@@ -9,4 +9,8 @@
     <Folder Include="Persistence\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Payroll.Core\Payroll.Core.csproj" />
+  </ItemGroup>
+
 </Project>
