@@ -4,6 +4,8 @@ namespace Payroll.Core
 {
     public class Location
     {
+        [Key]
+        public int LocationId { get; set; }
         [Required]
         [MaxLength(50)]
         public string Address1 { get; set; }
