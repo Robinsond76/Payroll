@@ -17,7 +17,7 @@ namespace Payroll.Data.Persistence
                     new Jobsite
                     {
                         Name = "Bombay Darbar",
-                        Moniker = "I-4500",
+                        Moniker = "I4500",
                         Location = new Location
                         {
                             Address1 = "1521 E Las Olas Blvd",
@@ -30,7 +30,7 @@ namespace Payroll.Data.Persistence
                     new Jobsite
                     {
                         Name = "The Whole Enchilada",
-                        Moniker = "I-4521",
+                        Moniker = "I4521",
                         Location = new Location
                         {
                             Address1 = "745 N Federal Hwy",
@@ -43,7 +43,7 @@ namespace Payroll.Data.Persistence
                     new Jobsite
                     {
                         Name = "Pizza Time",
-                        Moniker = "I-4536",
+                        Moniker = "I4536",
                         Location = new Location
                         {
                             Address1 = "11504 W Sample Rd",
@@ -56,7 +56,7 @@ namespace Payroll.Data.Persistence
                     new Jobsite
                     {
                         Name = "Casa Maya",
-                        Moniker = "I-4544",
+                        Moniker = "I4544",
                         Location = new Location
                         {
                             Address1 = "301 SE 15th Terrace",
