@@ -47,6 +47,15 @@ namespace Payroll.Data.Business
                 
             return await query.FirstOrDefaultAsync();
         }
-        
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return (await _db.SaveChangesAsync()) > 0;
+        }
+
+        public async Task<bool> JobsiteExistsAsync(string moniker)
+        {
+            return await _db.Jobsites.AnyAsync(jobsite => jobsite.Moniker == moniker);
+        }
     }
 }

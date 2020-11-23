@@ -11,10 +11,12 @@ namespace Payroll.Data.Business
         // General 
         void Add<T>(T entity) where T : class;
         void Delete<T>(T entity) where T : class;
+        Task<bool> SaveChangesAsync();
 
         //Jobsites
         Task<List<Jobsite>> GetAllJobsitesAsync();
         Task<Jobsite> GetJobsiteAsync(string moniker);
+        Task<bool> JobsiteExistsAsync(string moniker);
 
     }
 }

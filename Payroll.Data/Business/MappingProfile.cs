@@ -11,8 +11,8 @@ namespace Payroll.Data.Business
     {
         public MappingProfile()
         {
-            CreateMap<Jobsite, JobsiteDto>();
-            CreateMap<Location, LocationDto>();
+            CreateMap<Jobsite, JobsiteDto>().ReverseMap();
+            CreateMap<Location, LocationDto>().ReverseMap();
                 //.ForMember(j => j.Address1, o => o.MapFrom(m => m.Location.Address1))
                 //.ForMember(j => j.Address2, o => o.MapFrom(m => m.Location.Address2))
                 //.ForMember(j => j.Address3, o => o.MapFrom(m => m.Location.Address3))
