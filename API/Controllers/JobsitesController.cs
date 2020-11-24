@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Payroll.Data.Services;
 using Payroll.Data.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -42,6 +43,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{moniker}", Name = "GetJobsiteAsync")]
+        [Authorize]
         public async Task<ActionResult<JobsiteDto>> GetJobsite(string moniker)
         {
             try

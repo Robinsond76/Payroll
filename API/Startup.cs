@@ -17,6 +17,9 @@ using Payroll.Data.Profiles;
 using Payroll.Data.Persistence;
 using Payroll.Data.Services;
 using Payroll.Data.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace API
 {
@@ -36,7 +39,20 @@ namespace API
             var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
             identityBuilder.AddEntityFrameworkStores<PayrollContext>();
             identityBuilder.AddSignInManager<SignInManager<AppUser>>();
-            services.AddAuthentication();
+
+            //Jwt Authentication
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("cb272ffee121a00f0233e43e6f7d22ec2a0c47ddf380df"));
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opt =>
+                {
+                    opt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = key,
+                        ValidateAudience = false,
+                        ValidateIssuer = false
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +67,7 @@ namespace API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
