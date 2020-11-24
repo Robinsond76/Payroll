@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Payroll.Core;
 using System;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace Payroll.Data.Persistence
 {
-    public class PayrollContext : DbContext
+    public class PayrollContext : IdentityDbContext<AppUser>
     {
         private readonly IConfiguration _config;
 
@@ -22,6 +23,11 @@ namespace Payroll.Data.Persistence
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_config.GetConnectionString("DefaultConnection"));
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
         }
     }
 }
