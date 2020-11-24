@@ -26,17 +26,38 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<JobsiteDto>>> GetAllJobsitesAsync()
+        public async Task<ActionResult<List<JobsiteDto>>> GetAllJobsites()
         {
-            var results = await _repository.GetAllJobsitesAsync();
-            return _mapper.Map<List<JobsiteDto>>(results);
+            try
+            {
+                var results = await _repository.GetAllJobsitesAsync();
+                return _mapper.Map<List<JobsiteDto>>(results);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to retrieve all jobsites.");
+            } 
         }
 
         [HttpGet("{moniker}", Name = "GetJobsiteAsync")]
-        public async Task<ActionResult<JobsiteDto>> GetJobsiteAsync(string moniker)
+        public async Task<ActionResult<JobsiteDto>> GetJobsite(string moniker)
         {
-            var jobsite = await _repository.GetJobsiteAsync(moniker);
-            return Ok(_mapper.Map<JobsiteDto>(jobsite));
+            try
+            {
+                var jobsite = await _repository.GetJobsiteAsync(moniker);
+
+                if (jobsite == null)
+                    return NotFound($"Could not find jobsite with moniker of {moniker}");
+
+                return Ok(_mapper.Map<JobsiteDto>(jobsite));
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to retrieve jobsite.");
+            }
+
+
+            
         }
 
         [HttpPost]
@@ -57,7 +78,7 @@ namespace API.Controllers
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed to save.");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to add Jobsite.");
             }
             return BadRequest();
         }
@@ -77,7 +98,7 @@ namespace API.Controllers
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed to save.");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Update failed.");
             }
             return BadRequest();
         }
@@ -93,13 +114,13 @@ namespace API.Controllers
                 _repository.Delete(oldJobsite);
 
                 if (await _repository.SaveChangesAsync())
-                    return Ok();
+                    return Ok("Jobsite deleted.");
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed to save.");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to delete jobsite.");
             }
-            return BadRequest("Failed to delete camp");
+            return BadRequest();
         }
 
     }
