@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Payroll.Core;
+using Payroll.Data.Interfaces;
 using Payroll.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -17,15 +18,18 @@ namespace API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IMapper _mapper;
+        private readonly IJwtGenerator _jwtGenerator;
 
         //constructor
         public UserController(UserManager<AppUser> userManager, 
             SignInManager<AppUser> signInManager,
-            IMapper mapper)
+            IMapper mapper,
+            IJwtGenerator jwtGenerator)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _mapper = mapper;
+            _jwtGenerator = jwtGenerator;
         }
 
         [HttpPost("login")]
@@ -35,12 +39,18 @@ namespace API.Controllers
             if (user == null)
                 return Unauthorized("Incorrect username or password");
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, userDto.Password, false);
+            var confirmPassword = await _signInManager.CheckPasswordSignInAsync(user, userDto.Password, false);
 
             //Return a token
-            if (result.Succeeded)
-                return _mapper.Map<UserDto>(user);
-
+            if (confirmPassword.Succeeded)
+            {
+                return new UserDto
+                {
+                    DisplayName = user.DisplayName,
+                    Token = _jwtGenerator.CreateToken(user),
+                    Username = user.UserName
+                };
+            }
             return Unauthorized("Incorrect username or password.");
         }
     }

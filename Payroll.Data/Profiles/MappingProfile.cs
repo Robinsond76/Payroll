@@ -22,8 +22,7 @@ namespace Payroll.Data.Profiles
             //.ForMember(j => j.PostalCode, o => o.MapFrom(m => m.Location.PostalCode))
             //.ForMember(j => j.Country, o => o.MapFrom(m => m.Location.Country));
 
-            //users
-            CreateMap<AppUser, UserDto>();
+
         }
     }
 }
