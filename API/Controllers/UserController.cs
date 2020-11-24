@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Payroll.Core;
 using Payroll.Data.Models;
@@ -15,19 +16,22 @@ namespace API.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IMapper _mapper;
 
+        //constructor
         public UserController(UserManager<AppUser> userManager, 
-            SignInManager<AppUser> signInManager)
+            SignInManager<AppUser> signInManager,
+            IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _mapper = mapper;
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AppUser>> Login(UserLoginDto userDto)
+        public async Task<ActionResult<UserDto>> Login(UserLoginDto userDto)
         {
             var user = await _userManager.FindByEmailAsync(userDto.Email);
-
             if (user == null)
                 return Unauthorized("Incorrect username or password");
 
@@ -35,7 +39,7 @@ namespace API.Controllers
 
             //Return a token
             if (result.Succeeded)
-                return user;
+                return _mapper.Map<UserDto>(user);
 
             return Unauthorized("Incorrect username or password.");
         }

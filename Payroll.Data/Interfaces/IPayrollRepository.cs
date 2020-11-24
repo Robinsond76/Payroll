@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Payroll.Data.Business
+namespace Payroll.Data.Interfaces
 {
     public interface IPayrollRepository
     {

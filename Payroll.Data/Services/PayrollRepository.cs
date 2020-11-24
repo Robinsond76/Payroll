@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Payroll.Core;
+using Payroll.Data.Interfaces;
 using Payroll.Data.Models;
 using Payroll.Data.Persistence;
 using System;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Payroll.Data.Business
+namespace Payroll.Data.Services
 {
     public class PayrollRepository : IPayrollRepository
     {

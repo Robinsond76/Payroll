@@ -13,8 +13,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Payroll.Core;
-using Payroll.Data.Business;
+using Payroll.Data.Profiles;
 using Payroll.Data.Persistence;
+using Payroll.Data.Services;
+using Payroll.Data.Interfaces;
 
 namespace API
 {
@@ -27,6 +29,7 @@ namespace API
             services.AddDbContext<PayrollContext>();
             services.AddScoped<IPayrollRepository, PayrollRepository>();
             services.AddAutoMapper(typeof(MappingProfile));
+            services.AddScoped<IJwtGenerator, JwtGenerator>();
 
             //Identity
             var builder = services.AddIdentityCore<AppUser>();
