@@ -46,6 +46,7 @@ namespace API
 
             services.AddDbContext<PayrollContext>();
             services.AddScoped<IPayrollRepository, PayrollRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<IJwtGenerator, JwtGenerator>();
 
