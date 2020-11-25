@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Payroll.Core;
 using Payroll.Data.Interfaces;
 using System;
@@ -11,6 +12,13 @@ namespace Payroll.Data.Services
 {
     public class JwtGenerator : IJwtGenerator
     {
+        private readonly IConfiguration _config;
+
+        public JwtGenerator(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public string CreateToken(AppUser user)
         {
             var claims = new List<Claim>
@@ -19,7 +27,7 @@ namespace Payroll.Data.Services
             };
 
             //generate signing credentials (sign each token before sending)
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("cb272ffee121a00f0233e43e6f7d22ec2a0c47ddf380df"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["TokenKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor

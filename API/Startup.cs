@@ -25,6 +25,13 @@ namespace API
 {
     public class Startup
     {
+        private readonly IConfiguration _config;
+
+        public Startup(IConfiguration config)
+        {
+            _config = config;
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -41,7 +48,7 @@ namespace API
             identityBuilder.AddSignInManager<SignInManager<AppUser>>();
 
             //Jwt Authentication
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("cb272ffee121a00f0233e43e6f7d22ec2a0c47ddf380df"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["TokenKey"]));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
                 {
