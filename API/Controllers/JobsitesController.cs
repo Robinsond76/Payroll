@@ -43,7 +43,6 @@ namespace API.Controllers
         }
 
         [HttpGet("{moniker}", Name = "GetJobsiteAsync")]
-        [Authorize]
         public async Task<ActionResult<JobsiteDto>> GetJobsite(string moniker)
         {
             try
