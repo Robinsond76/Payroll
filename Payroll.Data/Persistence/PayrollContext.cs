@@ -23,5 +23,5 @@ namespace Payroll.Data.Persistence
         {
             optionsBuilder.UseSqlServer(_config.GetConnectionString("DefaultConnection"));
         }
-    }
+g    }
 }
