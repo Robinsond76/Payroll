@@ -56,6 +56,7 @@ namespace API
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<IJwtGenerator, JwtGenerator>();
+            services.AddScoped<IUserAccessor, UserAccessor>();
 
             //Identity
             var builder = services.AddIdentityCore<AppUser>();

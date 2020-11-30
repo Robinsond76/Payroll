@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 namespace API.Controllers
 {
     [ApiController]
-    [AllowAnonymous]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
@@ -23,21 +22,25 @@ namespace API.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IJwtGenerator _jwtGenerator;
+        private readonly IUserAccessor _userAccessor;
 
         //constructor
         public UserController(UserManager<AppUser> userManager, 
             SignInManager<AppUser> signInManager,
             IUserRepository userRepository,
             IMapper mapper,
-            IJwtGenerator jwtGenerator)
+            IJwtGenerator jwtGenerator,
+            IUserAccessor userAccessor)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _userRepository = userRepository;
             _mapper = mapper;
             _jwtGenerator = jwtGenerator;
+            _userAccessor = userAccessor;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(UserLoginDto userLoginDto)
         {
@@ -60,6 +63,7 @@ namespace API.Controllers
             return Unauthorized("Incorrect username or password.");
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(UserRegisterDto userRegisterDto)
         {
@@ -86,5 +90,17 @@ namespace API.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<ActionResult<UserDto>> CurrentUser()
+        {
+            var user = await _userManager.FindByNameAsync(_userAccessor.GetCurrentUsername());
+
+            return new UserDto
+            {
+                DisplayName = user.DisplayName,
+                Token = _jwtGenerator.CreateToken(user),
+                Username = user.UserName
+            };
+        }
     }
 }
