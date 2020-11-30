@@ -25,27 +25,25 @@ namespace Payroll.Data.Persistence
         {
             optionsBuilder.UseSqlServer(_config.GetConnectionString("DefaultConnection"));
         }
-<<<<<<< HEAD
-g    }
-=======
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.Entity<Timestamp>(x => x.HasKey(t =>
-                new {t.AppUserId, t.JobsiteId }));
+                new { t.AppUserId, t.JobsiteId }));
 
             builder.Entity<Timestamp>()
                 .HasOne(u => u.AppUser)
                 .WithMany(t => t.Timestamps)
                 .HasForeignKey(u => u.AppUserId);
-            
+
             builder.Entity<Timestamp>()
                 .HasOne(j => j.Jobsite)
                 .WithMany(t => t.Timestamps)
                 .HasForeignKey(j => j.JobsiteId);
         }
+
     }
->>>>>>> Identity
+  
 }

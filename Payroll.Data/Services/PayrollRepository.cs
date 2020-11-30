@@ -34,6 +34,8 @@ namespace Payroll.Data.Services
         {
             var query = _db.Jobsites
                 .Include(j => j.Location)
+                .Include(j => j.Timestamps)
+                .ThenInclude(t => t.AppUser)
                 .OrderBy(j => j.Name);
 
             return await query.ToListAsync(); ;
@@ -44,6 +46,8 @@ namespace Payroll.Data.Services
         {
             var query = _db.Jobsites
                 .Include(j => j.Location)
+                .Include(j => j.Timestamps)
+                .ThenInclude(t => t.AppUser)
                 .Where(j => j.Moniker == moniker);
                 
             return await query.FirstOrDefaultAsync();

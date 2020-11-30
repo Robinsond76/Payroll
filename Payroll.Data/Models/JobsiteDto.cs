@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Payroll.Data.Models
 {
@@ -17,5 +18,6 @@ namespace Payroll.Data.Models
         public string Moniker { get; set; }
 
         public LocationDto Location { get; set; }
+        public ICollection<TimestampDto> Timestamps { get; set; }
     }
 }
