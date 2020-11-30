@@ -22,6 +22,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using FluentValidation.AspNetCore;
+using Payroll.Data.Models;
 
 namespace API
 {
@@ -42,7 +44,12 @@ namespace API
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 opt.Filters.Add(new AuthorizeFilter(policy));
-            });
+            })
+                //fluent Validation
+                .AddFluentValidation(cfg => 
+                {
+                    cfg.RegisterValidatorsFromAssemblyContaining<UserRegisterDto>();
+                });
 
             services.AddDbContext<PayrollContext>();
             services.AddScoped<IPayrollRepository, PayrollRepository>();
