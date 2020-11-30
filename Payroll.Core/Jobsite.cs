@@ -16,5 +16,7 @@ namespace Payroll.Core
         [MaxLength(6)]
         public string Moniker { get; set; }
         public Location Location { get; set; }
+
+        public ICollection<Timestamp> Timestamps { get; set; }
     }
 }

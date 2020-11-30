@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Payroll.Data.Persistence;
 
 namespace Payroll.Data.Migrations
 {
     [DbContext(typeof(PayrollContext))]
-    partial class PayrollContextModelSnapshot : ModelSnapshot
+    [Migration("20201124170442_AddedIdentity")]
+    partial class AddedIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -288,33 +290,6 @@ namespace Payroll.Data.Migrations
                     b.ToTable("Location");
                 });
 
-            modelBuilder.Entity("Payroll.Core.Timestamp", b =>
-                {
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("JobsiteId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("ClockedIn")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ClockedInStamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ClockedOutStamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("LunchStamp")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("AppUserId", "JobsiteId");
-
-                    b.HasIndex("JobsiteId");
-
-                    b.ToTable("Timestamps");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -371,21 +346,6 @@ namespace Payroll.Data.Migrations
                     b.HasOne("Payroll.Core.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId");
-                });
-
-            modelBuilder.Entity("Payroll.Core.Timestamp", b =>
-                {
-                    b.HasOne("Payroll.Core.AppUser", "AppUser")
-                        .WithMany("Timestamps")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Payroll.Core.Jobsite", "Jobsite")
-                        .WithMany("Timestamps")
-                        .HasForeignKey("JobsiteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
