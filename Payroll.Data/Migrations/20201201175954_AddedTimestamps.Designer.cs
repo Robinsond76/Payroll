@@ -10,8 +10,8 @@ using Payroll.Data.Persistence;
 namespace Payroll.Data.Migrations
 {
     [DbContext(typeof(PayrollContext))]
-    [Migration("20201130163649_TimestampsAdded")]
-    partial class TimestampsAdded
+    [Migration("20201201175954_AddedTimestamps")]
+    partial class AddedTimestamps
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

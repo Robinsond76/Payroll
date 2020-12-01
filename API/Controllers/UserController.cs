@@ -17,8 +17,6 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IJwtGenerator _jwtGenerator;
@@ -32,8 +30,6 @@ namespace API.Controllers
             IJwtGenerator jwtGenerator,
             IUserAccessor userAccessor)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
             _userRepository = userRepository;
             _mapper = mapper;
             _jwtGenerator = jwtGenerator;
@@ -44,22 +40,23 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(UserLoginDto userLoginDto)
         {
-            var user = await _userManager.FindByEmailAsync(userLoginDto.Email);
+            var user = await _userRepository.GetUserByEmail(userLoginDto.Email);
             if (user == null)
                 return Unauthorized("Incorrect username or password");
 
-            var confirmPassword = await _signInManager.CheckPasswordSignInAsync(user, userLoginDto.Password, false);
+            var passwordConfirmed = await _userRepository.ConfirmPassword(user, userLoginDto.Password);
 
             //Return a token
-            if (confirmPassword.Succeeded)
+            if (passwordConfirmed)
             {
                 return new UserDto
-                {
+                { 
                     DisplayName = user.DisplayName,
                     Token = _jwtGenerator.CreateToken(user),
                     Username = user.UserName
                 };
             }
+            //else
             return Unauthorized("Incorrect username or password.");
         }
 
@@ -74,9 +71,9 @@ namespace API.Controllers
                 return BadRequest(new { Username = "This username is already registered" });
 
             var user = _mapper.Map<AppUser>(userRegisterDto);
-            var saveUser = await _userManager.CreateAsync(user, userRegisterDto.Password);
+            var userSaved = await _userRepository.SaveNewUser(user, userRegisterDto.Password);
 
-            if (saveUser.Succeeded)
+            if (userSaved)
             {
                 return new UserDto
                 {
@@ -91,16 +88,26 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<UserDto>> CurrentUser()
+        public async Task<IActionResult> CurrentUser(bool includeTimestamps = false)
         {
-            var user = await _userManager.FindByNameAsync(_userAccessor.GetCurrentUsername());
+            var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), includeTimestamps);
 
-            return new UserDto
+            if (includeTimestamps)
+            {
+                var userWithTimestamps = _mapper.Map<UserWithTimestampsDto>(user);
+                userWithTimestamps.Token = _jwtGenerator.CreateToken(user);
+                return Ok(userWithTimestamps);
+            }
+            
+            //else
+            var userDto = new UserDto
             {
                 DisplayName = user.DisplayName,
                 Token = _jwtGenerator.CreateToken(user),
                 Username = user.UserName
             };
+            return Ok(userDto);
+
         }
     }
 }

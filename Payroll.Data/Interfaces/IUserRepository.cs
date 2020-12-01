@@ -12,5 +12,10 @@ namespace Payroll.Data.Interfaces
     {
         Task<bool> EmailExists(string email);
         Task<bool> UsernameExists(string username);
+        Task<AppUser> GetUserByEmail(string email);
+        Task<bool> ConfirmPassword(AppUser user, string password);
+        Task<bool> SaveNewUser(AppUser user, string password);
+
+        Task<AppUser> GetUser(string username, bool withTimestamps);
     }
 }

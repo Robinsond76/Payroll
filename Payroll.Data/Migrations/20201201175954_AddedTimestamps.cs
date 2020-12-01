@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Payroll.Data.Migrations
 {
-    public partial class TimestampsAdded : Migration
+    public partial class AddedTimestamps : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
