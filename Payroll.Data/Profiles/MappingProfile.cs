@@ -25,6 +25,7 @@ namespace Payroll.Data.Profiles
             //users
             CreateMap<UserRegisterDto, AppUser>();
             CreateMap<AppUser, UserWithTimestampsDto>();
+            CreateMap<AppUser, UserDto>();
 
             //timestamps
             CreateMap<Timestamp, TimestampDto>()

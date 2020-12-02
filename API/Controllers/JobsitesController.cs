@@ -12,6 +12,7 @@ using Payroll.Data.Services;
 using Payroll.Data.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace API.Controllers
 {
     [ApiController]
@@ -20,12 +21,21 @@ namespace API.Controllers
     {
         private readonly IPayrollRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
+        private readonly IUserAccessor _userAccessor;
+
 
         //constructor
-        public JobsitesController(IPayrollRepository repository, IMapper mapper)
+        public JobsitesController(
+            IPayrollRepository repository, 
+            IMapper mapper,
+            IUserRepository userRepository,
+            IUserAccessor userAccessor)
         {
             _repository = repository;
             _mapper = mapper;
+            _userRepository = userRepository;
+            _userAccessor = userAccessor;
         }
 
         [HttpGet]
@@ -39,7 +49,7 @@ namespace API.Controllers
             catch (Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to retrieve all jobsites.");
-            } 
+            }
         }
 
         [HttpGet("{moniker}", Name = "GetJobsiteAsync")]
@@ -60,7 +70,7 @@ namespace API.Controllers
             }
 
 
-            
+
         }
 
         [HttpPost]
@@ -126,5 +136,38 @@ namespace API.Controllers
             return BadRequest();
         }
 
+        [HttpGet("{moniker}/clockin")]
+        public async Task<IActionResult> ClockIn(string moniker)
+        {
+            var jobsite = await _repository.GetJobsiteAsync(moniker);
+            if (jobsite == null)
+                return NotFound();
+
+            try
+            {
+                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), false);
+
+                var timestamp = new Timestamp
+                {
+                    Jobsite = jobsite,
+                    AppUser = user,
+                    ClockedIn = true,
+                    ClockedInStamp = DateTime.Now                 
+                };
+                _repository.SaveTimestamp(timestamp);
+                var success = await _repository.SaveChangesAsync();
+
+                if (success)
+                    return Ok();
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to clock in");
+            }
+            return BadRequest();
+
+            
+
+        }
     }
 }

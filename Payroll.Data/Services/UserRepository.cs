@@ -39,10 +39,13 @@ namespace Payroll.Data.Services
 
         public async Task<AppUser> GetUser(string username, bool withTimestamps)
         {
-            var query = _db.Users.Where(j => j.UserName == username);
+            var query = _db.Users
+                .Where(j => j.UserName == username);
 
             if (withTimestamps)
-                query.Include(u => u.Timestamps);
+                query = _db.Users
+                .Include(u => u.Timestamps)
+                .Where(j => j.UserName == username);
 
             return await query.FirstOrDefaultAsync();
         }

@@ -18,5 +18,8 @@ namespace Payroll.Data.Interfaces
         Task<Jobsite> GetJobsiteAsync(string moniker);
         Task<bool> JobsiteExistsAsync(string moniker);
 
+        //timestamps
+        void SaveTimestamp(Timestamp timestamp);
+
     }
 }

@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20201201175721_AddedTimestamps.cs" />
     <Compile Remove="Migrations\20201201175721_AddedTimestamps.Designer.cs" />
+    <Compile Remove="Migrations\20201201224717_AddedTimestamps2.cs" />
+    <Compile Remove="Migrations\20201201224717_AddedTimestamps2.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,6 +6,7 @@ namespace Payroll.Core
 {
     public class Timestamp
     {
+        public int TimestampId { get; set; }
         public string AppUserId { get; set; }
         public AppUser AppUser { get; set; }
         public int JobsiteId { get; set; }

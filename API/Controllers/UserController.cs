@@ -91,21 +91,18 @@ namespace API.Controllers
         public async Task<IActionResult> CurrentUser(bool includeTimestamps = false)
         {
             var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), includeTimestamps);
-
+            var token = _jwtGenerator.CreateToken(user);
+            
             if (includeTimestamps)
             {
                 var userWithTimestamps = _mapper.Map<UserWithTimestampsDto>(user);
-                userWithTimestamps.Token = _jwtGenerator.CreateToken(user);
+                userWithTimestamps.Token = token;
                 return Ok(userWithTimestamps);
             }
-            
+
             //else
-            var userDto = new UserDto
-            {
-                DisplayName = user.DisplayName,
-                Token = _jwtGenerator.CreateToken(user),
-                Username = user.UserName
-            };
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.Token = token;
             return Ok(userDto);
 
         }

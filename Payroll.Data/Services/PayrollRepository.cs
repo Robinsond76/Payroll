@@ -62,5 +62,10 @@ namespace Payroll.Data.Services
         {
             return await _db.Jobsites.AnyAsync(jobsite => jobsite.Moniker == moniker);
         }
+
+        public  void SaveTimestamp(Timestamp timestamp)
+        {
+           _db.Timestamps.Add(timestamp);
+        }
     }
 }

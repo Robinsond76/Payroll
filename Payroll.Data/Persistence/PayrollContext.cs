@@ -30,9 +30,6 @@ namespace Payroll.Data.Persistence
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<Timestamp>(x => x.HasKey(t =>
-                new { t.AppUserId, t.JobsiteId }));
-
             builder.Entity<Timestamp>()
                 .HasOne(u => u.AppUser)
                 .WithMany(t => t.Timestamps)
