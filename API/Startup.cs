@@ -57,6 +57,7 @@ namespace API
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddScoped<IUserAccessor, UserAccessor>();
+            services.AddScoped<ITimestampRepository, TimestampRepository>();
 
             //Identity
             var builder = services.AddIdentityCore<AppUser>();

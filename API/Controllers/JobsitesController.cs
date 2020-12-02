@@ -23,6 +23,7 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IUserAccessor _userAccessor;
+        private readonly ITimestampRepository _timestampRepository;
 
 
         //constructor
@@ -30,12 +31,14 @@ namespace API.Controllers
             IPayrollRepository repository, 
             IMapper mapper,
             IUserRepository userRepository,
-            IUserAccessor userAccessor)
+            IUserAccessor userAccessor,
+            ITimestampRepository timestampRepository)
         {
             _repository = repository;
             _mapper = mapper;
             _userRepository = userRepository;
             _userAccessor = userAccessor;
+            _timestampRepository = timestampRepository;
         }
 
         [HttpGet]
@@ -139,30 +142,27 @@ namespace API.Controllers
         [HttpGet("{moniker}/clockin")]
         public async Task<IActionResult> ClockIn(string moniker)
         {
-            var jobsite = await _repository.GetJobsiteAsync(moniker);
-            if (jobsite == null)
-                return NotFound();
-
             try
             {
+                var jobsite = await _repository.GetJobsiteAsync(moniker);
+                if (jobsite == null)
+                    return NotFound();
+
                 var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), false);
 
-                var timestamp = new Timestamp
-                {
-                    Jobsite = jobsite,
-                    AppUser = user,
-                    ClockedIn = true,
-                    ClockedInStamp = DateTime.Now                 
-                };
-                _repository.SaveTimestamp(timestamp);
-                var success = await _repository.SaveChangesAsync();
+                //if already clocked in, bad request
+                var currentlyClockedin = await _timestampRepository.GetClockedInTimestamp(user);
+                if (currentlyClockedin != null)
+                    return BadRequest($"Already clocked in at {currentlyClockedin.Jobsite.Moniker}");
 
-                if (success)
-                    return Ok();
+                //clock in
+                if (await _timestampRepository.ClockIn(jobsite, user))
+                    return Ok("Clocked in Successfully.");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to clock in");
+                throw ex;
+                //return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to clock in");
             }
             return BadRequest();
 

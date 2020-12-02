@@ -23,8 +23,7 @@ namespace API.Controllers
         private readonly IUserAccessor _userAccessor;
 
         //constructor
-        public UserController(UserManager<AppUser> userManager, 
-            SignInManager<AppUser> signInManager,
+        public UserController(
             IUserRepository userRepository,
             IMapper mapper,
             IJwtGenerator jwtGenerator,
