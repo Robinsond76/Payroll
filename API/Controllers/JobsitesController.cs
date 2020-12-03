@@ -148,7 +148,7 @@ namespace API.Controllers
                 if (jobsite == null)
                     return NotFound();
 
-                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), false);
+                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
 
                 //if already clocked in, bad request
                 var currentlyClockedin = await _timestampRepository.GetClockedInTimestamp(user);
@@ -175,7 +175,7 @@ namespace API.Controllers
                 if (jobsite == null)
                     return NotFound();
 
-                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), false);
+                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
 
                 //If not already clocked in, bad request
                 var currentlyClockedin = await _timestampRepository.GetClockedInTimestamp(user);
@@ -212,7 +212,7 @@ namespace API.Controllers
                 if (jobsite == null)
                     return NotFound();
 
-                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), false);
+                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
 
                 //If not already clocked in, bad request
                 var currentlyClockedin = await _timestampRepository.GetClockedInTimestamp(user);

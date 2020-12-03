@@ -87,23 +87,31 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CurrentUser(bool includeTimestamps = false)
+        public async Task<UserDto> GetLoggedInUser()
+        {
+            var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+            var token = _jwtGenerator.CreateToken(user);
+
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.Token = token;
+            return userDto;
+        }
+
+        [HttpGet("Current")]
+        public async Task<IActionResult> CurrentUserInfo(bool includeTimestamps = false)
         {
             var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), includeTimestamps);
-            var token = _jwtGenerator.CreateToken(user);
             
             if (includeTimestamps)
             {
-                var userWithTimestamps = _mapper.Map<UserWithTimestampsDto>(user);
-                userWithTimestamps.Token = token;
+                var userWithTimestamps = _mapper.Map<UserInfoWithTimestampsDto>(user);
                 return Ok(userWithTimestamps);
             }
 
             //else
-            var userDto = _mapper.Map<UserDto>(user);
-            userDto.Token = token;
-            return Ok(userDto);
-
+            var userInfoDto = _mapper.Map<UserInfoDto>(user);
+            return Ok(userInfoDto);
         }
+
     }
 }

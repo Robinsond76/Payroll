@@ -24,13 +24,17 @@ namespace Payroll.Data.Profiles
 
             //users
             CreateMap<UserRegisterDto, AppUser>();
-            CreateMap<AppUser, UserWithTimestampsDto>();
+            CreateMap<AppUser, UserInfoDto>();
+            CreateMap<AppUser, UserInfoWithTimestampsDto>();
             CreateMap<AppUser, UserDto>();
 
             //timestamps
-            CreateMap<Timestamp, TimestampDto>()
+            CreateMap<Timestamp, TimestampWithUserDto>()
                 .ForMember(t => t.Username, o => o.MapFrom(e => e.AppUser.UserName))
                 .ForMember(t => t.DisplayName, o => o.MapFrom(e => e.AppUser.DisplayName));
+            CreateMap<Timestamp, TimestampWithJobsiteDto>()
+                .ForMember(t => t.Jobsite, o => o.MapFrom(e => e.Jobsite.Name))
+                .ForMember(t => t.Moniker, o => o.MapFrom(e => e.Jobsite.Moniker));
         }
     }
 }

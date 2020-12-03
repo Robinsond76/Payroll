@@ -4,11 +4,10 @@ using System.Text;
 
 namespace Payroll.Data.Models
 {
-    public class UserWithTimestampsDto
+    public class UserInfoWithTimestampsDto
     {
         public string DisplayName { get; set; }
-        public string Token { get; set; }
         public string Username { get; set; }
-        public ICollection<TimestampDto> Timestamps { get; set; }
+        public ICollection<TimestampWithJobsiteDto> Timestamps { get; set; }
     }
 }

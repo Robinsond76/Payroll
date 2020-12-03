@@ -37,7 +37,7 @@ namespace Payroll.Data.Services
             return await _db.Users.AnyAsync(user => user.UserName == username);
         }
 
-        public async Task<AppUser> GetUser(string username, bool withTimestamps)
+        public async Task<AppUser> GetUser(string username, bool withTimestamps = false)
         {
             var query = _db.Users
                 .Where(j => j.UserName == username);
@@ -45,6 +45,7 @@ namespace Payroll.Data.Services
             if (withTimestamps)
                 query = _db.Users
                 .Include(u => u.Timestamps)
+                .ThenInclude(t => t.Jobsite)
                 .Where(j => j.UserName == username);
 
             return await query.FirstOrDefaultAsync();

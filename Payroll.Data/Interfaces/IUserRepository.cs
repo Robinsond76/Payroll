@@ -16,6 +16,6 @@ namespace Payroll.Data.Interfaces
         Task<bool> ConfirmPassword(AppUser user, string password);
         Task<bool> SaveNewUser(AppUser user, string password);
 
-        Task<AppUser> GetUser(string username, bool withTimestamps);
+        Task<AppUser> GetUser(string username, bool withTimestamps = false);
     }
 }
