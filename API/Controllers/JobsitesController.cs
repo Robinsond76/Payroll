@@ -164,9 +164,6 @@ namespace API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to clock in");
             }
             return BadRequest();
-
-            
-
         }
 
         [HttpPost("{moniker}/clockinlunch")]
@@ -189,6 +186,10 @@ namespace API.Controllers
                 if (currentlyClockedin.JobsiteId != jobsite.JobsiteId)
                     return BadRequest($"You're currently clocked in to another job: {currentlyClockedin.Jobsite.Moniker}");
 
+                //if already clocked in for lunch, bad request
+                if (currentlyClockedin.LunchStamp != System.DateTime.MinValue)
+                    return BadRequest($"You've already clocked in for lunch.");
+
                 //if clockedin to the correct jobsite, clockinLunch
                 var success = await _timestampRepository.ClockInLunch(user);
                 if (success)
@@ -200,6 +201,38 @@ namespace API.Controllers
             }
             return BadRequest();
 
+        }
+
+        [HttpPost("{moniker}/clockout")]
+        public async Task<IActionResult> ClockOut(string moniker)
+        {
+            try
+            {
+                var jobsite = await _repository.GetJobsiteAsync(moniker);
+                if (jobsite == null)
+                    return NotFound();
+
+                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), false);
+
+                //If not already clocked in, bad request
+                var currentlyClockedin = await _timestampRepository.GetClockedInTimestamp(user);
+                if (currentlyClockedin == null)
+                    return BadRequest($"You must first be clocked in to {jobsite.Moniker} to clock out. ");
+
+                //if clocked in to another job, bad request
+                if (currentlyClockedin.JobsiteId != jobsite.JobsiteId)
+                    return BadRequest($"You're currently clocked in to another job: {currentlyClockedin.Jobsite.Moniker}");
+
+                //if clockedin to the correct jobsite, clock out
+                var success = await _timestampRepository.ClockOut(user);
+                if (success)
+                    return Ok($"Successfully clocked out of {moniker}.");
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to clock out.");
+            }
+            return BadRequest();
         }
     }
 }

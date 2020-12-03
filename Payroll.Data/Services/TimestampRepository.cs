@@ -41,6 +41,15 @@ namespace Payroll.Data.Services
                     
         }
 
+        public async Task<bool> ClockOut(AppUser user)
+        {
+            var clockedInTimestamp = await this.GetClockedInTimestamp(user);
+            clockedInTimestamp.ClockedIn = false;
+            clockedInTimestamp.ClockedOutStamp = DateTime.Now;
+
+            return await _db.SaveChangesAsync() > 0;
+        }
+
         public async Task<Timestamp> GetClockedInTimestamp(AppUser user)
         {
             return await _db.Timestamps
