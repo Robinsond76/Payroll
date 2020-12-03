@@ -10,5 +10,6 @@ namespace Payroll.Data.Interfaces
     {
         public Task<Timestamp> GetClockedInTimestamp(AppUser user);
         public Task<bool> ClockIn(Jobsite jobsite, AppUser user);
+        public Task<bool> ClockInLunch(AppUser user);
     }
 }

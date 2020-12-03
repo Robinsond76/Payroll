@@ -139,7 +139,7 @@ namespace API.Controllers
             return BadRequest();
         }
 
-        [HttpGet("{moniker}/clockin")]
+        [HttpPost("{moniker}/clockin")]
         public async Task<IActionResult> ClockIn(string moniker)
         {
             try
@@ -159,14 +159,46 @@ namespace API.Controllers
                 if (await _timestampRepository.ClockIn(jobsite, user))
                     return Ok("Clocked in Successfully.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to clock in");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to clock in");
             }
             return BadRequest();
 
             
+
+        }
+
+        [HttpPost("{moniker}/clockinlunch")]
+        public async Task<IActionResult> ClockInLunch(string moniker)
+        {
+            try
+            {
+                var jobsite = await _repository.GetJobsiteAsync(moniker);
+                if (jobsite == null)
+                    return NotFound();
+
+                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), false);
+
+                //If not already clocked in, bad request
+                var currentlyClockedin = await _timestampRepository.GetClockedInTimestamp(user);
+                if (currentlyClockedin == null)
+                    return BadRequest($"You must first be clocked in to {jobsite.Moniker} to clock in for lunch. ");
+
+                //if clocked in to another job, bad request
+                if (currentlyClockedin.JobsiteId != jobsite.JobsiteId)
+                    return BadRequest($"You're currently clocked in to another job: {currentlyClockedin.Jobsite.Moniker}");
+
+                //if clockedin to the correct jobsite, clockinLunch
+                var success = await _timestampRepository.ClockInLunch(user);
+                if (success)
+                    return Ok("Successfully clocked in for lunch");
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to clock in for lunch");
+            }
+            return BadRequest();
 
         }
     }
