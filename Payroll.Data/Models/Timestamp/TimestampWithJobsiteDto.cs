@@ -7,6 +7,8 @@ namespace Payroll.Data.Models
 {
     public class TimestampWithJobsiteDto
     {
+        private String _totalTimeWorked = "test";
+
         public string Jobsite { get; set; }
         public string Moniker { get; set; }
 
@@ -15,5 +17,20 @@ namespace Payroll.Data.Models
         public DateTime ClockedInStamp { get; set; }
         public DateTime LunchStamp { get; set; }
         public DateTime ClockedOutStamp { get; set; }
+        public String TotalTimeWorked { 
+            get 
+            {
+                TimeSpan timeWorked;
+                if (this.LunchStamp == System.DateTime.MinValue)
+                {
+                    timeWorked = ClockedOutStamp - ClockedInStamp;
+                } else
+                {
+                    timeWorked = (ClockedOutStamp.AddMinutes(-30) - ClockedInStamp);
+                }
+                _totalTimeWorked = $"{timeWorked.Hours} hours and {timeWorked.Minutes} minutes";
+                return _totalTimeWorked;
+            } 
+        }
     }
 }

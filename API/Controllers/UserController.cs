@@ -100,17 +100,24 @@ namespace API.Controllers
         [HttpGet("Current")]
         public async Task<IActionResult> CurrentUserInfo(bool includeTimestamps = false)
         {
-            var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), includeTimestamps);
-            
-            if (includeTimestamps)
+            try
             {
-                var userWithTimestamps = _mapper.Map<UserInfoWithTimestampsDto>(user);
-                return Ok(userWithTimestamps);
-            }
+                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), includeTimestamps);
 
-            //else
-            var userInfoDto = _mapper.Map<UserInfoDto>(user);
-            return Ok(userInfoDto);
+                if (includeTimestamps)
+                {
+                    var userWithTimestamps = _mapper.Map<UserInfoWithTimestampsDto>(user);
+                    return Ok(userWithTimestamps);
+                }
+
+                //else
+                var userInfoDto = _mapper.Map<UserInfoDto>(user);
+                return Ok(userInfoDto);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to search database.");
+            }
         }
 
     }
