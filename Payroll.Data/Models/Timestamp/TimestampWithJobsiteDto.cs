@@ -21,13 +21,14 @@ namespace Payroll.Data.Models
             get 
             {
                 TimeSpan timeWorked;
-                if (this.LunchStamp == System.DateTime.MinValue)
-                {
-                    timeWorked = ClockedOutStamp - ClockedInStamp;
-                } else
-                {
-                    timeWorked = (ClockedOutStamp.AddMinutes(-30) - ClockedInStamp);
-                }
+                timeWorked = ClockedOutStamp - ClockedInStamp;
+                //if (this.LunchStamp == System.DateTime.MinValue)
+                //{
+                //    timeWorked = ClockedOutStamp - ClockedInStamp;
+                //} else
+                //{
+                //    timeWorked = (ClockedOutStamp.AddMinutes(-30) - ClockedInStamp);
+                //}
                 _totalTimeWorked = $"{timeWorked.Hours} hours and {timeWorked.Minutes} minutes";
                 return _totalTimeWorked;
             } 
