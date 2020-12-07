@@ -21,18 +21,21 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly IJwtGenerator _jwtGenerator;
         private readonly IUserAccessor _userAccessor;
+        private readonly ITimestampRepository _timestampRepository;
 
         //constructor
         public UserController(
             IUserRepository userRepository,
             IMapper mapper,
             IJwtGenerator jwtGenerator,
-            IUserAccessor userAccessor)
+            IUserAccessor userAccessor,
+            ITimestampRepository timestampRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _jwtGenerator = jwtGenerator;
             _userAccessor = userAccessor;
+            _timestampRepository = timestampRepository;
         }
 
         [AllowAnonymous]
@@ -110,8 +113,17 @@ namespace API.Controllers
                     return Ok(userWithTimestamps);
                 }
 
-                //else
                 var userInfoDto = _mapper.Map<UserInfoDto>(user);
+
+                //check to see if currently clocked in at a jobsite
+                var currentlyClockedin = await _timestampRepository.GetClockedInTimestamp(user);
+                if (currentlyClockedin != null)
+                {
+                    userInfoDto.CurrentlyClockedIn = true;
+                    userInfoDto.ClockedInAtJobsite = currentlyClockedin.Jobsite.Moniker;
+                    return Ok(userInfoDto);
+                }
+
                 return Ok(userInfoDto);
             }
             catch (Exception)
