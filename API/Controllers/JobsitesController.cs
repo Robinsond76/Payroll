@@ -65,15 +65,85 @@ namespace API.Controllers
                 if (jobsite == null)
                     return NotFound($"Could not find jobsite with moniker of {moniker}");
 
-                return Ok(_mapper.Map<JobsiteWithEmployeeLogDto>(jobsite));
+                return Ok(_mapper.Map<JobsiteDto>(jobsite));
             }
             catch (Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to retrieve jobsite.");
             }
+        }
+
+        [HttpGet("{moniker}/timestamps")]
+        public async Task<ActionResult<JobsiteDto>> GetJobsiteWithTimestamps(string moniker, string fromDate, string toDate)
+        {
+            try
+            {
+                var jobsite = await _repository.GetJobsiteAsync(moniker);
+
+                if (jobsite == null)
+                    return NotFound($"Could not find jobsite with moniker of {moniker}");
+
+                // if only 'fromDate' is provided
+                if (fromDate != null && toDate == null)
+                {
+                    DateTime fromDateTime;
+                    try
+                    {
+                        fromDateTime = DateTime.Parse(fromDate);
+                    }
+                    catch (Exception)
+                    {
+                        return BadRequest("Error: Date query should be in the following format: MM/DD/YYYY");
+                    }
+
+                    var filteredTimestamps = jobsite.Timestamps.Where(t =>
+                        t.ClockedInStamp >= fromDateTime && t.ClockedIn == false).ToList();
+
+                    jobsite.Timestamps = filteredTimestamps;
+
+                    var userWithFilteredTimestamps = _mapper.Map<JobsiteWithTimestampsDto>(jobsite);
+                    return Ok(userWithFilteredTimestamps);
+                }
+
+                //if both dates provided
+                if (fromDate != null && toDate != null)
+                {
+                    DateTime fromDateTime;
+                    DateTime toDateTime;
+                    try
+                    {
+                        fromDateTime = DateTime.Parse(fromDate);
+                        toDateTime = DateTime.Parse(toDate);
+                    }
+                    catch (Exception)
+                    {
+                        return BadRequest("Error: Date query should be in the following format: MM/DD/YYYY");
+                    }
+
+                    //BadRequest() if fromdate is past todate
+                    if (fromDateTime > toDateTime)
+                        return BadRequest("'From Date' cannot be past 'To Date'");
+
+                    var filteredTimestamps = jobsite.Timestamps.Where(t =>
+                        t.ClockedInStamp >= fromDateTime &&
+                        t.ClockedInStamp <= toDateTime &&
+                        t.ClockedIn == false).ToList();
+
+                    jobsite.Timestamps = filteredTimestamps;
+
+                    var userWithFilteredTimestamps = _mapper.Map<JobsiteWithTimestampsDto>(jobsite);
+                    return Ok(userWithFilteredTimestamps);
+                }
 
 
+                //else return all timestamps
+                return Ok(_mapper.Map<JobsiteWithTimestampsDto>(jobsite));
 
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to retrieve jobsite.");
+            }
         }
 
         [HttpPost]

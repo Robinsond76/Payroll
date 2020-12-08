@@ -13,7 +13,7 @@ namespace Payroll.Data.Profiles
         {
             //jobsites
             CreateMap<Jobsite, JobsiteDto>().ReverseMap();
-            CreateMap<Jobsite, JobsiteWithEmployeeLogDto>();
+            CreateMap<Jobsite, JobsiteWithTimestampsDto>();
             CreateMap<Location, LocationDto>().ReverseMap();
             //.ForMember(j => j.Address1, o => o.MapFrom(m => m.Location.Address1))
             //.ForMember(j => j.Address2, o => o.MapFrom(m => m.Location.Address2))

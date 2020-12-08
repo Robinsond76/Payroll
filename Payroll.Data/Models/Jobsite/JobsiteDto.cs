@@ -18,6 +18,5 @@ namespace Payroll.Data.Models
         public string Moniker { get; set; }
 
         public LocationDto Location { get; set; }
-        public ICollection<TimestampWithUserDto> Timestamps { get; set; }
     }
 }

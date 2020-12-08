@@ -206,7 +206,8 @@ namespace API.Controllers
         }
 
         [HttpGet("{username}/timestamps/{moniker}")]
-        public async Task<IActionResult> GetUserTimestampsFromJobsite(string username, string moniker)
+        public async Task<ActionResult<UserInfoWithHoursWorkedDto>> GetUserTimestampsFromJobsite(string username, 
+            string moniker, string fromDate, string toDate)
         {
             try
             {
@@ -221,10 +222,63 @@ namespace API.Controllers
                 if (jobsiteId == 0)
                     return NotFound($"Error: jobsite '{moniker}' not found");
 
-                //filter timestamps
+                //filter user's timestamps by jobsite
                 var filteredTimestamps = await _timestampRepository.TimestampsForJobByUser(user, moniker);
                 user.Timestamps = filteredTimestamps;
 
+                //if only fromDate is provided
+                if (fromDate != null && toDate == null)
+                {
+                    DateTime fromDateTime;
+                    try
+                    {
+                        fromDateTime = DateTime.Parse(fromDate);
+                    }
+                    catch (Exception)
+                    {
+                        return BadRequest("Error: Date query should be in the following format: MM/DD/YYYY");
+                    }
+
+                    var filteredTimestampsByDate = user.Timestamps.Where(t =>
+                        t.ClockedInStamp >= fromDateTime && t.ClockedIn == false).ToList();
+
+                    user.Timestamps = filteredTimestampsByDate;
+
+                    var userWithFilteredTimestamps = _mapper.Map<UserInfoWithHoursWorkedDto>(user);
+                    return Ok(userWithFilteredTimestamps);
+                }
+
+                //if both dates provided
+                if (fromDate != null && toDate != null)
+                {
+                    DateTime fromDateTime;
+                    DateTime toDateTime;
+                    try
+                    {
+                        fromDateTime = DateTime.Parse(fromDate);
+                        toDateTime = DateTime.Parse(toDate);
+                    }
+                    catch (Exception)
+                    {
+                        return BadRequest("Error: Date query should be in the following format: MM/DD/YYYY");
+                    }
+
+                    //BadRequest() if fromdate is past todate
+                    if (fromDateTime > toDateTime)
+                        return BadRequest("'From Date' cannot be past 'To Date'");
+
+                    var filteredTimestampsByDate = user.Timestamps.Where(t =>
+                        t.ClockedInStamp >= fromDateTime &&
+                        t.ClockedInStamp <= toDateTime &&
+                        t.ClockedIn == false).ToList();
+
+                    user.Timestamps = filteredTimestampsByDate;
+
+                    var userWithFilteredTimestamps = _mapper.Map<UserInfoWithHoursWorkedDto>(user);
+                    return Ok(userWithFilteredTimestamps);
+                }
+
+                //if no dates provided
                 return Ok(_mapper.Map<UserInfoWithHoursWorkedDto>(user));
             }
             catch (Exception)

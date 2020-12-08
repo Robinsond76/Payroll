@@ -4,13 +4,12 @@ using System.Text;
 
 namespace Payroll.Data.Models
 {
-    public class JobsiteWithEmployeeLogDto
+    public class JobsiteWithTimestampsDto
     {
         private ICollection<string> _employeesThatClocked;
 
         public string Name { get; set; }
         public string Moniker { get; set; }
-        public LocationDto Location { get; set; }
 
         public ICollection<String> EmployeesThatClocked { 
             get 
