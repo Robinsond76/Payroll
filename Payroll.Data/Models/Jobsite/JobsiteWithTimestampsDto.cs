@@ -15,20 +15,14 @@ namespace Payroll.Data.Models
             get 
             {
                 ICollection<string> employees = new List<string>();
-                string employee = "";
 
                 foreach (var timestamp in this.Timestamps)
                 {
-                    var x = timestamp.DisplayName;
-                    
-                    if (employee != x)
-                    {
-                        employee = x;
-                        employees.Add(employee);
-                    } else
-                    {
+                    if (employees.Contains(timestamp.DisplayName))
                         continue;
-                    }
+                    //else
+                    employees.Add(timestamp.DisplayName);
+
                 }
                 _employeesThatClocked = employees;
                 return _employeesThatClocked;

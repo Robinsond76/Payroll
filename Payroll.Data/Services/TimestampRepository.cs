@@ -51,6 +51,15 @@ namespace Payroll.Data.Services
             return await _db.SaveChangesAsync() > 0;
         }
 
+        public async Task<ICollection<Timestamp>> GetAllTimestamps()
+        {
+            var query = _db.Timestamps
+                .Include(t => t.AppUser)
+                .Include(t => t.Jobsite);
+
+            return await query.ToListAsync();
+        }
+
         public async Task<Timestamp> GetClockedInTimestamp(AppUser user)
         {
             return await _db.Timestamps
@@ -72,5 +81,7 @@ namespace Payroll.Data.Services
 
                 
         }
+
+
     }
 }
