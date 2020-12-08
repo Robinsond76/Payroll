@@ -12,5 +12,7 @@ namespace Payroll.Data.Interfaces
         public Task<bool> ClockIn(Jobsite jobsite, AppUser user);
         public Task<bool> ClockInLunch(AppUser user);
         public Task<bool> ClockOut(AppUser user);
+        public Task<ICollection<Timestamp>> TimestampsForJobByUser(AppUser user, string moniker);
+
     }
 }

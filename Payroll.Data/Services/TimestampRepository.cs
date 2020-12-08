@@ -4,6 +4,7 @@ using Payroll.Data.Interfaces;
 using Payroll.Data.Persistence;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -56,6 +57,20 @@ namespace Payroll.Data.Services
                 .Include(t => t.Jobsite)
                 .SingleOrDefaultAsync(
                 t => t.AppUserId == user.Id && t.ClockedIn == true);
+        }
+
+        public async Task<ICollection<Timestamp>> TimestampsForJobByUser(AppUser user, string moniker)
+        {
+            var query = _db.Timestamps
+                .Include(t => t.Jobsite)
+                .Where(t => 
+                t.AppUser == user && 
+                t.Jobsite.Moniker == moniker && 
+                t.ClockedIn == false);
+            return await query.ToListAsync();
+
+
+                
         }
     }
 }

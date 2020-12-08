@@ -41,7 +41,6 @@ namespace Payroll.Data.Services
             return await query.ToListAsync(); ;
         }
 
-
         public async Task<Jobsite> GetJobsiteAsync(string moniker)
         {
             var query = _db.Jobsites
@@ -63,9 +62,17 @@ namespace Payroll.Data.Services
             return await _db.Jobsites.AnyAsync(jobsite => jobsite.Moniker == moniker);
         }
 
-        public  void SaveTimestamp(Timestamp timestamp)
+        public async Task<int> GetJobsiteIdByMoniker(string moniker)
         {
-           _db.Timestamps.Add(timestamp);
+            try
+            {
+                var query = await _db.Jobsites.FirstOrDefaultAsync(t => t.Moniker == moniker);
+                return query.JobsiteId;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
         }
     }
 }

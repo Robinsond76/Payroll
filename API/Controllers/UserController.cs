@@ -18,6 +18,7 @@ namespace API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPayrollRepository _jobsiteRepository;
         private readonly IMapper _mapper;
         private readonly IJwtGenerator _jwtGenerator;
         private readonly IUserAccessor _userAccessor;
@@ -26,12 +27,14 @@ namespace API.Controllers
         //constructor
         public UserController(
             IUserRepository userRepository,
+            IPayrollRepository jobsiteRepository,
             IMapper mapper,
             IJwtGenerator jwtGenerator,
             IUserAccessor userAccessor,
             ITimestampRepository timestampRepository)
         {
             _userRepository = userRepository;
+            _jobsiteRepository = jobsiteRepository;
             _mapper = mapper;
             _jwtGenerator = jwtGenerator;
             _userAccessor = userAccessor;
@@ -52,7 +55,7 @@ namespace API.Controllers
             if (passwordConfirmed)
             {
                 return new UserDto
-                { 
+                {
                     DisplayName = user.DisplayName,
                     Token = _jwtGenerator.CreateToken(user),
                     Username = user.UserName
@@ -68,7 +71,7 @@ namespace API.Controllers
         {
             if (await _userRepository.EmailExists(userRegisterDto.Email))
                 return BadRequest(new { Email = "This email is already registered" });
-            
+
             if (await _userRepository.UsernameExists(userRegisterDto.Username))
                 return BadRequest(new { Username = "This username is already registered" });
 
@@ -100,18 +103,12 @@ namespace API.Controllers
             return userDto;
         }
 
-        [HttpGet("Current")]
-        public async Task<IActionResult> CurrentUserInfo(bool includeTimestamps = false)
+        [HttpGet("{username}")]
+        public async Task<IActionResult> CurrentUserInfo(string username)
         {
             try
             {
-                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername(), includeTimestamps);
-
-                if (includeTimestamps)
-                {
-                    var userWithTimestamps = _mapper.Map<UserInfoWithTimestampsDto>(user);
-                    return Ok(userWithTimestamps);
-                }
+                var user = await _userRepository.GetUser(username);
 
                 var userInfoDto = _mapper.Map<UserInfoDto>(user);
 
@@ -132,5 +129,108 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("{username}/timestamps")]
+        public async Task<IActionResult> GetAllTimeStamps(string username, string fromDate, string toDate)
+        {
+            try
+            {
+                var user = await _userRepository.GetUser(username, true);
+
+                //NotFound() if user not found
+                if (user == null)
+                    return NotFound($"Username {username}not found.");
+
+                // if only 'fromDate' is provided
+                if (fromDate != null && toDate == null)
+                {
+                    DateTime fromDateTime;
+                    try
+                    {
+                        fromDateTime = DateTime.Parse(fromDate);
+                    }
+                    catch (Exception)
+                    {
+                        return BadRequest("Error: Date query should be in the following format: MM/DD/YYYY");
+                    }
+
+                    var filteredTimestamps = user.Timestamps.Where(t =>
+                        t.ClockedInStamp >= fromDateTime && t.ClockedIn == false).ToList();
+
+                    user.Timestamps = filteredTimestamps;
+
+                    var userWithFilteredTimestamps = _mapper.Map<UserInfoWithHoursWorkedDto>(user);
+                    return Ok(userWithFilteredTimestamps);
+                }
+
+                //if both dates provided
+                if (fromDate != null && toDate != null)
+                {
+                    DateTime fromDateTime;
+                    DateTime toDateTime;
+                    try
+                    {
+                        fromDateTime = DateTime.Parse(fromDate);
+                        toDateTime = DateTime.Parse(toDate);
+                    }
+                    catch (Exception)
+                    {
+                        return BadRequest("Error: Date query should be in the following format: MM/DD/YYYY");
+                    }
+
+                    //BadRequest() if fromdate is past todate
+                    if (fromDateTime > toDateTime)
+                        return BadRequest("'From Date' cannot be past 'To Date'");
+
+                    var filteredTimestamps = user.Timestamps.Where(t =>
+                        t.ClockedInStamp >= fromDateTime &&
+                        t.ClockedInStamp <= toDateTime &&
+                        t.ClockedIn == false).ToList();
+
+                    user.Timestamps = filteredTimestamps;
+
+                    var userWithFilteredTimestamps = _mapper.Map<UserInfoWithHoursWorkedDto>(user);
+                    return Ok(userWithFilteredTimestamps);
+                }
+
+                //return all timestamps if no date provided
+                var TimestampsNotClockedIn = user.Timestamps.Where(t => t.ClockedIn == false).ToList();
+                user.Timestamps = TimestampsNotClockedIn;
+
+                var userWithTimestamps = _mapper.Map<UserInfoWithHoursWorkedDto>(user);
+                return Ok(userWithTimestamps);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to retrieve user data");
+            }
+        }
+
+        [HttpGet("{username}/timestamps/{moniker}")]
+        public async Task<IActionResult> GetUserTimestampsFromJobsite(string username, string moniker)
+        {
+            try
+            {
+                var user = await _userRepository.GetUser(username);
+
+                //error if user not found
+                if (user == null)
+                    return NotFound($"Error: user '{username}' not found");
+
+                //error if jobsite not found
+                var jobsiteId = await _jobsiteRepository.GetJobsiteIdByMoniker(moniker);
+                if (jobsiteId == 0)
+                    return NotFound($"Error: jobsite '{moniker}' not found");
+
+                //filter timestamps
+                var filteredTimestamps = await _timestampRepository.TimestampsForJobByUser(user, moniker);
+                user.Timestamps = filteredTimestamps;
+
+                return Ok(_mapper.Map<UserInfoWithHoursWorkedDto>(user));
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to query database.");
+            }
+        }
     }
 }
