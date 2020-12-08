@@ -65,7 +65,7 @@ namespace API.Controllers
                 if (jobsite == null)
                     return NotFound($"Could not find jobsite with moniker of {moniker}");
 
-                return Ok(_mapper.Map<JobsiteDto>(jobsite));
+                return Ok(_mapper.Map<JobsiteWithEmployeeLogDto>(jobsite));
             }
             catch (Exception)
             {
