@@ -15,5 +15,6 @@ namespace Payroll.Data.Interfaces
         public Task<bool> ClockOut(AppUser user);
         public Task<ICollection<Timestamp>> TimestampsForJobByUser(AppUser user, string moniker);
         public Task<ICollection<Timestamp>> GetAllTimestamps();
+        public Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn();
     }
 }

@@ -68,6 +68,17 @@ namespace Payroll.Data.Services
                 t => t.AppUserId == user.Id && t.ClockedIn == true);
         }
 
+        public async Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn()
+        {
+            var query = _db.Timestamps
+                .Where(t => t.ClockedIn == true)
+                .Include(t => t.AppUser)
+                .Include(t => t.Jobsite);
+
+            return await query.ToListAsync();
+
+        }
+
         public async Task<ICollection<Timestamp>> TimestampsForJobByUser(AppUser user, string moniker)
         {
             var query = _db.Timestamps

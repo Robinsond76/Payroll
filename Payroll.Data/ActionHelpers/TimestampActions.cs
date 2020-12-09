@@ -32,5 +32,18 @@ namespace Payroll.Data.ActionHelpers
             }
             return jobsites.Count;
         }
+
+        public static ICollection<string> ClockedInEmployees(ICollection<Timestamp> timestamps)
+        {
+            var employees = new List<string>();
+            foreach(Timestamp timestamp in timestamps)
+            {
+                if (!employees.Contains(timestamp.AppUser.DisplayName))
+                    employees.Add(timestamp.AppUser.DisplayName);
+                //else
+                continue;
+            }
+            return employees;
+        }
     }
 }
