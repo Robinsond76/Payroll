@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Payroll.Core;
+using Payroll.Data.Helpers;
 using Payroll.Data.Interfaces;
+using Payroll.Data.Models;
 using Payroll.Data.Persistence;
 using System;
 using System.Collections.Generic;
@@ -66,6 +68,22 @@ namespace Payroll.Data.Services
                 .Include(t => t.Jobsite)
                 .SingleOrDefaultAsync(
                 t => t.AppUserId == user.Id && t.ClockedIn == true);
+        }
+
+        public async Task<PagedList<Timestamp>> GetTimestamps(TimestampParameters timestampParameters)
+        {
+            var query = _db.Timestamps
+                .Include(t => t.AppUser)
+                .Include(t => t.Jobsite)
+                .Where(t => t.ClockedInStamp >= timestampParameters.FromDate && 
+                        t.ClockedInStamp <= timestampParameters.ToDate &&
+                        t.ClockedIn == false)
+                .OrderByDescending(t => t.ClockedInStamp);
+
+            return await PagedList<Timestamp>.ToPagedList(
+                query, 
+                timestampParameters.PageNumber, 
+                timestampParameters.PageSize);
         }
 
         public async Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn()

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Payroll.Core;
+using Payroll.Data.Helpers;
+using Payroll.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +17,7 @@ namespace Payroll.Data.Interfaces
         public Task<bool> ClockOut(AppUser user);
         public Task<ICollection<Timestamp>> TimestampsForJobByUser(AppUser user, string moniker);
         public Task<ICollection<Timestamp>> GetAllTimestamps();
+        public Task<PagedList<Timestamp>> GetTimestamps(TimestampParameters timestampParameters);
         public Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn();
     }
 }

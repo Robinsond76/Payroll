@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Payroll.Core;
-using Payroll.Data.ActionHelpers;
+using Payroll.Data.Helpers;
 using Payroll.Data.Interfaces;
 using Payroll.Data.Models;
 using System;
@@ -15,18 +16,18 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class TimestampsController : ControllerBase
     {
-        private readonly IMapper _imapper;
+        private readonly IMapper _mapper;
         private readonly ITimestampRepository _timestampRepository;
 
         //constructor
         public TimestampsController(IMapper imapper, ITimestampRepository timestampRepository)
         {
-            _imapper = imapper;
+            _mapper = imapper;
             _timestampRepository = timestampRepository;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<object>> TimestampHome()
+        [HttpGet("info")]
+        public async Task<ActionResult<object>> TimestampInfo()
         {
             var timestamps = await _timestampRepository.GetAllTimestamps();
             var employeeCount = TimestampActions.UniqueEmployeeCount(timestamps);
@@ -51,10 +52,30 @@ namespace API.Controllers
             var dto = new
             {
                 currentlyClockedIn = clockedInEmployees,
-                timestamps = _imapper.Map<ICollection<TimestampClockedInDto>>(timestamps)
+                timestamps = _mapper.Map<ICollection<TimestampClockedInDto>>(timestamps)
             };
 
             return Ok(dto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllTimestamps(
+            [FromQuery] TimestampParameters timestampParameters)
+        {
+            var timestamps = await _timestampRepository.GetTimestamps(timestampParameters);
+
+            var metadata = new
+            {
+               timestamps.TotalCount,
+               timestamps.PageSize,
+               timestamps.CurrentPage,
+               timestamps.HasNext,
+               timestamps.HasPrevious
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+            return Ok(_mapper.Map<ICollection<TimestampGeneralDto>>(timestamps));
         }
     }
 }

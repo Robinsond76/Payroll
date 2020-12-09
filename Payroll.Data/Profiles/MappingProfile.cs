@@ -42,6 +42,11 @@ namespace Payroll.Data.Profiles
                 .ForMember(t => t.DisplayName, o => o.MapFrom(e => e.AppUser.DisplayName))
                 .ForMember(t => t.Jobsite, o => o.MapFrom(e => e.Jobsite.Name))
                 .ForMember(t => t.Moniker, o => o.MapFrom(e => e.Jobsite.Moniker));
+            CreateMap<Timestamp, TimestampGeneralDto>()
+                .ForMember(t => t.Username, o => o.MapFrom(e => e.AppUser.UserName))
+                .ForMember(t => t.DisplayName, o => o.MapFrom(e => e.AppUser.DisplayName))
+                .ForMember(t => t.Jobsite, o => o.MapFrom(e => e.Jobsite.Name))
+                .ForMember(t => t.Moniker, o => o.MapFrom(e => e.Jobsite.Moniker));
         }
     }
 }

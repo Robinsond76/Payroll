@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Payroll.Data.ActionHelpers
+namespace Payroll.Data.Helpers
 {
     public class TimestampActions
     {
