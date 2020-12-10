@@ -73,6 +73,7 @@ namespace API.Controllers
             }
         }
 
+        //Get all timestamps for a particular jobsite - can sort by date
         [HttpGet("{moniker}/timestamps")]
         public async Task<ActionResult<JobsiteDto>> GetJobsiteWithTimestamps(string moniker, string fromDate, string toDate)
         {

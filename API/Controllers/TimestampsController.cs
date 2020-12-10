@@ -29,7 +29,7 @@ namespace API.Controllers
         [HttpGet("info")]
         public async Task<ActionResult<object>> TimestampInfo()
         {
-            var timestamps = await _timestampRepository.GetAllTimestamps();
+            var timestamps = await _timestampRepository.GetTimestamps();
             var employeeCount = TimestampActions.UniqueEmployeeCount(timestamps);
             var jobsitesCount = TimestampActions.UniqueJobsiteCount(timestamps);
 
@@ -43,23 +43,8 @@ namespace API.Controllers
             return Ok(dto);
         }
 
-        [HttpGet("clockedin")]
-        public async Task<ActionResult<object>> CurrentlyClockedIn()
-        {
-            var timestamps = await _timestampRepository.TimestampsCurrentlyClockedIn();
-            var clockedInEmployees = TimestampActions.ClockedInEmployees(timestamps);
-
-            var dto = new
-            {
-                currentlyClockedIn = clockedInEmployees,
-                timestamps = _mapper.Map<ICollection<TimestampClockedInDto>>(timestamps)
-            };
-
-            return Ok(dto);
-        }
-
         [HttpGet]
-        public async Task<IActionResult> GetAllTimestamps(
+        public async Task<IActionResult> GetTimestamps(
             [FromQuery] TimestampParameters timestampParameters)
         {
             var timestamps = await _timestampRepository.GetTimestamps(timestampParameters);
@@ -76,6 +61,21 @@ namespace API.Controllers
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(_mapper.Map<ICollection<TimestampGeneralDto>>(timestamps));
+        }
+
+        [HttpGet("clockedin")]
+        public async Task<ActionResult<object>> CurrentlyClockedIn()
+        {
+            var timestamps = await _timestampRepository.TimestampsCurrentlyClockedIn();
+            var clockedInEmployees = TimestampActions.ClockedInEmployees(timestamps);
+
+            var dto = new
+            {
+                currentlyClockedIn = clockedInEmployees,
+                timestamps = _mapper.Map<ICollection<TimestampClockedInDto>>(timestamps)
+            };
+
+            return Ok(dto);
         }
     }
 }

@@ -103,6 +103,7 @@ namespace API.Controllers
             return userDto;
         }
 
+        //Get's a user's display name, user name and login status
         [HttpGet("{username}")]
         public async Task<IActionResult> CurrentUserInfo(string username)
         {
@@ -129,6 +130,7 @@ namespace API.Controllers
             }
         }
 
+        //Get all timestamps from a user - can sort by date
         [HttpGet("{username}/timestamps")]
         public async Task<IActionResult> GetAllTimeStamps(string username, string fromDate, string toDate)
         {
@@ -205,6 +207,7 @@ namespace API.Controllers
             }
         }
 
+        //Get all timestamps from a user by jobsite - can sort by date
         [HttpGet("{username}/timestamps/{moniker}")]
         public async Task<ActionResult<UserInfoWithHoursWorkedDto>> GetUserTimestampsFromJobsite(string username, 
             string moniker, string fromDate, string toDate)
