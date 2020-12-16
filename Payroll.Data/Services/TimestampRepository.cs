@@ -62,15 +62,22 @@ namespace Payroll.Data.Services
             return await query.ToListAsync();
         }
 
-        public async Task<Timestamp> GetClockedInTimestamp(AppUser user)
+        public async Task<ICollection<Timestamp>> GetTimestamps(
+            WorkHistoryParameters workHistoryParameters)
         {
-            return await _db.Timestamps
+            var query = _db.Timestamps
+                .Include(t => t.AppUser)
                 .Include(t => t.Jobsite)
-                .SingleOrDefaultAsync(
-                t => t.AppUserId == user.Id && t.ClockedIn == true);
+                .Where(t => t.ClockedInStamp >= workHistoryParameters.FromDate &&
+                        t.ClockedInStamp <= workHistoryParameters.ToDate &&
+                        t.ClockedIn == false)
+                .OrderByDescending(t => t.ClockedInStamp);
+
+            return await query.ToListAsync();
         }
 
-        public async Task<PagedList<Timestamp>> GetTimestamps(TimestampParameters timestampParameters)
+        public async Task<PagedList<Timestamp>> GetTimestamps(
+            TimestampParameters timestampParameters)
         {
             var query = _db.Timestamps
                 .Include(t => t.AppUser)
@@ -84,6 +91,14 @@ namespace Payroll.Data.Services
                 query, 
                 timestampParameters.PageNumber, 
                 timestampParameters.PageSize);
+        }
+
+        public async Task<Timestamp> GetClockedInTimestamp(AppUser user)
+        {
+            return await _db.Timestamps
+                .Include(t => t.Jobsite)
+                .SingleOrDefaultAsync(
+                t => t.AppUserId == user.Id && t.ClockedIn == true);
         }
 
         public async Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn()

@@ -77,5 +77,15 @@ namespace API.Controllers
 
             return Ok(dto);
         }
+
+        [HttpGet("info/workhistory")]
+        public async Task<IActionResult> GetEmployeeWorkHistory(
+            [FromQuery] WorkHistoryParameters workHistoryParameters)
+        {
+            var timestamps = await _timestampRepository.GetTimestamps(workHistoryParameters);
+            var history = TimestampActions.GetUserWorkHistory(timestamps);
+
+            return Ok(history);
+        }
     }
 }
