@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Payroll.Core;
+using Payroll.Data.Helpers;
 using Payroll.Data.Interfaces;
 using Payroll.Data.Models;
 using Payroll.Data.Persistence;
@@ -30,7 +31,7 @@ namespace Payroll.Data.Services
             _db.Remove(entity);
         }
 
-        public async Task<List<Jobsite>> GetAllJobsitesAsync()
+        public async Task<PagedList<Jobsite>> GetAllJobsitesAsync(PageParameters pageParameters)
         {
             var query = _db.Jobsites
                 .Include(j => j.Location)
@@ -38,16 +39,23 @@ namespace Payroll.Data.Services
                 .ThenInclude(t => t.AppUser)
                 .OrderBy(j => j.Name);
 
-            return await query.ToListAsync(); ;
+            return await PagedList<Jobsite>.ToPagedList(
+                            query,
+                            pageParameters.PageNumber,
+                            pageParameters.PageSize);
         }
 
-        public async Task<Jobsite> GetJobsiteAsync(string moniker)
+        public async Task<Jobsite> GetJobsiteAsync(string moniker,
+            bool includeTimestamps = false)
         {
             var query = _db.Jobsites
                 .Include(j => j.Location)
-                .Include(j => j.Timestamps)
-                .ThenInclude(t => t.AppUser)
                 .Where(j => j.Moniker == moniker);
+
+            if (includeTimestamps)
+                query = query
+                .Include(j => j.Timestamps)
+                .ThenInclude(t => t.AppUser);
                 
             return await query.FirstOrDefaultAsync();
         }
@@ -74,5 +82,6 @@ namespace Payroll.Data.Services
                 return 0;
             }
         }
+
     }
 }

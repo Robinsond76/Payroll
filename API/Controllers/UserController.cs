@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Payroll.Core;
 using Payroll.Data.Interfaces;
 using Payroll.Data.Models;
@@ -132,71 +133,32 @@ namespace API.Controllers
 
         //Get all timestamps from a user - can sort by date
         [HttpGet("{username}/timestamps")]
-        public async Task<IActionResult> GetAllTimeStamps(string username, string fromDate, string toDate)
+        public async Task<ActionResult<UserInfoWithHoursWorkedDto>> GetAllTimeStamps(string username, [FromQuery] TimestampParameters timestampParameters)
         {
             try
             {
-                var user = await _userRepository.GetUser(username, true);
+                var user = await _userRepository.GetUser(username);
 
                 //NotFound() if user not found
                 if (user == null)
-                    return NotFound($"Username {username}not found.");
+                    return NotFound($"Username {username} not found.");
 
-                // if only 'fromDate' is provided
-                if (fromDate != null && toDate == null)
+                //Get timestamps by date
+                var filteredTimestamps = await _timestampRepository.GetTimestampsForUserByDate(user, timestampParameters);
+                user.Timestamps = filteredTimestamps;
+
+                //Create MetaData
+                var metadata = new
                 {
-                    DateTime fromDateTime;
-                    try
-                    {
-                        fromDateTime = DateTime.Parse(fromDate);
-                    }
-                    catch (Exception)
-                    {
-                        return BadRequest("Error: Date query should be in the following format: MM/DD/YYYY");
-                    }
+                    filteredTimestamps.TotalCount,
+                    filteredTimestamps.PageSize,
+                    filteredTimestamps.CurrentPage,
+                    filteredTimestamps.HasNext,
+                    filteredTimestamps.HasPrevious
+                };
 
-                    var filteredTimestamps = user.Timestamps.Where(t =>
-                        t.ClockedInStamp >= fromDateTime && t.ClockedIn == false).ToList();
-
-                    user.Timestamps = filteredTimestamps;
-
-                    var userWithFilteredTimestamps = _mapper.Map<UserInfoWithHoursWorkedDto>(user);
-                    return Ok(userWithFilteredTimestamps);
-                }
-
-                //if both dates provided
-                if (fromDate != null && toDate != null)
-                {
-                    DateTime fromDateTime;
-                    DateTime toDateTime;
-                    try
-                    {
-                        fromDateTime = DateTime.Parse(fromDate);
-                        toDateTime = DateTime.Parse(toDate);
-                    }
-                    catch (Exception)
-                    {
-                        return BadRequest("Error: Date query should be in the following format: MM/DD/YYYY");
-                    }
-
-                    //BadRequest() if fromdate is past todate
-                    if (fromDateTime > toDateTime)
-                        return BadRequest("'From Date' cannot be past 'To Date'");
-
-                    var filteredTimestamps = user.Timestamps.Where(t =>
-                        t.ClockedInStamp >= fromDateTime &&
-                        t.ClockedInStamp <= toDateTime &&
-                        t.ClockedIn == false).ToList();
-
-                    user.Timestamps = filteredTimestamps;
-
-                    var userWithFilteredTimestamps = _mapper.Map<UserInfoWithHoursWorkedDto>(user);
-                    return Ok(userWithFilteredTimestamps);
-                }
-
-                //return all timestamps if no date provided
-                var TimestampsNotClockedIn = user.Timestamps.Where(t => t.ClockedIn == false).ToList();
-                user.Timestamps = TimestampsNotClockedIn;
+                //Add metadata to header
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
                 var userWithTimestamps = _mapper.Map<UserInfoWithHoursWorkedDto>(user);
                 return Ok(userWithTimestamps);
@@ -210,7 +172,7 @@ namespace API.Controllers
         //Get all timestamps from a user by jobsite - can sort by date
         [HttpGet("{username}/timestamps/{moniker}")]
         public async Task<ActionResult<UserInfoWithHoursWorkedDto>> GetUserTimestampsFromJobsite(string username, 
-            string moniker, string fromDate, string toDate)
+            string moniker, [FromQuery] TimestampParameters timestampParameters)
         {
             try
             {
@@ -225,63 +187,26 @@ namespace API.Controllers
                 if (jobsiteId == 0)
                     return NotFound($"Error: jobsite '{moniker}' not found");
 
-                //filter user's timestamps by jobsite
-                var filteredTimestamps = await _timestampRepository.TimestampsForJobByUser(user, moniker);
+                //filter user's timestamps by jobsite & date
+                var filteredTimestamps = await _timestampRepository
+                    .GetTimestampsForJobByUser(user, moniker, timestampParameters);
+
+                //add the timestamps to the user object
                 user.Timestamps = filteredTimestamps;
 
-                //if only fromDate is provided
-                if (fromDate != null && toDate == null)
+                //Create MetaData
+                var metadata = new
                 {
-                    DateTime fromDateTime;
-                    try
-                    {
-                        fromDateTime = DateTime.Parse(fromDate);
-                    }
-                    catch (Exception)
-                    {
-                        return BadRequest("Error: Date query should be in the following format: MM/DD/YYYY");
-                    }
+                    filteredTimestamps.TotalCount,
+                    filteredTimestamps.PageSize,
+                    filteredTimestamps.CurrentPage,
+                    filteredTimestamps.HasNext,
+                    filteredTimestamps.HasPrevious
+                };
 
-                    var filteredTimestampsByDate = user.Timestamps.Where(t =>
-                        t.ClockedInStamp >= fromDateTime && t.ClockedIn == false).ToList();
+                //Add metadata to header
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
-                    user.Timestamps = filteredTimestampsByDate;
-
-                    var userWithFilteredTimestamps = _mapper.Map<UserInfoWithHoursWorkedDto>(user);
-                    return Ok(userWithFilteredTimestamps);
-                }
-
-                //if both dates provided
-                if (fromDate != null && toDate != null)
-                {
-                    DateTime fromDateTime;
-                    DateTime toDateTime;
-                    try
-                    {
-                        fromDateTime = DateTime.Parse(fromDate);
-                        toDateTime = DateTime.Parse(toDate);
-                    }
-                    catch (Exception)
-                    {
-                        return BadRequest("Error: Date query should be in the following format: MM/DD/YYYY");
-                    }
-
-                    //BadRequest() if fromdate is past todate
-                    if (fromDateTime > toDateTime)
-                        return BadRequest("'From Date' cannot be past 'To Date'");
-
-                    var filteredTimestampsByDate = user.Timestamps.Where(t =>
-                        t.ClockedInStamp >= fromDateTime &&
-                        t.ClockedInStamp <= toDateTime &&
-                        t.ClockedIn == false).ToList();
-
-                    user.Timestamps = filteredTimestampsByDate;
-
-                    var userWithFilteredTimestamps = _mapper.Map<UserInfoWithHoursWorkedDto>(user);
-                    return Ok(userWithFilteredTimestamps);
-                }
-
-                //if no dates provided
                 return Ok(_mapper.Map<UserInfoWithHoursWorkedDto>(user));
             }
             catch (Exception)

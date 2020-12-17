@@ -1,4 +1,6 @@
 ﻿using Payroll.Core;
+using Payroll.Data.Helpers;
+using Payroll.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,8 +16,8 @@ namespace Payroll.Data.Interfaces
         Task<bool> SaveChangesAsync();
 
         //Jobsites
-        Task<List<Jobsite>> GetAllJobsitesAsync();
-        Task<Jobsite> GetJobsiteAsync(string moniker);
+        Task<PagedList<Jobsite>> GetAllJobsitesAsync(PageParameters pageParameters);
+        Task<Jobsite> GetJobsiteAsync(string moniker, bool includeTimestamps = false);
         Task<bool> JobsiteExistsAsync(string moniker);
         Task<int> GetJobsiteIdByMoniker(string moniker);
 

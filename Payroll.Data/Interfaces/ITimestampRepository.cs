@@ -15,7 +15,9 @@ namespace Payroll.Data.Interfaces
         public Task<bool> ClockIn(Jobsite jobsite, AppUser user);
         public Task<bool> ClockInLunch(AppUser user);
         public Task<bool> ClockOut(AppUser user);
-        public Task<ICollection<Timestamp>> TimestampsForJobByUser(AppUser user, string moniker);
+        public Task<PagedList<Timestamp>> GetTimestampsForJobByUser(AppUser user, string moniker, TimestampParameters timestampParameters);
+        public Task<PagedList<Timestamp>> GetTimestampsForUserByDate(AppUser user, TimestampParameters timestampParameters);
+        public Task<PagedList<Timestamp>> GetTimestampsForJobByDate(Jobsite jobsite, TimestampParameters timestampParameters);
         public Task<ICollection<Timestamp>> GetTimestamps();
         public Task<ICollection<Timestamp>> GetTimestamps(WorkHistoryParameters workHistoryParameters);
         public Task<PagedList<Timestamp>> GetTimestamps(TimestampParameters timestampParameters);

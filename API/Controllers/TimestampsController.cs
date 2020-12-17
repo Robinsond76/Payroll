@@ -47,6 +47,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetTimestamps(
             [FromQuery] TimestampParameters timestampParameters)
         {
+            //returns a paged list
             var timestamps = await _timestampRepository.GetTimestamps(timestampParameters);
 
             var metadata = new
@@ -58,15 +59,29 @@ namespace API.Controllers
                timestamps.HasPrevious
             };
 
+            //Add page info to header
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(_mapper.Map<ICollection<TimestampGeneralDto>>(timestamps));
+        }
+
+        [HttpGet("info/workhistory")]
+        public async Task<IActionResult> GetEmployeeWorkHistory(
+            [FromQuery] WorkHistoryParameters workHistoryParameters)
+        {
+            //max 30 days
+            var timestamps = await _timestampRepository.GetTimestamps(workHistoryParameters);
+            //form custom DTO based on timestamps
+            var history = TimestampActions.GetUserWorkHistory(timestamps);
+
+            return Ok(history);
         }
 
         [HttpGet("clockedin")]
         public async Task<ActionResult<object>> CurrentlyClockedIn()
         {
             var timestamps = await _timestampRepository.TimestampsCurrentlyClockedIn();
+            //get list of strings of employee names 
             var clockedInEmployees = TimestampActions.ClockedInEmployees(timestamps);
 
             var dto = new
@@ -74,18 +89,7 @@ namespace API.Controllers
                 currentlyClockedIn = clockedInEmployees,
                 timestamps = _mapper.Map<ICollection<TimestampClockedInDto>>(timestamps)
             };
-
             return Ok(dto);
-        }
-
-        [HttpGet("info/workhistory")]
-        public async Task<IActionResult> GetEmployeeWorkHistory(
-            [FromQuery] WorkHistoryParameters workHistoryParameters)
-        {
-            var timestamps = await _timestampRepository.GetTimestamps(workHistoryParameters);
-            var history = TimestampActions.GetUserWorkHistory(timestamps);
-
-            return Ok(history);
         }
     }
 }

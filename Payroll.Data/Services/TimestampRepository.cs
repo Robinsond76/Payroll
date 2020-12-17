@@ -112,20 +112,53 @@ namespace Payroll.Data.Services
 
         }
 
-        public async Task<ICollection<Timestamp>> TimestampsForJobByUser(AppUser user, string moniker)
+        public async Task<PagedList<Timestamp>> GetTimestampsForJobByUser(
+            AppUser user, string moniker, TimestampParameters timestampParameters)
         {
             var query = _db.Timestamps
                 .Include(t => t.Jobsite)
                 .Where(t => 
                 t.AppUser == user && 
-                t.Jobsite.Moniker == moniker && 
-                t.ClockedIn == false);
-            return await query.ToListAsync();
+                t.Jobsite.Moniker == moniker &&
+                t.ClockedInStamp >= timestampParameters.FromDate &&
+                    t.ClockedInStamp <= timestampParameters.ToDate &&
+                    t.ClockedIn == false);
 
-
-                
+            return await PagedList<Timestamp>.ToPagedList(
+                query,
+                timestampParameters.PageNumber,
+                timestampParameters.PageSize); ;     
         }
 
+        public async Task<PagedList<Timestamp>> GetTimestampsForUserByDate(AppUser user, TimestampParameters timestampParameters)
+        {
+            var query = _db.Timestamps
+                .Include(t => t.Jobsite)
+                .Where(t =>
+                t.AppUser == user &&
+                t.ClockedInStamp >= timestampParameters.FromDate &&
+                    t.ClockedInStamp <= timestampParameters.ToDate &&
+                    t.ClockedIn == false);
 
+            return await PagedList<Timestamp>.ToPagedList(
+                query,
+                timestampParameters.PageNumber,
+                timestampParameters.PageSize);
+        }
+
+        public async Task<PagedList<Timestamp>> GetTimestampsForJobByDate(Jobsite jobsite, TimestampParameters timestampParameters)
+        {
+            var query = _db.Timestamps
+                .Include(t => t.AppUser)
+                .Where(t => t.Jobsite == jobsite &&
+                t.ClockedInStamp >= timestampParameters.FromDate &&
+                t.ClockedInStamp <= timestampParameters.ToDate &&
+                t.ClockedIn == false);
+
+            return await PagedList<Timestamp>.ToPagedList(
+                query,
+                timestampParameters.PageNumber,
+                timestampParameters.PageSize);
+        }
     }
 }
