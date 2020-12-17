@@ -1,29 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Payroll.Core;
-using Payroll.Data.Profiles;
-using Payroll.Data.Persistence;
-using Payroll.Data.Services;
-using Payroll.Data.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using FluentValidation.AspNetCore;
+using Payroll.Core;
+using Payroll.Data.Interfaces;
 using Payroll.Data.Models;
+using Payroll.Data.Persistence;
+using Payroll.Data.Profiles;
+using Payroll.Data.Services;
+using System.Text;
 
 namespace API
 {
@@ -59,6 +52,16 @@ namespace API
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<ITimestampRepository, TimestampRepository>();
 
+            //Cors
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod()
+                    .WithOrigins("http://localhost:3000");
+                });
+            });
+
             //Identity
             var builder = services.AddIdentityCore<AppUser>();
             var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
@@ -92,6 +95,7 @@ namespace API
 
             app.UseRouting();
 
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
 

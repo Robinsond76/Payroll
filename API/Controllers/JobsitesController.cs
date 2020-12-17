@@ -41,6 +41,7 @@ namespace API.Controllers
             _timestampRepository = timestampRepository;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<JobsiteDto>>> GetAllJobsites([FromQuery] PageParameters pageParameters)
         {
