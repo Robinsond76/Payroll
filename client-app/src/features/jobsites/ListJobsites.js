@@ -1,27 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Header, List } from 'semantic-ui-react'
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import { Header, List } from 'semantic-ui-react';
+
+import { getJobsites } from '../../app/context/jobsites/jobsiteActions';
+import { useJobsiteState, useJobsiteDispatch } 
+  from '../../app/context/jobsites/jobsiteContext';
 
 const ListJobsites = () => {
 
-  const [activities, setActivities] = useState([
-    {moniker: 'Test1', name: 'jobsite1' },
-    {moniker: 'Test2', name: 'jobsite2' },
-  ]);
+  const jobsiteDispatch = useJobsiteDispatch();
+  const { jobsites } = useJobsiteState();
 
   useEffect( () => {
-    axios.get('http://localhost:5000/api/jobsites')
-    .then(response => {
-      setActivities(response.data);
-    })
-  }, []);
+    getJobsites(jobsiteDispatch);
+  }, [jobsiteDispatch]);
 
 
   return (
     <>
       <Header as='h2' icon='map' content='Jobsites' />
       <List>
-          {activities.map(activity => (
+          {jobsites.map(activity => (
               <List.Item key={activity.moniker}>{activity.name}</List.Item>
             ))}
       </List>
