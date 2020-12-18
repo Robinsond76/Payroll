@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { Container, Header } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {JobsiteProvider} from './app/context/jobsites/jobsiteContext';
+import {AuthProvider} from './app/context/auth/authContext';
 
 //components
 import Navbar from './features/nav/Navbar.js';
@@ -14,6 +15,7 @@ const App = () => {
   return (
     <Fragment>
       <JobsiteProvider>
+        <AuthProvider>
         <Router>
           <Navbar />
           <Container style={{marginTop: '7em'}}>
@@ -26,6 +28,7 @@ const App = () => {
             </Switch>
           </Container>
         </Router>
+        </AuthProvider>
       </JobsiteProvider>
     </Fragment>
   );

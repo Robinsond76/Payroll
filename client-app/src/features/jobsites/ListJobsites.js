@@ -11,8 +11,9 @@ const ListJobsites = () => {
   const { jobsites } = useJobsiteState();
 
   useEffect( () => {
-    getJobsites(jobsiteDispatch);
-  }, [jobsiteDispatch]);
+    if(jobsites.length === 0)
+      getJobsites(jobsiteDispatch);
+  }, [jobsites, jobsiteDispatch]);
 
 
   return (

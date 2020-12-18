@@ -15,4 +15,10 @@ const Jobsites = {
   list: () => requests.get('/jobsites')
 }
 
-export { Jobsites }
+const User = {
+  current: () => requests.get('/user'),
+  login: (user) =>  requests.post('/user/login', user),
+  register: (user) =>  requests.post('/user/register', user)
+}
+
+export { Jobsites, User }
