@@ -4,6 +4,7 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import { JobsiteProvider } from './app/context/jobsites/jobsiteContext';
 import { useAuthDispatch } from './app/context/auth/authContext';
 import { loadUser } from './app/context/auth/authActions';
+import PrivateRoute from './app/layout/PrivateRoute';
 
 //components
 import Navbar from './features/nav/Navbar.js';
@@ -35,8 +36,16 @@ const App = () => {
               <Container style={{ marginTop: '7em' }}>
                 <Header as='h2' icon='users' content='Payroll App' />
                 <Switch>
-                  <Route exact path='/jobsites' component={ListJobsites} />
-                  <Route exact path='/register' component={RegisterForm} />
+                  <PrivateRoute
+                    exact
+                    path='/jobsites'
+                    component={ListJobsites}
+                  />
+                  <PrivateRoute
+                    exact
+                    path='/register'
+                    component={RegisterForm}
+                  />
                   <Route exact path='/login' component={LoginForm} />
                 </Switch>
               </Container>
