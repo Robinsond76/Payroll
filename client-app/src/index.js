@@ -5,12 +5,15 @@ import './styles.css';
 import App from './App';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
+import ScrollToTop from './app/layout/ScrollToTop';
 
 export const history = createBrowserHistory();
 
 ReactDOM.render(
   <Router history={history}>
-    <App />
+    <ScrollToTop>
+      <App />
+    </ScrollToTop>
   </Router>,
   document.getElementById('root')
 );
