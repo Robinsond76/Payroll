@@ -1,14 +1,14 @@
-import React, { useContext, useReducer } from 'react';
+import React, { createContext, useReducer } from 'react';
 import authReducer from './authReducer';
 
-const AuthContext = React.createContext();
-const AuthDispathContext = React.createContext();
+const AuthContext = createContext();
+const AuthDispathContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const initialState = {
     isAuthenticated: null,
     loading: false,
-    user: null,
+    user: {},
     errors: null,
   };
 
@@ -25,14 +25,14 @@ const AuthProvider = ({ children }) => {
 
 //Helper Functions
 
-const useAuthContext = () => {
-  const authContext = useContext(AuthContext);
-  return authContext;
+const useAuthState = () => {
+  const authState = React.useContext(AuthContext);
+  return authState;
 };
 
-const useAuthDispatchContext = () => {
-  const authDispatch = useContext(AuthDispathContext);
+const useAuthDispatch = () => {
+  const authDispatch = React.useContext(AuthDispathContext);
   return authDispatch;
 };
 
-export { AuthProvider, useAuthContext, useAuthDispatchContext };
+export { AuthProvider, useAuthState, useAuthDispatch };

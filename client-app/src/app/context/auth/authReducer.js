@@ -3,7 +3,8 @@ const authReducer = (state, action) => {
     case 'LOGIN':
       return {
         ...state,
-        user: action.payload        
+        user: action.payload,
+        isAuthenticated: true,
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

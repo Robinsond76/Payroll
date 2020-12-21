@@ -1,12 +1,14 @@
+import { history } from '../../..';
 import { User } from '../../api/agent';
 
-const login = async (userFormValues, dispatch) => {
+const loginUser = async (userFormValues, dispatch) => {
   try {
-    const user = User.Login(userFormValues);
-    dispatch({type: 'LOGIN', payload: user});
+    const user = await User.login(userFormValues);
+    dispatch({ type: 'LOGIN', payload: user });
+    history.push('/jobsites');
   } catch (err) {
-    console.log(err);
+    throw err;
   }
-}
+};
 
-export { login }
+export { loginUser };
