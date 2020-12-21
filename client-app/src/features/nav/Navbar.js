@@ -1,9 +1,14 @@
 import React from 'react';
 import { Button, Container, Dropdown, Image, Menu } from 'semantic-ui-react';
 import { Link, NavLink } from 'react-router-dom';
-import { useAuthState } from '../../app/context/auth/authContext';
+import {
+  useAuthDispatch,
+  useAuthState,
+} from '../../app/context/auth/authContext';
+import { logoutUser } from '../../app/context/auth/authActions';
 
 const Navbar = () => {
+  const authDispatch = useAuthDispatch();
   const { user } = useAuthState();
 
   return (
@@ -42,7 +47,11 @@ const Navbar = () => {
                     text='My profile'
                     icon='user'
                   />
-                  <Dropdown.Item text='Logout' icon='power' />
+                  <Dropdown.Item
+                    onClick={() => logoutUser(authDispatch)}
+                    text='Logout'
+                    icon='power'
+                  />
                 </Dropdown.Menu>
               </Dropdown>
             </Menu.Item>

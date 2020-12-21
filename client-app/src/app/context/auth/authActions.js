@@ -11,4 +11,13 @@ const loginUser = async (userFormValues, dispatch) => {
   }
 };
 
-export { loginUser };
+const logoutUser = async (dispatch) => {
+  try {
+    dispatch({ type: 'LOGOUT' });
+    history.push('/');
+  } catch (err) {
+    throw err;
+  }
+};
+
+export { loginUser, logoutUser };
