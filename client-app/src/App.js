@@ -11,7 +11,6 @@ import PrivateRoute from './app/layout/PrivateRoute';
 import Navbar from './features/nav/Navbar.js';
 import Homepage from './features/home/Homepage';
 import ListJobsites from './features/jobsites/ListJobsites';
-import LoginForm from './features/user/LoginForm';
 import RegisterForm from './features/user/RegisterForm';
 import ModalContainer from './app/common/modals/ModalContainer';
 
@@ -50,7 +49,6 @@ const App = () => {
                       path='/register'
                       component={RegisterForm}
                     />
-                    <Route exact path='/login' component={LoginForm} />
                   </Switch>
                 </Container>
               </Fragment>

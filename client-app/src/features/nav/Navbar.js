@@ -23,9 +23,6 @@ const Navbar = () => {
             />
             <Link to='/'>Payroll</Link>
           </Menu.Item>
-
-          <Menu.Item name='Login' as={NavLink} to='/login' />
-
           <Menu.Item>
             <Button positive as={NavLink} to='/register'>
               Register

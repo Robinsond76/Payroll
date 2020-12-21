@@ -29,4 +29,15 @@ const logoutUser = async (dispatch) => {
   }
 };
 
-export { loginUser, logoutUser, loadUser };
+const registerUser = async (userFormValues) => {
+  try {
+    const newUser = await User.register(userFormValues);
+    console.log(`New user ${newUser.username} registered successfully.`);
+    history.push('/jobsites');
+  } catch (err) {
+    console.log('Error registering new user. Try again.');
+    throw err;
+  }
+};
+
+export { loginUser, logoutUser, loadUser, registerUser };
