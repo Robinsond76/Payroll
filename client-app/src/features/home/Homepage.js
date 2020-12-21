@@ -44,9 +44,6 @@ const Homepage = () => {
             >
               Login
             </Button>
-            <Button as={Link} to='/register' size='huge' inverted>
-              Register
-            </Button>
           </Fragment>
         )}
       </Container>

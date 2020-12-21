@@ -1,11 +1,12 @@
 import React, { Fragment } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { Button, Form, Header, Label } from 'semantic-ui-react';
+import { Button, Form, Header } from 'semantic-ui-react';
 import TextInput from '../../app/common/form/TextInput';
 import { useAuthDispatch } from '../../app/context/auth/authContext';
 import { loginUser } from '../../app/context/auth/authActions';
 import { FORM_ERROR } from 'final-form';
 import { combineValidators, isRequired } from 'revalidate';
+import ErrorMessage from '../../app/common/form/ErrorMessage';
 
 const validate = combineValidators({
   email: isRequired('email'),
@@ -33,7 +34,7 @@ const LoginForm = () => {
           pristine,
           dirtySinceLastSubmit,
         }) => (
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} error>
             <Header
               as='h2'
               content='Login to Payroll App'
@@ -48,7 +49,10 @@ const LoginForm = () => {
               type='password'
             />
             {submitError && !dirtySinceLastSubmit && (
-              <Label color='red' basic content={submitError.statusText} />
+              <ErrorMessage
+                error={submitError}
+                text='Invalid email or password'
+              />
             )}
             <Button
               disabled={(invalid && !dirtySinceLastSubmit) || pristine}
