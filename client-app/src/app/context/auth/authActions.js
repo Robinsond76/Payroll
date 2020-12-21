@@ -11,6 +11,15 @@ const loginUser = async (userFormValues, dispatch) => {
   }
 };
 
+const loadUser = async (dispatch) => {
+  try {
+    const user = await User.current();
+    dispatch({ type: 'LOAD_USER', payload: user });
+  } catch (err) {
+    throw err;
+  }
+};
+
 const logoutUser = async (dispatch) => {
   try {
     dispatch({ type: 'LOGOUT' });
@@ -20,4 +29,4 @@ const logoutUser = async (dispatch) => {
   }
 };
 
-export { loginUser, logoutUser };
+export { loginUser, logoutUser, loadUser };
