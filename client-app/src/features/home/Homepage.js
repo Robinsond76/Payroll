@@ -2,9 +2,13 @@ import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Container, Header, Image, Segment } from 'semantic-ui-react';
 import { useAuthState } from '../../app/context/auth/authContext';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
+import { openModal } from '../../app/context/modal/modalActions';
+import LoginForm from '../user/LoginForm';
 
 const Homepage = () => {
   const { isAuthenticated, user } = useAuthState();
+  const modalDispatch = useModalDispatch();
 
   return (
     <Segment inverted textAlign='center' vertical className='masthead'>
@@ -32,7 +36,12 @@ const Homepage = () => {
         ) : (
           <Fragment>
             <Header as='h2' inverted content='Welcome to Payroll App' />
-            <Button as={Link} to='/login' size='huge' inverted>
+            <Button
+              onClick={() => openModal(<LoginForm />, modalDispatch)}
+              to='/login'
+              size='huge'
+              inverted
+            >
               Login
             </Button>
             <Button as={Link} to='/register' size='huge' inverted>

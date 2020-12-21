@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { Button, Form, Label } from 'semantic-ui-react';
+import { Button, Form, Header, Label } from 'semantic-ui-react';
 import TextInput from '../../app/common/form/TextInput';
 import { useAuthDispatch } from '../../app/context/auth/authContext';
 import { loginUser } from '../../app/context/auth/authActions';
@@ -28,13 +28,18 @@ const LoginForm = () => {
         render={({
           handleSubmit,
           submitting,
-          form,
           submitError,
           invalid,
           pristine,
           dirtySinceLastSubmit,
         }) => (
           <Form onSubmit={handleSubmit}>
+            <Header
+              as='h2'
+              content='Login to Payroll App'
+              color='teal'
+              textAlign='center'
+            />
             <Field name='email' component={TextInput} placeholder='Email' />
             <Field
               name='password'
@@ -45,14 +50,14 @@ const LoginForm = () => {
             {submitError && !dirtySinceLastSubmit && (
               <Label color='red' basic content={submitError.statusText} />
             )}
-            <br />
             <Button
               disabled={(invalid && !dirtySinceLastSubmit) || pristine}
               loading={submitting}
-              positive
+              color='teal'
               content='Login'
+              fluid
             />
-            <pre>{JSON.stringify(form.getState(), null, 2)}</pre>
+            {/* <pre>{JSON.stringify(form.getState(), null, 2)}</pre> */}
           </Form>
         )}
       />

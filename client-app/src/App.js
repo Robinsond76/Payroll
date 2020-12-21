@@ -2,6 +2,7 @@ import React, { useEffect, Fragment } from 'react';
 import { Container, Header } from 'semantic-ui-react';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { JobsiteProvider } from './app/context/jobsites/jobsiteContext';
+import { ModalProvider } from './app/context/modal/modalContext';
 import { useAuthDispatch } from './app/context/auth/authContext';
 import { loadUser } from './app/context/auth/authActions';
 import PrivateRoute from './app/layout/PrivateRoute';
@@ -12,6 +13,7 @@ import Homepage from './features/home/Homepage';
 import ListJobsites from './features/jobsites/ListJobsites';
 import LoginForm from './features/user/LoginForm';
 import RegisterForm from './features/user/RegisterForm';
+import ModalContainer from './app/common/modals/ModalContainer';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -27,31 +29,34 @@ const App = () => {
   return (
     <Fragment>
       <JobsiteProvider>
-        <Route exact path='/' component={Homepage} />
-        <Route
-          path={'/(.+)'}
-          render={() => (
-            <Fragment>
-              <Navbar />
-              <Container style={{ marginTop: '7em' }}>
-                <Header as='h2' icon='users' content='Payroll App' />
-                <Switch>
-                  <PrivateRoute
-                    exact
-                    path='/jobsites'
-                    component={ListJobsites}
-                  />
-                  <PrivateRoute
-                    exact
-                    path='/register'
-                    component={RegisterForm}
-                  />
-                  <Route exact path='/login' component={LoginForm} />
-                </Switch>
-              </Container>
-            </Fragment>
-          )}
-        />
+        <ModalProvider>
+          <ModalContainer />
+          <Route exact path='/' component={Homepage} />
+          <Route
+            path={'/(.+)'}
+            render={() => (
+              <Fragment>
+                <Navbar />
+                <Container style={{ marginTop: '7em' }}>
+                  <Header as='h2' icon='users' content='Payroll App' />
+                  <Switch>
+                    <PrivateRoute
+                      exact
+                      path='/jobsites'
+                      component={ListJobsites}
+                    />
+                    <PrivateRoute
+                      exact
+                      path='/register'
+                      component={RegisterForm}
+                    />
+                    <Route exact path='/login' component={LoginForm} />
+                  </Switch>
+                </Container>
+              </Fragment>
+            )}
+          />
+        </ModalProvider>
       </JobsiteProvider>
     </Fragment>
   );
