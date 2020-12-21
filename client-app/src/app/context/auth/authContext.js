@@ -8,7 +8,7 @@ const AuthProvider = ({ children }) => {
   const initialState = {
     isAuthenticated: null,
     loading: false,
-    user: {},
+    user: null,
     errors: null,
   };
 
