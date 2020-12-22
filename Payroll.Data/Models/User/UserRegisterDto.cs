@@ -20,7 +20,7 @@ namespace Payroll.Data.Models
         {
             RuleFor(x => x.DisplayName).NotEmpty();
             RuleFor(x => x.Username).NotEmpty();
-            RuleFor(x => x.Email).NotEmpty();
+            RuleFor(x => x.Email).NotEmpty().EmailAddress();
             RuleFor(x => x.Password)
                 .NotEmpty()
                 .MinimumLength(6).WithMessage("Password must contain at least 6 characters")

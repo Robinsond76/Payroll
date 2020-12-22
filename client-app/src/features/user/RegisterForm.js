@@ -39,7 +39,7 @@ const RegisterForm = () => {
           <Form onSubmit={handleSubmit} error>
             <Header
               as='h2'
-              content='Login to Payroll App'
+              content='Register a new employee'
               color='teal'
               textAlign='center'
             />
@@ -61,10 +61,7 @@ const RegisterForm = () => {
               type='password'
             />
             {submitError && !dirtySinceLastSubmit && (
-              <ErrorMessage
-                error={submitError}
-                text='Invalid email or password'
-              />
+              <ErrorMessage error={submitError} />
             )}
             <Button
               disabled={(invalid && !dirtySinceLastSubmit) || pristine}

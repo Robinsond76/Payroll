@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Payroll.Core;
+using Payroll.Data.Errors;
 using Payroll.Data.Interfaces;
 using Payroll.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -71,11 +73,11 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Register(UserRegisterDto userRegisterDto)
         {
             if (await _userRepository.EmailExists(userRegisterDto.Email))
-                return BadRequest(new { Email = "This email is already registered" });
+                return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Email = "Email already exists" }));
 
             if (await _userRepository.UsernameExists(userRegisterDto.Username))
-                return BadRequest(new { Username = "This username is already registered" });
-
+                return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Username = "This username is already registered" }));
+            
             var user = _mapper.Map<AppUser>(userRegisterDto);
             var userSaved = await _userRepository.SaveNewUser(user, userRegisterDto.Password);
 
