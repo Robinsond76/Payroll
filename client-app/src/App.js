@@ -1,6 +1,6 @@
 import React, { useEffect, Fragment } from 'react';
 import { Container, Header } from 'semantic-ui-react';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Link, Route, Switch, withRouter } from 'react-router-dom';
 import { JobsiteProvider } from './app/context/jobsites/jobsiteContext';
 import { ModalProvider } from './app/context/modal/modalContext';
 import { useAuthDispatch } from './app/context/auth/authContext';
@@ -13,6 +13,7 @@ import Homepage from './features/home/Homepage';
 import ListJobsites from './features/jobsites/ListJobsites';
 import RegisterForm from './features/user/RegisterForm';
 import ModalContainer from './app/common/modals/ModalContainer';
+import NotFound from './app/layout/NotFound';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -38,6 +39,7 @@ const App = () => {
                 <Navbar />
                 <Container style={{ marginTop: '7em' }}>
                   <Header as='h2' icon='users' content='Payroll App' />
+                  <Link to='/oogabooga'>Test link for notfound page </Link>
                   <Switch>
                     <PrivateRoute
                       exact
@@ -49,6 +51,7 @@ const App = () => {
                       path='/register'
                       component={RegisterForm}
                     />
+                    <PrivateRoute component={NotFound} />
                   </Switch>
                 </Container>
               </Fragment>

@@ -7,6 +7,7 @@ import { loginUser } from '../../app/context/auth/authActions';
 import { FORM_ERROR } from 'final-form';
 import { combineValidators, isRequired } from 'revalidate';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
 
 const validate = combineValidators({
   email: isRequired('email'),
@@ -15,11 +16,14 @@ const validate = combineValidators({
 
 const LoginForm = () => {
   const authDispatch = useAuthDispatch();
+  const modalDispatch = useModalDispatch();
 
   const handleFinalFormSubmit = (values) =>
-    loginUser(values, authDispatch).catch((error) => ({
-      [FORM_ERROR]: error.response,
-    }));
+    loginUser(values, authDispatch)
+      .then(() => modalDispatch({ type: 'CLOSE_MODAL' }))
+      .catch((error) => ({
+        [FORM_ERROR]: error.response,
+      }));
 
   return (
     <Fragment>
@@ -49,10 +53,7 @@ const LoginForm = () => {
               type='password'
             />
             {submitError && !dirtySinceLastSubmit && (
-              <ErrorMessage
-                error={submitError}
-                text='Invalid email or password'
-              />
+              <ErrorMessage error={submitError} />
             )}
             <Button
               disabled={(invalid && !dirtySinceLastSubmit) || pristine}

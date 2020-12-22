@@ -50,7 +50,7 @@ namespace API.Controllers
         {
             var user = await _userRepository.GetUserByEmail(userLoginDto.Email);
             if (user == null)
-                return Unauthorized("Incorrect username or password");
+                return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new {Unauthorized = "Invalid email or password" }));
 
             var passwordConfirmed = await _userRepository.ConfirmPassword(user, userLoginDto.Password);
 
@@ -65,7 +65,7 @@ namespace API.Controllers
                 };
             }
             //else
-            return Unauthorized("Incorrect username or password.");
+            return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Invalid email or password" }));
         }
 
         [AllowAnonymous]
