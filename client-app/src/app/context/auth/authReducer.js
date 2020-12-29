@@ -7,6 +7,7 @@ const authReducer = (state, action) => {
         ...state,
         user: action.payload,
         isAuthenticated: true,
+        loading: false,
       };
     case 'LOGOUT':
       localStorage.removeItem('token');
@@ -14,6 +15,11 @@ const authReducer = (state, action) => {
         ...state,
         user: null,
         isAuthenticated: false,
+      };
+    case 'LOADING':
+      return {
+        ...state,
+        loading: true,
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

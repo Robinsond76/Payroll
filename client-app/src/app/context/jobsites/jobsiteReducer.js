@@ -3,7 +3,13 @@ const jobsiteReducer = (state, action) => {
     case 'GET_JOBSITES':
       return {
         ...state,
-        jobsites: action.payload
+        jobsites: action.payload,
+        loading: false,
+      };
+    case 'LOADING':
+      return {
+        ...state,
+        loading: true,
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

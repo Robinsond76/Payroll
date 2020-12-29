@@ -2,6 +2,7 @@ import { history } from '../../..';
 import { User } from '../../api/agent';
 
 const loginUser = async (userFormValues, dispatch) => {
+  dispatch({ type: 'LOADING' });
   try {
     const user = await User.login(userFormValues);
     dispatch({ type: 'LOGIN', payload: user });
@@ -12,6 +13,7 @@ const loginUser = async (userFormValues, dispatch) => {
 };
 
 const loadUser = async (dispatch) => {
+  dispatch({ type: 'LOADING' });
   try {
     const user = await User.current();
     dispatch({ type: 'LOAD_USER', payload: user });

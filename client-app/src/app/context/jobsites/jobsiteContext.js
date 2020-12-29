@@ -4,10 +4,11 @@ import jobsiteReducer from './jobsiteReducer';
 const JobsiteStateContext = createContext();
 const JobsiteDispatchContext = createContext();
 
-const JobsiteProvider = ({children}) => {
+const JobsiteProvider = ({ children }) => {
   const initialState = {
-    jobsites: []
-  }
+    jobsites: [],
+    loading: false,
+  };
 
   const [state, dispatch] = useReducer(jobsiteReducer, initialState);
 
@@ -24,13 +25,11 @@ const JobsiteProvider = ({children}) => {
 const useJobsiteState = () => {
   const jobsiteState = React.useContext(JobsiteStateContext);
   return jobsiteState;
-}
+};
 
 const useJobsiteDispatch = () => {
   const jobsiteDispatch = React.useContext(JobsiteDispatchContext);
   return jobsiteDispatch;
-}
+};
 
-
-export { JobsiteProvider, useJobsiteState, useJobsiteDispatch }
-
+export { JobsiteProvider, useJobsiteState, useJobsiteDispatch };
