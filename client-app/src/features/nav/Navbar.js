@@ -29,6 +29,9 @@ const Navbar = () => {
             </Button>
           </Menu.Item>
           <Menu.Item name='Jobsites' as={NavLink} to='/jobsites' />
+          <Menu.Item>
+            <Link to='/clock'>Clock</Link>
+          </Menu.Item>
           {user && (
             <Menu.Item position='right'>
               <Image

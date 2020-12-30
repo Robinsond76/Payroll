@@ -103,6 +103,19 @@ namespace API.Controllers
 
             var userDto = _mapper.Map<UserDto>(user);
             userDto.Token = token;
+
+            //check to see if currently clocked in at a jobsite
+            var currentlyClockedin = await _timestampRepository.GetClockedInTimestamp(user);
+            if (currentlyClockedin != null)
+            {
+                userDto.CurrentlyClockedIn = true;
+                userDto.ClockedInAtJobsite = currentlyClockedin.Jobsite.Moniker;
+            } else
+            {
+                userDto.CurrentlyClockedIn = false;
+                userDto.ClockedInAtJobsite = null;
+            }
+
             return userDto;
         }
 

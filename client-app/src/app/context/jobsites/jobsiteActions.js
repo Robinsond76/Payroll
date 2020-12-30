@@ -5,6 +5,7 @@ const getJobsites = async (dispatch) => {
   try {
     const jobsites = await Jobsites.list();
     dispatch({ type: 'GET_JOBSITES', payload: jobsites });
+    return jobsites;
   } catch (err) {
     console.log(err);
   }

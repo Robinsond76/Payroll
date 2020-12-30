@@ -30,6 +30,9 @@ const User = {
   current: () => requests.get('/user'),
   login: (user) => requests.post(`/user/login`, user),
   register: (user) => requests.post('/user/register', user),
+  status: (username) => requests.get(`/user/${username}`),
+  clockIn: (moniker) => requests.post(`/jobsites/${moniker}/clockin`),
+  clockOut: (moniker) => requests.post(`/jobsites/${moniker}/clockout`),
 };
 
 export { Jobsites, User };

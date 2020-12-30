@@ -14,6 +14,7 @@ import ListJobsites from './features/jobsites/ListJobsites';
 import RegisterForm from './features/user/RegisterForm';
 import ModalContainer from './app/common/modals/ModalContainer';
 import NotFound from './app/layout/NotFound';
+import Clock from './features/home/Clock';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -51,6 +52,7 @@ const App = () => {
                       path='/register'
                       component={RegisterForm}
                     />
+                    <PrivateRoute exact path='/clock' component={Clock} />
                     <PrivateRoute component={NotFound} />
                   </Switch>
                 </Container>

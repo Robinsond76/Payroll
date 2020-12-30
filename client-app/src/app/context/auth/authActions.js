@@ -42,4 +42,29 @@ const registerUser = async (userFormValues) => {
   }
 };
 
-export { loginUser, logoutUser, loadUser, registerUser };
+const clockInUser = async (moniker, dispatch) => {
+  try {
+    await User.clockIn(moniker);
+    loadUser(dispatch);
+  } catch (err) {
+    throw Error;
+  }
+};
+
+const clockOutUser = async (moniker, dispatch) => {
+  try {
+    await User.clockOut(moniker);
+    loadUser(dispatch);
+  } catch (err) {
+    throw Error;
+  }
+};
+
+export {
+  loginUser,
+  logoutUser,
+  loadUser,
+  registerUser,
+  clockInUser,
+  clockOutUser,
+};

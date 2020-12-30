@@ -9,5 +9,7 @@ namespace Payroll.Data.Models
         public string DisplayName { get; set; }
         public string Token { get; set; }
         public string Username { get; set; }
+        public bool CurrentlyClockedIn { get; set; }
+        public string ClockedInAtJobsite { get; set; }
     }
 }

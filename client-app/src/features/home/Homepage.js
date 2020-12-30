@@ -1,14 +1,62 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Container, Header, Image, Segment } from 'semantic-ui-react';
-import { useAuthState } from '../../app/context/auth/authContext';
+import {
+  Button,
+  Container,
+  Header,
+  Image,
+  Segment,
+  Dropdown,
+} from 'semantic-ui-react';
+import {
+  useAuthDispatch,
+  useAuthState,
+} from '../../app/context/auth/authContext';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { openModal } from '../../app/context/modal/modalActions';
 import LoginForm from '../user/LoginForm';
+import { clockInUser, clockOutUser } from '../../app/context/auth/authActions';
+import {
+  useJobsiteDispatch,
+  useJobsiteState,
+} from '../../app/context/jobsites/jobsiteContext';
+import { getJobsites } from '../../app/context/jobsites/jobsiteActions';
 
 const Homepage = () => {
   const { isAuthenticated, user } = useAuthState();
+  const authDispatch = useAuthDispatch();
   const modalDispatch = useModalDispatch();
+
+  const { jobsites } = useJobsiteState();
+  const jobsiteDispatch = useJobsiteDispatch();
+
+  const [jobsiteList, setJobsiteList] = React.useState([]);
+
+  //load jobsites on first visit
+  React.useEffect(() => {
+    if (user && jobsites.length === 0) {
+      getJobsites(jobsiteDispatch);
+      console.log('database call ran');
+    }
+  }, [user, jobsites, jobsiteDispatch]);
+
+  //populate the selection with jobsites
+  React.useEffect(() => {
+    setJobsiteList(
+      jobsites.map((jobsite) => ({
+        key: jobsite.moniker,
+        text: `${jobsite.moniker} - ${jobsite.name}`,
+        value: jobsite.moniker,
+      }))
+    );
+    console.log('second effect ran');
+  }, [jobsites]);
+
+  //handle dropdown selection
+  const [selection, setSelection] = React.useState('');
+  const handleSelect = (e, { value }) => {
+    setSelection(value);
+  };
 
   return (
     <Segment inverted textAlign='center' vertical className='masthead'>
@@ -27,9 +75,41 @@ const Homepage = () => {
             <Header
               as='h2'
               inverted
-              content={`Welcome back ${user.displayName}`}
+              content={`Welcome back ${user.displayName},`}
             />
-            <Button as={Link} to='/jobsites' size='huge' inverted>
+            {user.currentlyClockedIn ? (
+              <Fragment>
+                <h3>
+                  You are currently clocked in at jobsite{' '}
+                  {user.clockedInAtJobsite}
+                </h3>
+                <Button
+                  onClick={() =>
+                    clockOutUser(user.clockedInAtJobsite, authDispatch)
+                  }
+                >
+                  Clock Out
+                </Button>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <h3>You are not currently clocked in.</h3>
+                <p>Choose a jobsite below:</p>
+                <Dropdown
+                  placeholder='Jobsite'
+                  search
+                  selection
+                  clearable
+                  options={jobsiteList}
+                  onChange={handleSelect}
+                />
+                <Button onClick={() => clockInUser(selection, authDispatch)}>
+                  Clock in
+                </Button>
+              </Fragment>
+            )}
+            <br />
+            <Button as={Link} to='/jobsites' size='small' inverted>
               Take me to Jobsites
             </Button>
           </Fragment>

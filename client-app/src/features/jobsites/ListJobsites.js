@@ -13,7 +13,9 @@ const ListJobsites = () => {
   const { jobsites, loading } = useJobsiteState();
 
   useEffect(() => {
-    if (jobsites.length === 0) getJobsites(jobsiteDispatch);
+    if (jobsites.length === 0) {
+      getJobsites(jobsiteDispatch);
+    }
   }, [jobsites, jobsiteDispatch]);
 
   if (loading) return <LoadingComponent />;
