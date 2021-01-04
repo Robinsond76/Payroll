@@ -16,6 +16,11 @@ const loadUser = async (dispatch) => {
   dispatch({ type: 'LOADING' });
   try {
     const user = await User.current();
+    if (user.clockedInTimestamp) {
+      user.clockedInTimestamp.clockedIn = new Date(
+        user.clockedInTimestamp.clockedIn
+      );
+    }
     dispatch({ type: 'LOAD_USER', payload: user });
   } catch (err) {
     throw err;

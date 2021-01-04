@@ -109,11 +109,11 @@ namespace API.Controllers
             if (currentlyClockedin != null)
             {
                 userDto.CurrentlyClockedIn = true;
-                userDto.ClockedInAtJobsite = currentlyClockedin.Jobsite.Moniker;
+                userDto.ClockedInTimestamp = _mapper.Map<TimestampClockedInBasicDto>(currentlyClockedin);
             } else
             {
                 userDto.CurrentlyClockedIn = false;
-                userDto.ClockedInAtJobsite = null;
+                userDto.ClockedInTimestamp = null;
             }
 
             return userDto;

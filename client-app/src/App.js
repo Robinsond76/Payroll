@@ -1,6 +1,7 @@
 import React, { useEffect, Fragment } from 'react';
 import { Container, Header } from 'semantic-ui-react';
 import { Link, Route, Switch, withRouter } from 'react-router-dom';
+import { TimestampProvider } from './app/context/timestamps/timestampContext';
 import { JobsiteProvider } from './app/context/jobsites/jobsiteContext';
 import { ModalProvider } from './app/context/modal/modalContext';
 import { useAuthDispatch } from './app/context/auth/authContext';
@@ -15,6 +16,7 @@ import RegisterForm from './features/user/RegisterForm';
 import ModalContainer from './app/common/modals/ModalContainer';
 import NotFound from './app/layout/NotFound';
 import Clock from './features/home/Clock';
+import ListTimestamps from './features/jobsites/ListTimestamps';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -30,36 +32,43 @@ const App = () => {
   return (
     <Fragment>
       <JobsiteProvider>
-        <ModalProvider>
-          <ModalContainer />
-          <Route exact path='/' component={Homepage} />
-          <Route
-            path={'/(.+)'}
-            render={() => (
-              <Fragment>
-                <Navbar />
-                <Container style={{ marginTop: '7em' }}>
-                  <Header as='h2' icon='users' content='Payroll App' />
-                  <Link to='/oogabooga'>Test link for notfound page </Link>
-                  <Switch>
-                    <PrivateRoute
-                      exact
-                      path='/jobsites'
-                      component={ListJobsites}
-                    />
-                    <PrivateRoute
-                      exact
-                      path='/register'
-                      component={RegisterForm}
-                    />
-                    <PrivateRoute exact path='/clock' component={Clock} />
-                    <PrivateRoute component={NotFound} />
-                  </Switch>
-                </Container>
-              </Fragment>
-            )}
-          />
-        </ModalProvider>
+        <TimestampProvider>
+          <ModalProvider>
+            <ModalContainer />
+            <Route exact path='/' component={Homepage} />
+            <Route
+              path={'/(.+)'}
+              render={() => (
+                <Fragment>
+                  <Navbar />
+                  <Container style={{ marginTop: '7em' }}>
+                    <Header as='h2' icon='users' content='Payroll App' />
+                    <Link to='/oogabooga'>Test link for notfound page </Link>
+                    <Switch>
+                      <PrivateRoute
+                        exact
+                        path='/jobsites'
+                        component={ListJobsites}
+                      />
+                      <PrivateRoute
+                        exact
+                        path='/register'
+                        component={RegisterForm}
+                      />
+                      <PrivateRoute exact path='/clock' component={Clock} />
+                      <PrivateRoute
+                        exact
+                        path='/timestamps'
+                        component={ListTimestamps}
+                      />
+                      <PrivateRoute component={NotFound} />
+                    </Switch>
+                  </Container>
+                </Fragment>
+              )}
+            />
+          </ModalProvider>
+        </TimestampProvider>
       </JobsiteProvider>
     </Fragment>
   );

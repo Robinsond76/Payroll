@@ -21,6 +21,7 @@ import {
   useJobsiteState,
 } from '../../app/context/jobsites/jobsiteContext';
 import { getJobsites } from '../../app/context/jobsites/jobsiteActions';
+import { format } from 'date-fns';
 
 const Homepage = () => {
   const { isAuthenticated, user } = useAuthState();
@@ -79,13 +80,21 @@ const Homepage = () => {
             />
             {user.currentlyClockedIn ? (
               <Fragment>
-                <h3>
-                  You are currently clocked in at jobsite{' '}
-                  {user.clockedInAtJobsite}
-                </h3>
+                <h3>You are currently clocked in at: </h3>
+                <h2>{user.clockedInTimestamp.moniker}</h2>
+                <h3>{user.clockedInTimestamp.jobsite}</h3>
+                <h4>
+                  Clocked in on:{' '}
+                  {format(
+                    new Date(user.clockedInTimestamp.clockedIn),
+                    'eeee, MMMM do, yyyy'
+                  )}{' '}
+                  at {format(user.clockedInTimestamp.clockedIn, 'h:mm a')}
+                </h4>
+
                 <Button
                   onClick={() =>
-                    clockOutUser(user.clockedInAtJobsite, authDispatch)
+                    clockOutUser(user.clockedInTimestamp.moniker, authDispatch)
                   }
                 >
                   Clock Out

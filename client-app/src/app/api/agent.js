@@ -26,6 +26,10 @@ const Jobsites = {
   list: () => requests.get('/jobsites'),
 };
 
+const Timestamps = {
+  getTimestamps: (username) => requests.get(`/user/${username}/timestamps`),
+};
+
 const User = {
   current: () => requests.get('/user'),
   login: (user) => requests.post(`/user/login`, user),
@@ -35,4 +39,4 @@ const User = {
   clockOut: (moniker) => requests.post(`/jobsites/${moniker}/clockout`),
 };
 
-export { Jobsites, User };
+export { Jobsites, User, Timestamps };

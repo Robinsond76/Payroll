@@ -10,6 +10,6 @@ namespace Payroll.Data.Models
         public string Token { get; set; }
         public string Username { get; set; }
         public bool CurrentlyClockedIn { get; set; }
-        public string ClockedInAtJobsite { get; set; }
+        public TimestampClockedInBasicDto ClockedInTimestamp { get; set; }
     }
 }

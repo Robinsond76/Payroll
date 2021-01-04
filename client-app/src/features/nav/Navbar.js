@@ -32,6 +32,9 @@ const Navbar = () => {
           <Menu.Item>
             <Link to='/clock'>Clock</Link>
           </Menu.Item>
+          <Menu.Item>
+            <Link to='/timestamps'>Timestamps</Link>
+          </Menu.Item>
           {user && (
             <Menu.Item position='right'>
               <Image
