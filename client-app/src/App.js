@@ -16,7 +16,7 @@ import RegisterForm from './features/user/RegisterForm';
 import ModalContainer from './app/common/modals/ModalContainer';
 import NotFound from './app/layout/NotFound';
 import Clock from './features/home/Clock';
-import ListTimestamps from './features/jobsites/ListTimestamps';
+import ListTimestamps from './features/timestamps/ListTimestamps';
 
 const App = () => {
   const authDispatch = useAuthDispatch();

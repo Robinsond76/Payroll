@@ -27,7 +27,10 @@ const Jobsites = {
 };
 
 const Timestamps = {
-  getTimestamps: (username) => requests.get(`/user/${username}/timestamps`),
+  getTimestamps: (username, pageSize, pageNumber) =>
+    axios.get(
+      `/user/${username}/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`
+    ),
 };
 
 const User = {

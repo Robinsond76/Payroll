@@ -5,6 +5,7 @@ const timestampReducer = (state, action) => {
         ...state,
         timestamps: action.payload,
         loading: false,
+        timestampPagination: action.pagination,
       };
     case 'LOADING':
       return {
