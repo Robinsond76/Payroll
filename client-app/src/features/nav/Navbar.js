@@ -36,7 +36,7 @@ const Navbar = () => {
             <Link to='/timestamps'>Timestamps</Link>
           </Menu.Item>
           <Menu.Item>
-            <Link to='/random'>Random</Link>
+            <Link to='/employees/ClockedIn'>Clocked In</Link>
           </Menu.Item>
           {user && (
             <Menu.Item position='right'>

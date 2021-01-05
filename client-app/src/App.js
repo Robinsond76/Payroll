@@ -18,6 +18,7 @@ import NotFound from './app/layout/NotFound';
 import Clock from './features/home/Clock';
 import ListTimestamps from './features/timestamps/ListTimestamps';
 import JobsiteTimestamps from './features/jobsites/JobsiteTimestamps';
+import ClockedIn from './features/employees/ClockedIn';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -66,6 +67,11 @@ const App = () => {
                         exact
                         path='/jobsite/:moniker'
                         component={JobsiteTimestamps}
+                      />
+                      <PrivateRoute
+                        exact
+                        path='/employees/clockedIn'
+                        component={ClockedIn}
                       />
                       <PrivateRoute component={NotFound} />
                     </Switch>

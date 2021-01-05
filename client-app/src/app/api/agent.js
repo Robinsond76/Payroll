@@ -35,6 +35,7 @@ const Timestamps = {
     axios.get(
       `/user/${username}/timestamps/${moniker}?pagesize=${pageSize}&pagenumber=${pageNumber}`
     ),
+  getClockedInTimestamps: () => requests.get('/timestamps/clockedin'),
 };
 
 const User = {
