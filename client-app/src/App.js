@@ -17,6 +17,7 @@ import ModalContainer from './app/common/modals/ModalContainer';
 import NotFound from './app/layout/NotFound';
 import Clock from './features/home/Clock';
 import ListTimestamps from './features/timestamps/ListTimestamps';
+import JobsiteTimestamps from './features/jobsites/JobsiteTimestamps';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -60,6 +61,11 @@ const App = () => {
                         exact
                         path='/timestamps'
                         component={ListTimestamps}
+                      />
+                      <PrivateRoute
+                        exact
+                        path='/jobsite/:moniker'
+                        component={JobsiteTimestamps}
                       />
                       <PrivateRoute component={NotFound} />
                     </Switch>

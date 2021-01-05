@@ -32,10 +32,13 @@ const Clock = () => {
       {user.currentlyClockedIn ? (
         <Fragment>
           <h3>
-            You are currently clocked in at jobsite {user.clockedInAtJobsite}
+            You are currently clocked in at jobsite{' '}
+            {user.clockedInTimestamp.moniker}
           </h3>
           <Button
-            onClick={() => clockOutUser(user.clockedInAtJobsite, authDispatch)}
+            onClick={() =>
+              clockOutUser(user.clockedInTimestamp.moniker, authDispatch)
+            }
           >
             Clock Out
           </Button>

@@ -7,7 +7,9 @@ const TimestampDispatchContext = createContext();
 const TimestampProvider = ({ children }) => {
   const initialState = {
     timestamps: [],
+    jobsiteTimestamps: [],
     timestampPagination: 0,
+    jobsitePagination: 0,
     loading: false,
   };
 

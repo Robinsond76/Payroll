@@ -7,6 +7,19 @@ const timestampReducer = (state, action) => {
         loading: false,
         timestampPagination: action.pagination,
       };
+    case 'GET_JOBSITE_TIMESTAMPS_BY_USER':
+      return {
+        ...state,
+        jobsiteTimestamps: action.payload,
+        loading: false,
+        jobsitePagination: action.pagination,
+      };
+    case 'CLEAR_JOBSITE_TIMESTAMPS':
+      return {
+        ...state,
+        jobsiteTimestamps: [],
+        jobsitePagination: 0,
+      };
     case 'LOADING':
       return {
         ...state,

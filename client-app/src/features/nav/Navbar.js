@@ -35,6 +35,9 @@ const Navbar = () => {
           <Menu.Item>
             <Link to='/timestamps'>Timestamps</Link>
           </Menu.Item>
+          <Menu.Item>
+            <Link to='/random'>Random</Link>
+          </Menu.Item>
           {user && (
             <Menu.Item position='right'>
               <Image

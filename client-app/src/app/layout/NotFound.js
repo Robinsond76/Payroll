@@ -1,6 +1,5 @@
 import React from 'react';
 import { Segment, Button, Header, Icon } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
 
 const NotFound = (props) => {
   return (
@@ -10,7 +9,7 @@ const NotFound = (props) => {
         404 - Page not found
       </Header>
       <Segment.Inline>
-        <Button as={Link} onClick={() => props.history.goBack()} primary>
+        <Button onClick={() => props.history.goBack()} primary>
           Return to previous page
         </Button>
       </Segment.Inline>

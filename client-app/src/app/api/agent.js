@@ -31,6 +31,10 @@ const Timestamps = {
     axios.get(
       `/user/${username}/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`
     ),
+  getJobsiteTimestamps: (moniker, username, pageSize, pageNumber) =>
+    axios.get(
+      `/user/${username}/timestamps/${moniker}?pagesize=${pageSize}&pagenumber=${pageNumber}`
+    ),
 };
 
 const User = {

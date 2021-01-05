@@ -1,32 +1,41 @@
 import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
-import { getUserTimestamps } from '../../app/context/timestamps/timestampActions';
+import { useAuthState } from '../../app/context/auth/authContext';
 import {
   useTimestampState,
   useTimestampDispatch,
 } from '../../app/context/timestamps/timestampContext';
-import { useAuthState } from '../../app/context/auth/authContext';
-import LoadingComponent from '../../app/layout/LoadingComponent';
+import {
+  getJobsiteTimestampsByUser,
+  clearJobsiteTimestamps,
+} from '../../app/context/timestamps/timestampActions';
 import { Table, Pagination } from 'semantic-ui-react';
 import { format, intervalToDuration } from 'date-fns';
+import LoadingComponent from '../../app/layout/LoadingComponent';
 
-const ListTimestamps = () => {
+const JobsiteTimestamps = ({ match }) => {
+  const moniker = match.params.moniker;
   const { user } = useAuthState();
   const { username } = user;
-  const { timestamps, timestampPagination, loading } = useTimestampState();
+  const { jobsiteTimestamps, jobsitePagination, loading } = useTimestampState();
   const timestampDispatch = useTimestampDispatch();
-  const { TotalCount, PageSize, CurrentPage } = timestampPagination;
+  const { TotalCount, PageSize, CurrentPage } = jobsitePagination;
 
   React.useEffect(() => {
-    if (timestamps.length === 0) {
-      getUserTimestamps(username, timestampDispatch);
-    }
-  }, [timestampDispatch, timestamps.length, username]);
+    getJobsiteTimestampsByUser(moniker, username, timestampDispatch);
 
-  //page variables and functions
+    return () => {
+      clearJobsiteTimestamps(timestampDispatch);
+    };
+  }, [moniker, timestampDispatch, username]);
 
   const pageChangeHandler = (e, { activePage }) => {
-    getUserTimestamps(username, timestampDispatch, 3, activePage);
+    getJobsiteTimestampsByUser(
+      moniker,
+      username,
+      timestampDispatch,
+      3,
+      activePage
+    );
   };
 
   //LOADER
@@ -34,6 +43,7 @@ const ListTimestamps = () => {
 
   return (
     <Fragment>
+      <h2>{moniker}</h2>
       <Table celled selectable>
         <Table.Header>
           <Table.Row>
@@ -47,7 +57,7 @@ const ListTimestamps = () => {
         </Table.Header>
 
         <Table.Body>
-          {timestamps.map((timestamp) => {
+          {jobsiteTimestamps.map((timestamp) => {
             const dateClockedIn = new Date(timestamp.clockedInStamp);
             const dateClockedOut = new Date(timestamp.clockedOutStamp);
             const date = format(dateClockedIn, 'eeee, MMMM do, yyyy');
@@ -60,11 +70,7 @@ const ListTimestamps = () => {
 
             return (
               <Table.Row key={timestamp.clockedInStamp}>
-                <Table.Cell>
-                  <Link to={`/jobsite/${timestamp.moniker}`}>
-                    {timestamp.moniker}
-                  </Link>
-                </Table.Cell>
+                <Table.Cell>{timestamp.moniker}</Table.Cell>
                 <Table.Cell>{timestamp.jobsite}</Table.Cell>
                 <Table.Cell>{date}</Table.Cell>
                 <Table.Cell>{clockedIn}</Table.Cell>
@@ -78,7 +84,8 @@ const ListTimestamps = () => {
           })}
         </Table.Body>
       </Table>
-      {timestampPagination && (
+
+      {jobsitePagination && (
         <Pagination
           boundaryRange={0}
           activePage={CurrentPage}
@@ -91,4 +98,4 @@ const ListTimestamps = () => {
   );
 };
 
-export default ListTimestamps;
+export default JobsiteTimestamps;
