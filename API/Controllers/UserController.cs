@@ -21,7 +21,7 @@ namespace API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
-        private readonly IPayrollRepository _jobsiteRepository;
+        private readonly IJobsiteRepository _jobsiteRepository;
         private readonly IMapper _mapper;
         private readonly IJwtGenerator _jwtGenerator;
         private readonly IUserAccessor _userAccessor;
@@ -30,7 +30,7 @@ namespace API.Controllers
         //constructor
         public UserController(
             IUserRepository userRepository,
-            IPayrollRepository jobsiteRepository,
+            IJobsiteRepository jobsiteRepository,
             IMapper mapper,
             IJwtGenerator jwtGenerator,
             IUserAccessor userAccessor,

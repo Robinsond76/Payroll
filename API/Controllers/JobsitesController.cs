@@ -19,7 +19,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class JobsitesController : ControllerBase
     {
-        private readonly IPayrollRepository _repository;
+        private readonly IJobsiteRepository _repository;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IUserAccessor _userAccessor;
@@ -28,7 +28,7 @@ namespace API.Controllers
 
         //constructor
         public JobsitesController(
-            IPayrollRepository repository,
+            IJobsiteRepository repository,
             IMapper mapper,
             IUserRepository userRepository,
             IUserAccessor userAccessor,
@@ -281,6 +281,34 @@ namespace API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to clock out.");
             }
             return BadRequest();
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchJobsites([FromQuery] string q, 
+            [FromQuery] PageParameters pageParameters)
+        {
+            try
+            {
+                var searchResults = await _repository.SearchJobsites(q, pageParameters);
+
+                var metadata = new
+                {
+                    searchResults.TotalCount,
+                    searchResults.PageSize,
+                    searchResults.CurrentPage,
+                    searchResults.HasNext,
+                    searchResults.HasPrevious
+                };
+
+                //Add page info to header
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+                return Ok(_mapper.Map<List<JobsiteDto>>(searchResults));
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to find jobsite.");
+            }
         }
     }
 }

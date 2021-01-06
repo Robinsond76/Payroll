@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Payroll.Data.Interfaces
 {
-    public interface IPayrollRepository
+    public interface IJobsiteRepository
     {
         // General 
         void Add<T>(T entity) where T : class;
@@ -20,6 +20,7 @@ namespace Payroll.Data.Interfaces
         Task<Jobsite> GetJobsiteAsync(string moniker, bool includeTimestamps = false);
         Task<bool> JobsiteExistsAsync(string moniker);
         Task<int> GetJobsiteIdByMoniker(string moniker);
+        Task<PagedList<Jobsite>> SearchJobsites(string searchQuery, PageParameters pageParameters);
 
     }
 }

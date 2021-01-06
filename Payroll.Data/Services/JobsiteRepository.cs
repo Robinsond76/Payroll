@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace Payroll.Data.Services
 {
-    public class PayrollRepository : IPayrollRepository
+    public class JobsiteRepository : IJobsiteRepository
     {
         private readonly PayrollContext _db;
 
-        public PayrollRepository(PayrollContext db)
+        public JobsiteRepository(PayrollContext db)
         {
             _db = db;
         }
@@ -83,5 +83,25 @@ namespace Payroll.Data.Services
             }
         }
 
+        public async Task<PagedList<Jobsite>> SearchJobsites(string searchQuery, 
+            PageParameters pageParameters)
+        {
+            var query = from j in _db.Jobsites
+                        select j;
+
+            if (!String.IsNullOrEmpty(searchQuery))
+            {
+                query = query.Where(j =>
+                            j.Name.Contains(searchQuery) ||
+                            j.Moniker.Contains(searchQuery));
+            }
+
+            query = query.Include(j => j.Location).OrderBy(j => j.Moniker);
+
+            return await PagedList<Jobsite>.ToPagedList(
+                query, 
+                pageParameters.PageNumber, 
+                pageParameters.PageSize);
+        }
     }
 }

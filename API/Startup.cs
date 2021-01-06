@@ -45,12 +45,12 @@ namespace API
                 });
 
             services.AddDbContext<PayrollContext>();
-            services.AddScoped<IPayrollRepository, PayrollRepository>();
+            services.AddScoped<IJobsiteRepository, JobsiteRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITimestampRepository, TimestampRepository>();
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddScoped<IUserAccessor, UserAccessor>();
-            services.AddScoped<ITimestampRepository, TimestampRepository>();
 
             //Cors
             services.AddCors(opt =>
