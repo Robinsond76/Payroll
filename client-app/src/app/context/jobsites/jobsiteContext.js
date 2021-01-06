@@ -7,6 +7,7 @@ const JobsiteDispatchContext = createContext();
 const JobsiteProvider = ({ children }) => {
   const initialState = {
     jobsites: [],
+    jobsitePagination: 0,
     loading: false,
   };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, Fragment } from 'react';
-import { Container, Header } from 'semantic-ui-react';
-import { Link, Route, Switch, withRouter } from 'react-router-dom';
+import { Container } from 'semantic-ui-react';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import { TimestampProvider } from './app/context/timestamps/timestampContext';
 import { JobsiteProvider } from './app/context/jobsites/jobsiteContext';
 import { ModalProvider } from './app/context/modal/modalContext';
@@ -44,8 +44,8 @@ const App = () => {
                 <Fragment>
                   <Navbar />
                   <Container style={{ marginTop: '7em' }}>
-                    <Header as='h2' icon='users' content='Payroll App' />
-                    <Link to='/oogabooga'>Test link for notfound page </Link>
+                    {/* <Header as='h2' icon='users' content='Payroll App' /> */}
+                    {/* <Link to='/oogabooga'>Test link for notfound page </Link> */}
                     <Switch>
                       <PrivateRoute
                         exact
@@ -65,7 +65,7 @@ const App = () => {
                       />
                       <PrivateRoute
                         exact
-                        path='/jobsite/:moniker'
+                        path='/timestamps/:moniker'
                         component={JobsiteTimestamps}
                       />
                       <PrivateRoute

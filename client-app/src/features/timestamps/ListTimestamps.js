@@ -12,7 +12,7 @@ import { format, intervalToDuration } from 'date-fns';
 
 const ListTimestamps = () => {
   const { user } = useAuthState();
-  const { username } = user;
+  const { displayName, username } = user;
   const { timestamps, timestampPagination, loading } = useTimestampState();
   const timestampDispatch = useTimestampDispatch();
   const { TotalCount, PageSize, CurrentPage } = timestampPagination;
@@ -34,6 +34,7 @@ const ListTimestamps = () => {
 
   return (
     <Fragment>
+      <h3>{displayName}'s Timestamps</h3>
       <Table celled selectable>
         <Table.Header>
           <Table.Row>
@@ -61,7 +62,7 @@ const ListTimestamps = () => {
             return (
               <Table.Row key={timestamp.clockedInStamp}>
                 <Table.Cell>
-                  <Link to={`/jobsite/${timestamp.moniker}`}>
+                  <Link to={`/timestamps/${timestamp.moniker}`}>
                     {timestamp.moniker}
                   </Link>
                 </Table.Cell>

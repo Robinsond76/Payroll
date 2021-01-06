@@ -4,6 +4,7 @@ const jobsiteReducer = (state, action) => {
       return {
         ...state,
         jobsites: action.payload,
+        jobsitePagination: action.pagination,
         loading: false,
       };
     case 'LOADING':

@@ -23,7 +23,11 @@ const requests = {
 };
 
 const Jobsites = {
-  list: () => requests.get('/jobsites'),
+  listJobsites: (query, pageSize, pageNumber) =>
+    axios.get(
+      `/jobsites/search?q=${query}&pagesize=${pageSize}&pagenumber=${pageNumber}`
+    ),
+  getJobsite: (moniker) => requests.get(`/jobsites/${moniker}`),
 };
 
 const Timestamps = {
