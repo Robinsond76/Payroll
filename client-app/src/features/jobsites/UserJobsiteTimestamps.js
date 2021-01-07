@@ -12,7 +12,8 @@ import { Table, Pagination } from 'semantic-ui-react';
 import { format, intervalToDuration } from 'date-fns';
 import LoadingComponent from '../../app/layout/LoadingComponent';
 
-const JobsiteTimestamps = ({ match }) => {
+// /timestamps/moniker
+const UserJobsiteTimestamps = ({ match }) => {
   const moniker = match.params.moniker;
   const { user } = useAuthState();
   const { username } = user;
@@ -98,4 +99,4 @@ const JobsiteTimestamps = ({ match }) => {
   );
 };
 
-export default JobsiteTimestamps;
+export default UserJobsiteTimestamps;

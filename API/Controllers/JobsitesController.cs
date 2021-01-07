@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Payroll.Core;
 using Payroll.Data.Profiles;
+using Payroll.Data.Helpers;
 using Payroll.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -115,7 +116,14 @@ namespace API.Controllers
                 //Add metadata to header
                 Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
-                return Ok(_mapper.Map<JobsiteWithTimestampsDto>(jobsite));
+                var jobsiteDto = _mapper.Map<JobsiteWithTimestampsDto>(jobsite);
+
+                //get all employees who visited this jobsite
+                var jobsiteTimestamps = await _timestampRepository.GetTimestampsForJob(jobsite);
+                var employees = TimestampActions.GetEmployeesFromJobsite(jobsiteTimestamps);
+                jobsiteDto.EmployeesThatClocked = employees;
+
+                return Ok(jobsiteDto);
 
             }
             catch (Exception)

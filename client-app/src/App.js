@@ -17,8 +17,9 @@ import ModalContainer from './app/common/modals/ModalContainer';
 import NotFound from './app/layout/NotFound';
 import Clock from './features/home/Clock';
 import ListTimestamps from './features/timestamps/ListTimestamps';
-import JobsiteTimestamps from './features/jobsites/JobsiteTimestamps';
+import UserJobsiteTimestamps from './features/jobsites/UserJobsiteTimestamps';
 import ClockedIn from './features/employees/ClockedIn';
+import JobsiteInfo from './features/jobsites/JobsiteInfo';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -54,6 +55,11 @@ const App = () => {
                       />
                       <PrivateRoute
                         exact
+                        path='/jobsite/:moniker'
+                        component={JobsiteInfo}
+                      />
+                      <PrivateRoute
+                        exact
                         path='/register'
                         component={RegisterForm}
                       />
@@ -66,7 +72,7 @@ const App = () => {
                       <PrivateRoute
                         exact
                         path='/timestamps/:moniker'
-                        component={JobsiteTimestamps}
+                        component={UserJobsiteTimestamps}
                       />
                       <PrivateRoute
                         exact

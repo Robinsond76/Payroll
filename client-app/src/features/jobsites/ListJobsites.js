@@ -57,6 +57,9 @@ const ListJobsites = () => {
           <Table.Row>
             <Table.HeaderCell>Moniker</Table.HeaderCell>
             <Table.HeaderCell>Job Name</Table.HeaderCell>
+            <Table.HeaderCell>Address 1</Table.HeaderCell>
+            <Table.HeaderCell>Address 2</Table.HeaderCell>
+            <Table.HeaderCell>Address 3</Table.HeaderCell>
             <Table.HeaderCell>City</Table.HeaderCell>
             <Table.HeaderCell>State</Table.HeaderCell>
             <Table.HeaderCell>Zip Code</Table.HeaderCell>
@@ -75,6 +78,9 @@ const ListJobsites = () => {
                     </Link>
                   </Table.Cell>
                   <Table.Cell>{jobsite.name}</Table.Cell>
+                  <Table.Cell>{jobsite.location.address1}</Table.Cell>
+                  <Table.Cell>{jobsite.location.address2}</Table.Cell>
+                  <Table.Cell>{jobsite.location.address3}</Table.Cell>
                   <Table.Cell>{jobsite.location.cityTown}</Table.Cell>
                   <Table.Cell>{jobsite.location.stateProvince}</Table.Cell>
                   <Table.Cell>{jobsite.location.postalCode}</Table.Cell>

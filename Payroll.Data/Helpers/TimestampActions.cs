@@ -107,5 +107,20 @@ namespace Payroll.Data.Helpers
 
             return userWorkHistory.Values.ToList(); 
         }
+
+        public static ICollection<string> GetEmployeesFromJobsite(ICollection<Timestamp> timestamps)
+        {
+            ICollection<string> employees = new List<string>();
+
+            foreach (var timestamp in timestamps)
+            {
+                if (employees.Contains(timestamp.AppUser.DisplayName))
+                    continue;
+                //else
+                employees.Add(timestamp.AppUser.DisplayName);
+            }
+
+            return employees;
+        }
     }
 }

@@ -27,7 +27,10 @@ const Jobsites = {
     axios.get(
       `/jobsites/search?q=${query}&pagesize=${pageSize}&pagenumber=${pageNumber}`
     ),
-  getJobsite: (moniker) => requests.get(`/jobsites/${moniker}`),
+  getJobsite: (moniker, pageSize, pageNumber) =>
+    axios.get(
+      `/jobsites/${moniker}/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`
+    ),
 };
 
 const Timestamps = {

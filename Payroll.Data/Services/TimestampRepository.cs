@@ -152,13 +152,21 @@ namespace Payroll.Data.Services
                 .Include(t => t.AppUser)
                 .Where(t => t.Jobsite == jobsite &&
                 t.ClockedInStamp >= timestampParameters.FromDate &&
-                t.ClockedInStamp <= timestampParameters.ToDate &&
-                t.ClockedIn == false);
+                t.ClockedInStamp <= timestampParameters.ToDate)
+                .OrderByDescending(t => t.ClockedInStamp);
 
             return await PagedList<Timestamp>.ToPagedList(
                 query,
                 timestampParameters.PageNumber,
                 timestampParameters.PageSize);
+        }
+
+        public async Task<ICollection<Timestamp>> GetTimestampsForJob(Jobsite jobsite)
+        {
+            return await _db.Timestamps
+                .Include(t => t.AppUser)
+                .Where(t => t.Jobsite == jobsite)
+                .ToListAsync();
         }
     }
 }
