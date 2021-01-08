@@ -52,7 +52,7 @@ const ListJobsites = () => {
           placeholder='Search...'
         />
       </Form>
-      <Table celled selectable>
+      <Table padded size='small' celled selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Moniker</Table.HeaderCell>

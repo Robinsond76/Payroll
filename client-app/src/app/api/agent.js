@@ -52,6 +52,8 @@ const User = {
   status: (username) => requests.get(`/user/${username}`),
   clockIn: (moniker) => requests.post(`/jobsites/${moniker}/clockin`),
   clockOut: (moniker) => requests.post(`/jobsites/${moniker}/clockout`),
+  getUsers: (pageSize, pageNumber) =>
+    axios.get(`/users?pagesize=${pageSize}&pagenumber=${pageNumber}`),
 };
 
 export { Jobsites, User, Timestamps };

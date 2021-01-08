@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Payroll.Core;
+using Payroll.Data.Helpers;
 using Payroll.Data.Interfaces;
 using Payroll.Data.Models;
 using Payroll.Data.Persistence;
@@ -72,6 +73,17 @@ namespace Payroll.Data.Services
                 return true;
             //else
             return false;
+        }
+
+        public async Task<PagedList<AppUser>> GetAllUsers(PageParameters pageParameters)
+        {
+            var query = from u in _db.Users
+                        select u;
+
+            return await PagedList<AppUser>.ToPagedList(
+                query, 
+                pageParameters.PageNumber, 
+                pageParameters.PageSize);
         }
     }
 }

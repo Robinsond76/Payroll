@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Payroll.Core;
+using Payroll.Data.Helpers;
 using Payroll.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -17,5 +18,6 @@ namespace Payroll.Data.Interfaces
         Task<bool> SaveNewUser(AppUser user, string password);
 
         Task<AppUser> GetUser(string username, bool withTimestamps = false);
+        Task<PagedList<AppUser>> GetAllUsers(PageParameters pageParameters);
     }
 }

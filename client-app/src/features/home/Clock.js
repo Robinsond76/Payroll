@@ -14,12 +14,14 @@ const Clock = () => {
 
   const [loading, setLoading] = React.useState(false);
   const [query, setQuery] = React.useState('');
+  const [searched, setSearched] = React.useState(false);
   const [searchResult, setSearchResult] = React.useState([]);
   const [searchPagination, setSearchPagination] = React.useState(0);
 
   const searchJobsites = async (query) => {
     setLoading(true);
     const result = await Jobsites.listJobsites(query, 3, 1);
+    if (!searched) setSearched(true);
     setSearchResult(result.data);
     setLoading(false);
     setSearchPagination(JSON.parse(result.headers['x-pagination']));
@@ -67,9 +69,12 @@ const Clock = () => {
               placeholder='Search...'
             />
           </Form>
+          {searchResult.length === 0 &&
+            searched === true &&
+            'No Jobsite found...'}
           {searchResult.length > 0 && (
             <Fragment>
-              <Table celled selectable>
+              <Table padded size='small' celled selectable>
                 <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>Action</Table.HeaderCell>
@@ -83,7 +88,7 @@ const Clock = () => {
                   {searchResult.map((jobsite) => {
                     return (
                       <Table.Row key={jobsite.moniker}>
-                        <Table.Cell>
+                        <Table.Cell collapsing>
                           <Button
                             onClick={() =>
                               clockInUser(jobsite.moniker, authDispatch)

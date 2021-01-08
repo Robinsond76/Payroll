@@ -20,6 +20,7 @@ import ListTimestamps from './features/timestamps/ListTimestamps';
 import UserJobsiteTimestamps from './features/jobsites/UserJobsiteTimestamps';
 import ClockedIn from './features/employees/ClockedIn';
 import JobsiteInfo from './features/jobsites/JobsiteInfo';
+import ListUsers from './features/user/ListUsers';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -73,6 +74,11 @@ const App = () => {
                         exact
                         path='/timestamps/:moniker'
                         component={UserJobsiteTimestamps}
+                      />
+                      <PrivateRoute
+                        exact
+                        path='/employees'
+                        component={ListUsers}
                       />
                       <PrivateRoute
                         exact

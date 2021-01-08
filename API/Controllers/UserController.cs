@@ -229,5 +229,32 @@ namespace API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to query database.");
             }
         }
+
+        [HttpGet("/api/users")]
+        public async Task<IActionResult> GetAllUsers([FromQuery] PageParameters pageParameters)
+        {
+            try
+            {
+                var users = await _userRepository.GetAllUsers(pageParameters);
+
+                var metadata = new
+                {
+                    users.TotalCount,
+                    users.PageSize,
+                    users.CurrentPage,
+                    users.HasNext,
+                    users.HasPrevious
+                };
+
+                //Add page info to header
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+                return Ok(_mapper.Map<ICollection<UserGeneralInfoDto>>(users));
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to query database.");
+            }
+        }
     }
 }

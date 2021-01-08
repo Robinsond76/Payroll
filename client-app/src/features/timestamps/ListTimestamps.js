@@ -35,7 +35,7 @@ const ListTimestamps = () => {
   return (
     <Fragment>
       <h3>{displayName}'s Timestamps</h3>
-      <Table celled selectable>
+      <Table padded size='small' celled selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Moniker</Table.HeaderCell>
