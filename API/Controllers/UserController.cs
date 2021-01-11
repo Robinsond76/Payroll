@@ -154,7 +154,7 @@ namespace API.Controllers
             {
                 var user = await _userRepository.GetUser(username);
 
-                //NotFound() if user not found
+                //if user not found
                 if (user == null)
                     return NotFound($"Username {username} not found.");
 

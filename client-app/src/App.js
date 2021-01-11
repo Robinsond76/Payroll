@@ -20,7 +20,8 @@ import ListTimestamps from './features/timestamps/ListTimestamps';
 import UserJobsiteTimestamps from './features/jobsites/UserJobsiteTimestamps';
 import ClockedIn from './features/employees/ClockedIn';
 import JobsiteInfo from './features/jobsites/JobsiteInfo';
-import ListUsers from './features/user/ListUsers';
+import ListEmployees from './features/employees/ListEmployees';
+import ViewEmployee from './features/employees/ViewEmployee';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -78,12 +79,17 @@ const App = () => {
                       <PrivateRoute
                         exact
                         path='/employees'
-                        component={ListUsers}
+                        component={ListEmployees}
                       />
                       <PrivateRoute
                         exact
                         path='/employees/clockedIn'
                         component={ClockedIn}
+                      />
+                      <PrivateRoute
+                        exact
+                        path='/employees/:username'
+                        component={ViewEmployee}
                       />
                       <PrivateRoute component={NotFound} />
                     </Switch>

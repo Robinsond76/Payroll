@@ -138,7 +138,8 @@ namespace Payroll.Data.Services
                 t.AppUser == user &&
                 t.ClockedInStamp >= timestampParameters.FromDate &&
                     t.ClockedInStamp <= timestampParameters.ToDate &&
-                    t.ClockedIn == false);
+                    t.ClockedIn == false)
+                .OrderByDescending(t => t.ClockedInStamp);
 
             return await PagedList<Timestamp>.ToPagedList(
                 query,

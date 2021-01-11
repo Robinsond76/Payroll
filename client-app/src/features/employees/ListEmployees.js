@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import { Pagination, Table } from 'semantic-ui-react';
 import { User } from '../../app/api/agent';
 
-const ListUsers = () => {
+const ListEmployees = () => {
   const [users, setUsers] = React.useState([]);
   const [pagination, setPagination] = React.useState(0);
 
@@ -36,7 +37,11 @@ const ListUsers = () => {
           {users &&
             users.map((user) => (
               <Table.Row key={user.username}>
-                <Table.Cell>{user.displayName}</Table.Cell>
+                <Table.Cell>
+                  <Link to={`/employees/${user.username}`}>
+                    {user.displayName}
+                  </Link>
+                </Table.Cell>
                 <Table.Cell>{user.username}</Table.Cell>
                 <Table.Cell>{user.email}</Table.Cell>
               </Table.Row>
@@ -56,4 +61,4 @@ const ListUsers = () => {
   );
 };
 
-export default ListUsers;
+export default ListEmployees;

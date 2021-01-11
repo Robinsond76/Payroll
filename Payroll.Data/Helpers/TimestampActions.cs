@@ -122,5 +122,24 @@ namespace Payroll.Data.Helpers
 
             return employees;
         }
+
+        //public static ICollection<object> GetAllJobsitesVisitedByEmployee(ICollection<Timestamp> timestamps)
+        //{
+        //    Dictionary<string, object> jobsitesVisted = new Dictionary<string, object>();
+
+        //    foreach (Timestamp timestamp in timestamps)
+        //    {
+        //        if (jobsitesVisted.ContainsKey(timestamp.Jobsite.Moniker))
+        //            continue;
+        //        //else
+        //        jobsitesVisted.Add(timestamp.Jobsite.Moniker, new
+        //        {
+        //            timestamp.Jobsite.Moniker,
+        //            timestamp.Jobsite.Name
+        //        });
+        //    }
+
+        //    return jobsitesVisted.Values.ToList();
+        //}
     }
 }
