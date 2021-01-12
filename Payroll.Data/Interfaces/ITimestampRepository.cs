@@ -23,6 +23,6 @@ namespace Payroll.Data.Interfaces
         public Task<ICollection<Timestamp>> GetTimestamps(WorkHistoryParameters workHistoryParameters);
         public Task<PagedList<Timestamp>> GetTimestamps(TimestampParameters timestampParameters);
         public Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn();
-
+        public Task<Timestamp> GetUsersLastTimestamp(AppUser user);
     }
 }

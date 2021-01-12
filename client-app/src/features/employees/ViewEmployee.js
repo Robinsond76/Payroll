@@ -12,7 +12,6 @@ const ViewEmployee = ({ match }) => {
   React.useEffect(() => {
     Timestamps.getTimestamps(username, 3, 1).then((result) => {
       setUser(result.data);
-      console.log(result.data.timestamps);
       setPagination(JSON.parse(result.headers['x-pagination']));
     });
   }, [username]);

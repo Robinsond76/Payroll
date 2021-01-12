@@ -57,12 +57,32 @@ namespace API.Controllers
             //Return a token
             if (passwordConfirmed)
             {
-                return new UserDto
+                var userDto = new UserDto
                 {
                     DisplayName = user.DisplayName,
                     Token = _jwtGenerator.CreateToken(user),
                     Username = user.UserName
                 };
+
+                //get last timestamp for LastJobsiteVisited
+                var lastJobsiteVisited = await _timestampRepository.GetUsersLastTimestamp(user);
+                if (lastJobsiteVisited != null)
+                    userDto.LastJobsiteVisited = _mapper.Map<TimestampWithBasicJobsiteInfoDto>(lastJobsiteVisited);
+
+                //check to see if currently clocked in at a jobsite
+                var currentlyClockedin = await _timestampRepository.GetClockedInTimestamp(user);
+                if (currentlyClockedin != null)
+                {
+                    userDto.CurrentlyClockedIn = true;
+                    userDto.ClockedInTimestamp = _mapper.Map<TimestampClockedInBasicDto>(currentlyClockedin);
+                }
+                //else
+                //{
+                //    userDto.CurrentlyClockedIn = false;
+                //    userDto.ClockedInTimestamp = null;
+                //}
+
+                return userDto;
             }
             //else
             return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Invalid email or password" }));
@@ -104,6 +124,11 @@ namespace API.Controllers
             var userDto = _mapper.Map<UserDto>(user);
             userDto.Token = token;
 
+            //get last timestamp for LastJobsiteVisited
+            var lastJobsiteVisited = await _timestampRepository.GetUsersLastTimestamp(user);
+            if (lastJobsiteVisited != null)
+                userDto.LastJobsiteVisited = _mapper.Map<TimestampWithBasicJobsiteInfoDto>(lastJobsiteVisited);
+
             //check to see if currently clocked in at a jobsite
             var currentlyClockedin = await _timestampRepository.GetClockedInTimestamp(user);
             if (currentlyClockedin != null)
@@ -128,6 +153,11 @@ namespace API.Controllers
                 var user = await _userRepository.GetUser(username);
 
                 var userInfoDto = _mapper.Map<UserInfoDto>(user);
+
+                //get last timestamp for LastJobsiteVisited
+                var lastJobsiteVisited = await _timestampRepository.GetUsersLastTimestamp(user);
+                if (lastJobsiteVisited != null)
+                    userInfoDto.LastJobsiteVisited = _mapper.Map<TimestampWithBasicJobsiteInfoDto>(lastJobsiteVisited);
 
                 //check to see if currently clocked in at a jobsite
                 var currentlyClockedin = await _timestampRepository.GetClockedInTimestamp(user);

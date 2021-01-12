@@ -169,5 +169,21 @@ namespace Payroll.Data.Services
                 .Where(t => t.Jobsite == jobsite)
                 .ToListAsync();
         }
+
+        public async Task<Timestamp> GetUsersLastTimestamp(AppUser user)
+        {
+            var timestamp = _db.Timestamps
+                .Include(t => t.Jobsite)
+                .Where(t => t.AppUser == user)
+                .OrderByDescending(t => t.ClockedInStamp);
+
+            if (timestamp.Count() == 0 )
+            {
+                return null;
+            }
+
+            return await timestamp.FirstAsync();
+
+        }
     }
 }
