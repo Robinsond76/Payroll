@@ -21,6 +21,7 @@ import JobsiteInfo from './features/jobsites/JobsiteInfo';
 import ListEmployees from './features/employees/ListEmployees';
 import ViewEmployee from './features/employees/ViewEmployee';
 import Homepage from './features/home/Homepage';
+import EmployeeJobsite from './features/employees/EmployeeJobsite';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -88,6 +89,11 @@ const App = () => {
                         exact
                         path='/employees/:username'
                         component={ViewEmployee}
+                      />
+                      <PrivateRoute
+                        exact
+                        path='/employees/:username/:moniker'
+                        component={EmployeeJobsite}
                       />
                       <PrivateRoute component={NotFound} />
                     </Switch>

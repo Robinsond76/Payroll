@@ -117,12 +117,13 @@ namespace Payroll.Data.Services
         {
             var query = _db.Timestamps
                 .Include(t => t.Jobsite)
-                .Where(t => 
-                t.AppUser == user && 
+                .Where(t =>
+                t.AppUser == user &&
                 t.Jobsite.Moniker == moniker &&
                 t.ClockedInStamp >= timestampParameters.FromDate &&
                     t.ClockedInStamp <= timestampParameters.ToDate &&
-                    t.ClockedIn == false);
+                    t.ClockedIn == false)
+                .OrderByDescending(t => t.ClockedInStamp);
 
             return await PagedList<Timestamp>.ToPagedList(
                 query,
