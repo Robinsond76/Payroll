@@ -10,7 +10,7 @@ import LoadingComponent from '../../app/layout/LoadingComponent';
 import { Table, Pagination } from 'semantic-ui-react';
 import { format, intervalToDuration } from 'date-fns';
 
-const ListTimestamps = () => {
+const ListUserTimestamps = () => {
   const { user } = useAuthState();
   const { displayName, username } = user;
   const { timestamps, timestampPagination, loading } = useTimestampState();
@@ -62,7 +62,7 @@ const ListTimestamps = () => {
             return (
               <Table.Row key={timestamp.clockedInStamp}>
                 <Table.Cell>
-                  <Link to={`/timestamps/${timestamp.moniker}`}>
+                  <Link to={`/timestamps/user/${timestamp.moniker}`}>
                     {timestamp.moniker}
                   </Link>
                 </Table.Cell>
@@ -92,4 +92,4 @@ const ListTimestamps = () => {
   );
 };
 
-export default ListTimestamps;
+export default ListUserTimestamps;

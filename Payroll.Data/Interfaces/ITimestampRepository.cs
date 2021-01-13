@@ -15,14 +15,15 @@ namespace Payroll.Data.Interfaces
         public Task<bool> ClockIn(Jobsite jobsite, AppUser user);
         public Task<bool> ClockInLunch(AppUser user);
         public Task<bool> ClockOut(AppUser user);
+        public Task<ICollection<Timestamp>> GetTimestamps();
+        public Task<ICollection<Timestamp>> GetTimestamps(WorkHistoryParameters workHistoryParameters);
+        public Task<PagedList<Timestamp>> GetTimestamps(TimestampParameters timestampParameters);
+        public Task<ICollection<Timestamp>> GetTimestampsUnpaged(TimestampParameters timestampParameters);
         public Task<ICollection<Timestamp>> GetTimestampsForJob(Jobsite jobsite);
         public Task<PagedList<Timestamp>> GetTimestampsForJobByUser(AppUser user, string moniker, TimestampParameters timestampParameters);
         public Task<PagedList<Timestamp>> GetTimestampsForUserByDate(AppUser user, TimestampParameters timestampParameters);
-        public Task<PagedList<Timestamp>> GetTimestampsForJobByDate(Jobsite jobsite, TimestampParameters timestampParameters);
-        public Task<ICollection<Timestamp>> GetTimestamps();
-        public Task<ICollection<Timestamp>> GetTimestamps(WorkHistoryParameters workHistoryParameters);
         public Task<ICollection<Timestamp>> GetTimestampsForUserByWorkDate(AppUser user, WorkHistoryParameters workHistoryParameters);
-        public Task<PagedList<Timestamp>> GetTimestamps(TimestampParameters timestampParameters);
+        public Task<PagedList<Timestamp>> GetTimestampsForJobByDate(Jobsite jobsite, TimestampParameters timestampParameters);
         public Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn();
         public Task<Timestamp> GetUsersLastTimestamp(AppUser user);
     }

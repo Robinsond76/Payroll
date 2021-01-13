@@ -112,6 +112,35 @@ namespace API.Controllers
             return Ok(history);
         }
 
+        [HttpGet("jobsitesVisited")]
+        public async Task<IActionResult> GetJobsitesVisited(
+            [FromQuery] TimestampParameters timestampParameters)
+        {
+            var timestamps = await _timestampRepository.GetTimestampsUnpaged(timestampParameters);
+
+            //get Jobsites visited
+            var jobsitesVisited = TimestampActions.GetJobsitesFromTimestamps(timestamps);
+
+            //page the results
+            var pagedJobsitesVisited = PagedList<JobsiteBasicDto>.ToPagedListFromList(
+                jobsitesVisited, 
+                timestampParameters.PageNumber, 
+                timestampParameters.PageSize);
+
+            var metadata = new
+            {
+                pagedJobsitesVisited.TotalCount,
+                pagedJobsitesVisited.PageSize,
+                pagedJobsitesVisited.CurrentPage,
+                pagedJobsitesVisited.HasNext,
+                pagedJobsitesVisited.HasPrevious
+            };
+
+            //Add page info to header
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+            return Ok(pagedJobsitesVisited);
+        }
 
         [HttpGet("clockedin")]
         public async Task<ActionResult<object>> CurrentlyClockedIn()

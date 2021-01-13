@@ -14,7 +14,7 @@ import ListJobsites from './features/jobsites/ListJobsites';
 import RegisterForm from './features/user/RegisterForm';
 import ModalContainer from './app/common/modals/ModalContainer';
 import NotFound from './app/layout/NotFound';
-import ListTimestamps from './features/timestamps/ListTimestamps';
+import ListUserTimestamps from './features/timestamps/ListUserTimestamps';
 import UserJobsiteTimestamps from './features/jobsites/UserJobsiteTimestamps';
 import ClockedIn from './features/employees/ClockedIn';
 import JobsiteInfo from './features/jobsites/JobsiteInfo';
@@ -24,6 +24,7 @@ import Homepage from './features/home/Homepage';
 import EmployeeJobsite from './features/employees/EmployeeJobsite';
 import Payroll from './features/employees/Payroll';
 import EmployeeWorkHistory from './features/employees/EmployeeWorkHistory';
+import ListAllTimestamps from './features/timestamps/ListAllTimestamps';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -59,12 +60,12 @@ const App = () => {
                       />
                       <PrivateRoute
                         exact
-                        path='/jobsite/:moniker'
+                        path='/jobsites/:moniker'
                         component={JobsiteInfo}
                       />
                       <PrivateRoute
                         exact
-                        path='/jobsite/:moniker/:username'
+                        path='/jobsites/:moniker/:username'
                         component={EmployeeJobsite}
                       />
                       <PrivateRoute
@@ -75,11 +76,16 @@ const App = () => {
                       <PrivateRoute
                         exact
                         path='/timestamps'
-                        component={ListTimestamps}
+                        component={ListAllTimestamps}
                       />
                       <PrivateRoute
                         exact
-                        path='/timestamps/:moniker'
+                        path='/timestamps/user'
+                        component={ListUserTimestamps}
+                      />
+                      <PrivateRoute
+                        exact
+                        path='/timestamps/user/:moniker'
                         component={UserJobsiteTimestamps}
                       />
                       <PrivateRoute

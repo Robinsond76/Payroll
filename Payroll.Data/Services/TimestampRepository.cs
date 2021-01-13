@@ -94,6 +94,20 @@ namespace Payroll.Data.Services
                 timestampParameters.PageSize);
         }
 
+        public async Task<ICollection<Timestamp>> GetTimestamps(WorkHistoryParameters workHistoryParameters)
+        {
+            var query = _db.Timestamps
+                .Include(t => t.AppUser)
+                .Include(t => t.Jobsite)
+                .Where(t =>
+                        t.ClockedInStamp >= workHistoryParameters.FromDate &&
+                        t.ClockedInStamp <= workHistoryParameters.ToDate &&
+                        t.ClockedIn == false)
+                .OrderByDescending(t => t.ClockedInStamp);
+
+            return await query.ToListAsync();
+        }
+
         public async Task<Timestamp> GetClockedInTimestamp(AppUser user)
         {
             return await _db.Timestamps
@@ -188,14 +202,12 @@ namespace Payroll.Data.Services
 
         }
 
-        public async Task<ICollection<Timestamp>> GetTimestamps(WorkHistoryParameters workHistoryParameters)
+        public async Task<ICollection<Timestamp>> GetTimestampsUnpaged(TimestampParameters timestampParameters)
         {
             var query = _db.Timestamps
-                .Include(t => t.AppUser)
                 .Include(t => t.Jobsite)
-                .Where(t =>
-                        t.ClockedInStamp >= workHistoryParameters.FromDate &&
-                        t.ClockedInStamp <= workHistoryParameters.ToDate &&
+                .Where(t => t.ClockedInStamp >= timestampParameters.FromDate &&
+                        t.ClockedInStamp <= timestampParameters.ToDate &&
                         t.ClockedIn == false)
                 .OrderByDescending(t => t.ClockedInStamp);
 

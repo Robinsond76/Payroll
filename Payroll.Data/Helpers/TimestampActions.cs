@@ -118,6 +118,27 @@ namespace Payroll.Data.Helpers
             return employees.Values.ToList();
         }
 
+        public static ICollection<JobsiteBasicDto> GetJobsitesFromTimestamps(ICollection<Timestamp> timestamps)
+        {
+            var jobsites = new Dictionary<string, JobsiteBasicDto>();
+
+            foreach (var timestamp in timestamps)
+            {
+                if (jobsites.ContainsKey(timestamp.Jobsite.Moniker))
+                    continue;
+                //else
+                jobsites.Add(timestamp.Jobsite.Moniker, new JobsiteBasicDto
+                {
+                    Name = timestamp.Jobsite.Name,
+                    Moniker = timestamp.Jobsite.Moniker
+                });
+            }
+
+            return jobsites.Values.ToList();
+        }
+
+
+
         //public static ICollection<object> GetAllJobsitesVisitedByEmployee(ICollection<Timestamp> timestamps)
         //{
         //    Dictionary<string, object> jobsitesVisted = new Dictionary<string, object>();

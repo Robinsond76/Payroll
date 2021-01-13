@@ -12,7 +12,7 @@ import { Table, Pagination } from 'semantic-ui-react';
 import { format, intervalToDuration } from 'date-fns';
 import LoadingComponent from '../../app/layout/LoadingComponent';
 
-// /timestamps/moniker
+// /timestamps/user/:moniker
 const UserJobsiteTimestamps = ({ match }) => {
   const moniker = match.params.moniker;
   const { user } = useAuthState();

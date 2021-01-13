@@ -5,7 +5,7 @@ import { Jobsites } from '../../app/api/agent';
 import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom';
 
-// /jobsite/moniker
+// /jobsite/:moniker
 const JobsiteInfo = ({ match }) => {
   const moniker = match.params.moniker;
 
@@ -35,7 +35,7 @@ const JobsiteInfo = ({ match }) => {
         {jobsite &&
           jobsite.employeesThatClocked.map((employee) => (
             <li key={uuidv4()}>
-              <Link to={`/jobsite/${moniker}/${employee.username}`}>
+              <Link to={`/jobsites/${moniker}/${employee.username}`}>
                 {employee.displayName}
               </Link>
             </li>

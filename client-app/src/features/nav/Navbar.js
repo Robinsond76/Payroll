@@ -30,7 +30,7 @@ const Navbar = () => {
           </Menu.Item>
           <Menu.Item name='Jobsites' as={NavLink} to='/jobsites' />
           <Menu.Item>
-            <Link to='/timestamps'>Timestamps</Link>
+            <Link to='/timestamps/user'>User Timestamps</Link>
           </Menu.Item>
           <Menu.Item>
             <Link to='/employees'>Employees</Link>
@@ -40,6 +40,9 @@ const Navbar = () => {
           </Menu.Item>
           <Menu.Item>
             <Link to='/employees/payroll'>Payroll</Link>
+          </Menu.Item>
+          <Menu.Item>
+            <Link to='/timestamps'>All Timestamps</Link>
           </Menu.Item>
           {user && (
             <Menu.Item position='right'>

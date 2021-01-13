@@ -73,7 +73,7 @@ const ListJobsites = () => {
               return (
                 <Table.Row key={jobsite.moniker}>
                   <Table.Cell>
-                    <Link to={`/jobsite/${jobsite.moniker}`}>
+                    <Link to={`/jobsites/${jobsite.moniker}`}>
                       {jobsite.moniker}
                     </Link>
                   </Table.Cell>
