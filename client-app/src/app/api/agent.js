@@ -43,6 +43,9 @@ const Timestamps = {
       `/user/${username}/timestamps/${moniker}?pagesize=${pageSize}&pagenumber=${pageNumber}`
     ),
   getClockedInTimestamps: () => requests.get('/timestamps/clockedin'),
+  getWorkHistory: () => axios.get('/timestamps/workhistory?fromDate=01/01'),
+  getUserWorkHistory: (username) =>
+    axios.get(`/timestamps/workhistory/${username}?fromDate=01/01`),
 };
 
 const User = {

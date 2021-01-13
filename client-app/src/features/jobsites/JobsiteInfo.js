@@ -3,8 +3,9 @@ import React, { Fragment } from 'react';
 import { Pagination, Table } from 'semantic-ui-react';
 import { Jobsites } from '../../app/api/agent';
 import { v4 as uuidv4 } from 'uuid';
+import { Link } from 'react-router-dom';
 
-// /jobsites/moniker
+// /jobsite/moniker
 const JobsiteInfo = ({ match }) => {
   const moniker = match.params.moniker;
 
@@ -22,7 +23,6 @@ const JobsiteInfo = ({ match }) => {
       setJobsite(result.data);
       setPagination(JSON.parse(result.headers['x-pagination']));
     });
-    console.log('useeffect ran');
   }, [moniker]);
 
   return (
@@ -34,7 +34,11 @@ const JobsiteInfo = ({ match }) => {
       <ul>
         {jobsite &&
           jobsite.employeesThatClocked.map((employee) => (
-            <li key={uuidv4()}>{employee}</li>
+            <li key={uuidv4()}>
+              <Link to={`/jobsite/${moniker}/${employee.username}`}>
+                {employee.displayName}
+              </Link>
+            </li>
           ))}
       </ul>
       <Table celled selectable>

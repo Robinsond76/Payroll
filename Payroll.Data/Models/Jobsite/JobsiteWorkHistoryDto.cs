@@ -6,7 +6,7 @@ namespace Payroll.Data.Models
 {
     public class JobsiteWorkHistoryDto
     {
-        private double _hoursWorked;
+        public double _hoursWorked;
 
         public string Name { get; set; }
         public string Moniker { get; set; }

@@ -37,7 +37,7 @@ const EmployeeJobsite = ({ match }) => {
       <Button as={Link} to={`/jobsite/${moniker}`} size='mini'>
         See all timestamps
       </Button>
-      <Table celled selectable>
+      <Table padded size='small' celled selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Moniker</Table.HeaderCell>

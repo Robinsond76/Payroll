@@ -22,6 +22,8 @@ import ListEmployees from './features/employees/ListEmployees';
 import ViewEmployee from './features/employees/ViewEmployee';
 import Homepage from './features/home/Homepage';
 import EmployeeJobsite from './features/employees/EmployeeJobsite';
+import Payroll from './features/employees/Payroll';
+import EmployeeWorkHistory from './features/employees/EmployeeWorkHistory';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -62,6 +64,11 @@ const App = () => {
                       />
                       <PrivateRoute
                         exact
+                        path='/jobsite/:moniker/:username'
+                        component={EmployeeJobsite}
+                      />
+                      <PrivateRoute
+                        exact
                         path='/register'
                         component={RegisterForm}
                       />
@@ -87,14 +94,20 @@ const App = () => {
                       />
                       <PrivateRoute
                         exact
-                        path='/employees/:username'
-                        component={ViewEmployee}
+                        path='/employees/payroll'
+                        component={Payroll}
                       />
                       <PrivateRoute
                         exact
-                        path='/employees/:username/:moniker'
-                        component={EmployeeJobsite}
+                        path='/employees/payroll/:username'
+                        component={EmployeeWorkHistory}
                       />
+                      <PrivateRoute
+                        exact
+                        path='/employees/:username'
+                        component={ViewEmployee}
+                      />
+
                       <PrivateRoute component={NotFound} />
                     </Switch>
                   </Container>

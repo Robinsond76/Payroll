@@ -4,6 +4,7 @@ import { Table, Pagination } from 'semantic-ui-react';
 import { format, intervalToDuration } from 'date-fns';
 import { Timestamps } from '../../app/api/agent';
 
+// /employees/:username
 const ViewEmployee = ({ match }) => {
   const username = match.params.username;
   const [user, setUser] = React.useState(null);
@@ -53,9 +54,7 @@ const ViewEmployee = ({ match }) => {
               return (
                 <Table.Row key={timestamp.clockedInStamp}>
                   <Table.Cell>
-                    <Link
-                      to={`/employees/${user.username}/${timestamp.moniker}`}
-                    >
+                    <Link to={`/jobsite/${timestamp.moniker}/${user.username}`}>
                       {timestamp.moniker}
                     </Link>
                   </Table.Cell>

@@ -62,13 +62,14 @@ namespace Payroll.Data.Services
             return await query.ToListAsync();
         }
 
-        public async Task<ICollection<Timestamp>> GetTimestamps(
+        public async Task<ICollection<Timestamp>> GetTimestampsForUserByWorkDate(AppUser user,
             WorkHistoryParameters workHistoryParameters)
         {
             var query = _db.Timestamps
                 .Include(t => t.AppUser)
                 .Include(t => t.Jobsite)
-                .Where(t => t.ClockedInStamp >= workHistoryParameters.FromDate &&
+                .Where(t => t.AppUser == user && 
+                        t.ClockedInStamp >= workHistoryParameters.FromDate &&
                         t.ClockedInStamp <= workHistoryParameters.ToDate &&
                         t.ClockedIn == false)
                 .OrderByDescending(t => t.ClockedInStamp);
@@ -185,6 +186,20 @@ namespace Payroll.Data.Services
 
             return await timestamp.FirstAsync();
 
+        }
+
+        public async Task<ICollection<Timestamp>> GetTimestamps(WorkHistoryParameters workHistoryParameters)
+        {
+            var query = _db.Timestamps
+                .Include(t => t.AppUser)
+                .Include(t => t.Jobsite)
+                .Where(t =>
+                        t.ClockedInStamp >= workHistoryParameters.FromDate &&
+                        t.ClockedInStamp <= workHistoryParameters.ToDate &&
+                        t.ClockedIn == false)
+                .OrderByDescending(t => t.ClockedInStamp);
+
+            return await query.ToListAsync();
         }
     }
 }

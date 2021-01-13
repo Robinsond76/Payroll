@@ -21,6 +21,7 @@ namespace Payroll.Data.Interfaces
         public Task<PagedList<Timestamp>> GetTimestampsForJobByDate(Jobsite jobsite, TimestampParameters timestampParameters);
         public Task<ICollection<Timestamp>> GetTimestamps();
         public Task<ICollection<Timestamp>> GetTimestamps(WorkHistoryParameters workHistoryParameters);
+        public Task<ICollection<Timestamp>> GetTimestampsForUserByWorkDate(AppUser user, WorkHistoryParameters workHistoryParameters);
         public Task<PagedList<Timestamp>> GetTimestamps(TimestampParameters timestampParameters);
         public Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn();
         public Task<Timestamp> GetUsersLastTimestamp(AppUser user);

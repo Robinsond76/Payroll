@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Payroll.Core;
@@ -18,12 +19,14 @@ namespace API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ITimestampRepository _timestampRepository;
+        private readonly IUserRepository _userRepository;
 
         //constructor
-        public TimestampsController(IMapper imapper, ITimestampRepository timestampRepository)
+        public TimestampsController(IMapper imapper, ITimestampRepository timestampRepository, IUserRepository userRepository)
         {
             _mapper = imapper;
             _timestampRepository = timestampRepository;
+            _userRepository = userRepository;
         }
 
         [HttpGet("info")]
@@ -65,17 +68,50 @@ namespace API.Controllers
             return Ok(_mapper.Map<ICollection<TimestampGeneralDto>>(timestamps));
         }
 
-        [HttpGet("info/workhistory")]
-        public async Task<IActionResult> GetEmployeeWorkHistory(
+        [HttpGet("workhistory/{username}")]
+        public async Task<IActionResult> GetUserWorkHistory(string username,
+            [FromQuery] WorkHistoryParameters workHistoryParameters)
+        {
+            try
+            {
+                var user = await _userRepository.GetUser(username);
+
+                //if user not found
+                if (user == null)
+                    return NotFound($"Username {username} not found.");
+
+                //max 30 days
+                var timestamps = await _timestampRepository.GetTimestampsForUserByWorkDate(user, workHistoryParameters);
+                //form custom DTO based on timestamps
+                var history = TimestampActions.GetUserWorkHistory(timestamps);
+
+                var dto = new UserWorkHistoryWithTotalDto
+                {
+                    DisplayName = user.DisplayName,
+                    Username = user.UserName,
+                    workHistory = history
+                };
+
+                return Ok(dto);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to retrieve user data");
+            }            
+        }
+        
+        [HttpGet("workhistory")]
+        public async Task<IActionResult> GetWorkHistory(
             [FromQuery] WorkHistoryParameters workHistoryParameters)
         {
             //max 30 days
             var timestamps = await _timestampRepository.GetTimestamps(workHistoryParameters);
             //form custom DTO based on timestamps
-            var history = TimestampActions.GetUserWorkHistory(timestamps);
+            var history = TimestampActions.GetWorkHistory(timestamps);
 
             return Ok(history);
         }
+
 
         [HttpGet("clockedin")]
         public async Task<ActionResult<object>> CurrentlyClockedIn()

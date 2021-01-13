@@ -38,6 +38,9 @@ const Navbar = () => {
           <Menu.Item>
             <Link to='/employees/ClockedIn'>Clocked In</Link>
           </Menu.Item>
+          <Menu.Item>
+            <Link to='/employees/payroll'>Payroll</Link>
+          </Menu.Item>
           {user && (
             <Menu.Item position='right'>
               <Image
