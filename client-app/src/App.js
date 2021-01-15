@@ -113,7 +113,6 @@ const App = () => {
                         path='/employees/:username'
                         component={ViewEmployee}
                       />
-
                       <PrivateRoute component={NotFound} />
                     </Switch>
                   </Container>

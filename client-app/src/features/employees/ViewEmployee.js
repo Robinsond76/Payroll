@@ -54,7 +54,9 @@ const ViewEmployee = ({ match }) => {
               return (
                 <Table.Row key={timestamp.clockedInStamp}>
                   <Table.Cell>
-                    <Link to={`/jobsite/${timestamp.moniker}/${user.username}`}>
+                    <Link
+                      to={`/jobsites/${timestamp.moniker}/${user.username}`}
+                    >
                       {timestamp.moniker}
                     </Link>
                   </Table.Cell>

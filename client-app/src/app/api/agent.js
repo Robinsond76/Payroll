@@ -46,12 +46,21 @@ const Timestamps = {
   getWorkHistory: () => axios.get('/timestamps/workhistory?fromDate=01/01'),
   getUserWorkHistory: (username) =>
     axios.get(`/timestamps/workhistory/${username}?fromDate=01/01`),
-  getJobsitesVisited: (pageSize, pageNumber) =>
-    axios.get(
-      `/timestamps/jobsitesvisited?pagesize=${pageSize}&pagenumber=${pageNumber}`
-    ),
-  getAllTimestamps: (pageSize, pageNumber) =>
-    axios.get(`/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`),
+
+  getJobsitesVisited: (pageSize, pageNumber, fromDate = '', toDate = '') => {
+    let url = `/timestamps/jobsitesvisited?pagesize=${pageSize}&pagenumber=${pageNumber}`;
+    let parameters = '';
+    if (fromDate) parameters = `&fromDate=${fromDate}`;
+    if (toDate) parameters += `&toDate=${toDate}`;
+    return axios.get(url + parameters);
+  },
+  getAllTimestamps: (pageSize, pageNumber, fromDate = '', toDate = '') => {
+    let url = `/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`;
+    let parameters = '';
+    if (fromDate) parameters = `&fromDate=${fromDate}`;
+    if (toDate) parameters += `&toDate=${toDate}`;
+    return axios.get(url + parameters);
+  },
 };
 
 const User = {

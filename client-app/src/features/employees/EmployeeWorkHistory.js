@@ -31,7 +31,7 @@ const EmployeeWorkHistory = ({ match }) => {
               return (
                 <Table.Row key={entry.moniker}>
                   <Table.Cell>
-                    <Link to={`/jobsite/${entry.moniker}/${username}`}>
+                    <Link to={`/jobsites/${entry.moniker}/${username}`}>
                       {entry.moniker}
                     </Link>
                   </Table.Cell>

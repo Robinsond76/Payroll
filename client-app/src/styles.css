@@ -36,3 +36,20 @@ body {
 }
 
 /*end home page styles*/
+
+/*Search Filter Form */
+
+.Filter-Date-Form {
+  display: flex;
+}
+
+.Filter-Date-Form p {
+  margin: 9.5px 5px 0 20px;
+  font-weight: 700;
+  color: rgb(0, 0, 0, 0.6);
+}
+
+.Filter-Date-Form .button {
+  margin-left: 20px;
+  width: 200px;
+}

@@ -11,6 +11,8 @@ const TimestampProvider = ({ children }) => {
     timestampPagination: 0,
     jobsitePagination: 0,
     loading: false,
+    fromDate: '',
+    toDate: '',
   };
 
   const [state, dispatch] = useReducer(timestampReducer, initialState);

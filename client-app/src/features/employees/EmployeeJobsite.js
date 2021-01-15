@@ -34,7 +34,7 @@ const EmployeeJobsite = ({ match }) => {
     <Fragment>
       <h2>{moniker}</h2>
       <p>Showing timestamps for user '{username}' at this location</p>
-      <Button as={Link} to={`/jobsite/${moniker}`} size='mini'>
+      <Button as={Link} to={`/jobsites/${moniker}`} size='mini'>
         See all timestamps
       </Button>
       <Table padded size='small' celled selectable>

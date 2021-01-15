@@ -54,6 +54,7 @@ const getJobsiteTimestampsByUser = async (
 const clearJobsiteTimestamps = (dispatch) => {
   dispatch({ type: 'CLEAR_JOBSITE_TIMESTAMPS' });
 };
+
 export {
   getUserTimestamps,
   getJobsiteTimestampsByUser,

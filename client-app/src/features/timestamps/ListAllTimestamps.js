@@ -3,8 +3,12 @@ import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Pagination, Table } from 'semantic-ui-react';
 import { Timestamps } from '../../app/api/agent';
+import FilterDateForm from '../../app/layout/FilterDateForm';
+import { useTimestampState } from '../../app/context/timestamps/timestampContext';
 
 const ListAllTimestamps = () => {
+  const { fromDate, toDate } = useTimestampState();
+
   const [timestamps, setTimestamps] = React.useState([]);
   const [timestampPagination, setTimestampPagination] = React.useState(0);
   const [jobsitesVisited, setJobsitesVisited] = React.useState([]);
@@ -21,20 +25,45 @@ const ListAllTimestamps = () => {
     });
   }, []);
 
-  const timestampPageChangeHandler = async (e, { activePage }) => {
-    const result = await Timestamps.getAllTimestamps(3, activePage);
+  const loadTimestamps = async (activePage = 1) => {
+    const result = await Timestamps.getAllTimestamps(
+      3,
+      activePage,
+      fromDate,
+      toDate
+    );
     setTimestamps(result.data);
     setTimestampPagination(JSON.parse(result.headers['x-pagination']));
   };
 
-  const jobsitePageChangeHandler = async (e, { activePage }) => {
-    const result = await Timestamps.getJobsitesVisited(3, activePage);
+  const loadJobsites = async (activePage = 1) => {
+    const result = await Timestamps.getJobsitesVisited(
+      3,
+      activePage,
+      fromDate,
+      toDate
+    );
     setJobsitesVisited(result.data);
     setJobsitesPagination(JSON.parse(result.headers['x-pagination']));
   };
 
+  const timestampPageChangeHandler = async (e, { activePage }) => {
+    loadTimestamps(activePage);
+  };
+
+  const jobsitePageChangeHandler = async (e, { activePage }) => {
+    loadJobsites(activePage);
+  };
+
+  const filterHandler = async () => {
+    await loadJobsites();
+    await loadTimestamps();
+  };
+
   return (
     <Fragment>
+      <FilterDateForm filterHandler={filterHandler} />
+
       <h3>Jobsites Visited</h3>
       <Table padded size='small' celled selectable>
         <Table.Header>

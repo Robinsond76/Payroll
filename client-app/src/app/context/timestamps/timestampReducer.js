@@ -20,6 +20,22 @@ const timestampReducer = (state, action) => {
         jobsiteTimestamps: [],
         jobsitePagination: 0,
       };
+    case 'SET_FROM_DATE':
+      return {
+        ...state,
+        fromDate: action.payload,
+      };
+    case 'SET_TO_DATE':
+      return {
+        ...state,
+        toDate: action.payload,
+      };
+    case 'CLEAR_DATES':
+      return {
+        ...state,
+        fromDate: '',
+        toDate: '',
+      };
     case 'LOADING':
       return {
         ...state,
