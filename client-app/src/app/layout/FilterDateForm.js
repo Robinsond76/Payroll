@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react';
 import { DateInput } from 'semantic-ui-calendar-react';
-import { Accordion, Button, Divider, Icon } from 'semantic-ui-react';
+import { Accordion, Divider, Icon } from 'semantic-ui-react';
 import {
   useTimestampState,
   useTimestampDispatch,
 } from '../context/timestamps/timestampContext';
 
-const FilterDateForm = ({ filterHandler }) => {
+const FilterDateForm = () => {
   const { fromDate, toDate } = useTimestampState();
   const timestampDispatch = useTimestampDispatch();
 
@@ -40,7 +40,7 @@ const FilterDateForm = ({ filterHandler }) => {
           onClick={handleAccordion}
         >
           <Icon name='dropdown' />
-          <Icon name='search' />{' '}
+          <Icon name='search' />
           <h4 style={{ display: 'inline' }}>Filter By Date</h4>
         </Accordion.Title>
         <Accordion.Content active={activeIndex === 0}>
@@ -67,9 +67,6 @@ const FilterDateForm = ({ filterHandler }) => {
               clearable
               style={{ width: '300px' }}
             />
-            <Button onClick={filterHandler} className='button'>
-              <Icon name='search' /> Filter
-            </Button>
           </div>
           <Divider />
         </Accordion.Content>

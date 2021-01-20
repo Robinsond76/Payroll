@@ -1,5 +1,12 @@
 const timestampReducer = (state, action) => {
   switch (action.type) {
+    case 'LOAD_TIMESTAMPS':
+      return {
+        ...state,
+        timestamps: action.payload,
+        loading: false,
+        timestampPagination: action.pagination,
+      };
     case 'GET_USER_TIMESTAMPS':
       return {
         ...state,
@@ -15,9 +22,10 @@ const timestampReducer = (state, action) => {
         jobsitePagination: action.pagination,
       };
     case 'CLEAR_JOBSITE_TIMESTAMPS':
+    case 'CLEAR_TIMESTAMPS':
       return {
         ...state,
-        jobsiteTimestamps: [],
+        timestamps: [],
         jobsitePagination: 0,
       };
     case 'SET_FROM_DATE':

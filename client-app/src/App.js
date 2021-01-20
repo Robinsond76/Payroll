@@ -10,11 +10,11 @@ import PrivateRoute from './app/layout/PrivateRoute';
 
 //components
 import Navbar from './features/nav/Navbar.js';
-import ListJobsites from './features/jobsites/ListJobsites';
+import ViewJobsites from './features/jobsites/ViewJobsites';
 import RegisterForm from './features/user/RegisterForm';
 import ModalContainer from './app/common/modals/ModalContainer';
 import NotFound from './app/layout/NotFound';
-import ListUserTimestamps from './features/timestamps/ListUserTimestamps';
+import ViewUserTimestamps from './features/timestamps/ViewUserTimestamps';
 import UserJobsiteTimestamps from './features/jobsites/UserJobsiteTimestamps';
 import ClockedIn from './features/employees/ClockedIn';
 import JobsiteInfo from './features/jobsites/JobsiteInfo';
@@ -24,7 +24,7 @@ import Homepage from './features/home/Homepage';
 import EmployeeJobsite from './features/employees/EmployeeJobsite';
 import Payroll from './features/employees/Payroll';
 import EmployeeWorkHistory from './features/employees/EmployeeWorkHistory';
-import ListAllTimestamps from './features/timestamps/ListAllTimestamps';
+import ViewAllTimestamps from './features/timestamps/ViewAllTimestamps';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -56,7 +56,7 @@ const App = () => {
                       <PrivateRoute
                         exact
                         path='/jobsites'
-                        component={ListJobsites}
+                        component={ViewJobsites}
                       />
                       <PrivateRoute
                         exact
@@ -76,12 +76,12 @@ const App = () => {
                       <PrivateRoute
                         exact
                         path='/timestamps'
-                        component={ListAllTimestamps}
+                        component={ViewAllTimestamps}
                       />
                       <PrivateRoute
                         exact
                         path='/timestamps/user'
-                        component={ListUserTimestamps}
+                        component={ViewUserTimestamps}
                       />
                       <PrivateRoute
                         exact

@@ -27,26 +27,19 @@ const Jobsites = {
     axios.get(
       `/jobsites/search?q=${query}&pagesize=${pageSize}&pagenumber=${pageNumber}`
     ),
-  getJobsite: (moniker, pageSize, pageNumber) =>
-    axios.get(
-      `/jobsites/${moniker}/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`
-    ),
-};
-
-const Timestamps = {
-  getTimestamps: (username, pageSize, pageNumber) =>
-    axios.get(
-      `/user/${username}/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`
-    ),
-  getJobsiteTimestamps: (moniker, username, pageSize, pageNumber) =>
-    axios.get(
-      `/user/${username}/timestamps/${moniker}?pagesize=${pageSize}&pagenumber=${pageNumber}`
-    ),
-  getClockedInTimestamps: () => requests.get('/timestamps/clockedin'),
-  getWorkHistory: () => axios.get('/timestamps/workhistory?fromDate=01/01'),
-  getUserWorkHistory: (username) =>
-    axios.get(`/timestamps/workhistory/${username}?fromDate=01/01`),
-
+  getJobsiteTimestamps: (
+    moniker,
+    pageSize,
+    pageNumber,
+    fromDate = '',
+    toDate = ''
+  ) => {
+    let url = `/jobsites/${moniker}/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`;
+    let parameters = '';
+    if (fromDate) parameters = `&fromDate=${fromDate}`;
+    if (toDate) parameters += `&toDate=${toDate}`;
+    return axios.get(url + parameters);
+  },
   getJobsitesVisited: (pageSize, pageNumber, fromDate = '', toDate = '') => {
     let url = `/timestamps/jobsitesvisited?pagesize=${pageSize}&pagenumber=${pageNumber}`;
     let parameters = '';
@@ -54,6 +47,40 @@ const Timestamps = {
     if (toDate) parameters += `&toDate=${toDate}`;
     return axios.get(url + parameters);
   },
+};
+
+const Timestamps = {
+  getUserTimestamps: (
+    username,
+    pageSize,
+    pageNumber,
+    fromDate = '',
+    toDate = ''
+  ) => {
+    let url = `/user/${username}/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`;
+    let parameters = '';
+    if (fromDate) parameters = `&fromDate=${fromDate}`;
+    if (toDate) parameters += `&toDate=${toDate}`;
+    return axios.get(url + parameters);
+  },
+  getUserJobsiteTimestamps: (
+    moniker,
+    username,
+    pageSize,
+    pageNumber,
+    fromDate = '',
+    toDate = ''
+  ) => {
+    let url = `/user/${username}/timestamps/${moniker}?pagesize=${pageSize}&pagenumber=${pageNumber}`;
+    let parameters = '';
+    if (fromDate) parameters = `&fromDate=${fromDate}`;
+    if (toDate) parameters += `&toDate=${toDate}`;
+    return axios.get(url + parameters);
+  },
+  getClockedInTimestamps: () => requests.get('/timestamps/clockedin'),
+  getWorkHistory: () => axios.get('/timestamps/workhistory?fromDate=01/01'),
+  getUserWorkHistory: (username) =>
+    axios.get(`/timestamps/workhistory/${username}?fromDate=01/01`),
   getAllTimestamps: (pageSize, pageNumber, fromDate = '', toDate = '') => {
     let url = `/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`;
     let parameters = '';

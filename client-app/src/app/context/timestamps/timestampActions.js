@@ -1,17 +1,48 @@
 import { Timestamps } from '../../api/agent';
 
-const getUserTimestamps = async (
-  username,
+const getAllTimestamps = async (
   dispatch,
-  pageSize = 3,
-  pageNumber = 1
+  pageSize,
+  pageNumber = 1,
+  fromDate = '',
+  toDate = ''
 ) => {
   dispatch({ type: 'LOADING' });
   try {
-    const result = await Timestamps.getTimestamps(
+    const result = await Timestamps.getAllTimestamps(
+      pageSize,
+      pageNumber,
+      fromDate,
+      toDate
+    );
+    const pagination = JSON.parse(result.headers['x-pagination']);
+    dispatch({
+      type: 'LOAD_TIMESTAMPS',
+      payload: result.data,
+      pagination: pagination,
+    });
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+const getUserTimestamps = async (
+  dispatch,
+  username,
+  pageSize,
+  pageNumber = 1,
+  fromDate = '',
+  toDate = ''
+) => {
+  dispatch({ type: 'LOADING' });
+  try {
+    const result = await Timestamps.getUserTimestamps(
       username,
       pageSize,
-      pageNumber
+      pageNumber,
+      fromDate,
+      toDate
     );
 
     dispatch({
@@ -56,6 +87,7 @@ const clearJobsiteTimestamps = (dispatch) => {
 };
 
 export {
+  getAllTimestamps,
   getUserTimestamps,
   getJobsiteTimestampsByUser,
   clearJobsiteTimestamps,
