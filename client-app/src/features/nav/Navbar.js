@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Container, Dropdown, Image, Menu } from 'semantic-ui-react';
+import { Container, Dropdown, Image, Menu } from 'semantic-ui-react';
 import { Link, NavLink } from 'react-router-dom';
 import {
   useAuthDispatch,
@@ -23,27 +23,9 @@ const Navbar = () => {
             />
             <Link to='/'>Payroll</Link>
           </Menu.Item>
-          <Menu.Item>
-            <Button positive as={NavLink} to='/register'>
-              Register
-            </Button>
-          </Menu.Item>
           <Menu.Item name='Jobsites' as={NavLink} to='/jobsites' />
-          <Menu.Item>
-            <Link to='/timestamps/user'>User Timestamps</Link>
-          </Menu.Item>
-          <Menu.Item>
-            <Link to='/employees'>Employees</Link>
-          </Menu.Item>
-          <Menu.Item>
-            <Link to='/employees/ClockedIn'>Clocked In</Link>
-          </Menu.Item>
-          <Menu.Item>
-            <Link to='/employees/payroll'>Payroll</Link>
-          </Menu.Item>
-          <Menu.Item>
-            <Link to='/timestamps'>All Timestamps</Link>
-          </Menu.Item>
+          <Menu.Item name='Timestamps' as={NavLink} to='/timestamps' />
+          <Menu.Item name='Employees' as={NavLink} to='/employees' />
           {user && (
             <Menu.Item position='right'>
               <Image
@@ -53,12 +35,6 @@ const Navbar = () => {
               />
               <Dropdown pointing='top left' text={user.displayName}>
                 <Dropdown.Menu>
-                  <Dropdown.Item
-                    as={Link}
-                    to={`/profile/username`}
-                    text='My profile'
-                    icon='user'
-                  />
                   <Dropdown.Item
                     onClick={() => logoutUser(authDispatch)}
                     text='Logout'

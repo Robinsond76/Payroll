@@ -1,17 +1,25 @@
 import React, { Fragment, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Pagination } from 'semantic-ui-react';
+import { Pagination, Button, Divider } from 'semantic-ui-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Jobsites } from '../../app/api/agent';
 import { useTimestampState } from '../../app/context/timestamps/timestampContext';
-import JobsiteHistoryTable from './JobsiteHistoryTable';
+import JobsiteHistoryTable from '../tables/JobsiteHistoryTable';
 import FilterDateForm from '../../app/layout/FilterDateForm';
 
-const JobsiteHistory = ({ moniker, pageSize }) => {
+import { openModal } from '../../app/context/modal/modalActions';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
+import ConfirmDelete from '../../app/layout/ConfirmDelete';
+
+const JobsiteHistory = ({ match }) => {
+  const moniker = match.params.moniker;
   const { fromDate, toDate } = useTimestampState();
+  const modalDispatch = useModalDispatch();
+
   const [jobsite, setJobsite] = React.useState(null);
   const [pagination, setPagination] = React.useState('');
   const pageOne = 1;
+  const pageSize = 3;
 
   const loadJobsiteTimestamps = useCallback(
     async (activePage) => {
@@ -41,6 +49,19 @@ const JobsiteHistory = ({ moniker, pageSize }) => {
       <h2>
         {jobsite && jobsite.name} - {jobsite && jobsite.moniker}
       </h2>
+
+      <Button as={Link} to={`${moniker}/edit`}>
+        Edit Jobsite
+      </Button>
+      <Button
+        onClick={() =>
+          openModal(<ConfirmDelete moniker={moniker} />, modalDispatch)
+        }
+      >
+        Delete Jobsite
+      </Button>
+      <Divider />
+
       <p>All employees who clocked into this location:</p>
       <ul>
         {jobsite &&

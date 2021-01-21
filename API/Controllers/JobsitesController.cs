@@ -180,10 +180,14 @@ namespace API.Controllers
         {
             try
             {
-                var oldJobsite = await _repository.GetJobsiteAsync(moniker);
-                if (oldJobsite == null) return NotFound($"Could not find jobsite with moniker of {moniker}");
+                var jobsite = await _repository.GetJobsiteAsync(moniker);
+                if (jobsite == null) return NotFound($"Could not find jobsite with moniker of {moniker}");
 
-                _repository.Delete(oldJobsite);
+                //confirm nobody is currently clocked in at jobsite
+                var anyoneClockedIn = await _timestampRepository.JobsiteHasClockedInTimestamp(jobsite);
+                if (anyoneClockedIn) return BadRequest($"Cannot delete jobsite {moniker} - There are users clocked in.");
+
+                _repository.Delete(jobsite);
 
                 if (await _repository.SaveChangesAsync())
                     return Ok("Jobsite deleted.");

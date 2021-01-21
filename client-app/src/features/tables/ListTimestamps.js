@@ -14,7 +14,7 @@ import {
   useTimestampDispatch,
 } from '../../app/context/timestamps/timestampContext';
 
-const ListTimestamps = ({ pageSize, username }) => {
+const ListTimestamps = ({ pageSize, username, showEditDelete = false }) => {
   const pageOne = 1;
 
   const tDispatch = useTimestampDispatch();
@@ -59,6 +59,7 @@ const ListTimestamps = ({ pageSize, username }) => {
       <TimestampTable
         timestamps={timestamps}
         forOneUser={username ? true : false}
+        showEditDelete={showEditDelete}
       />
       {timestampPagination && (
         <Pagination

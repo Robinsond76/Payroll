@@ -11,7 +11,6 @@ namespace Payroll.Data.Interfaces
 {
     public interface ITimestampRepository
     {
-        public Task<Timestamp> GetClockedInTimestamp(AppUser user);
         public Task<bool> ClockIn(Jobsite jobsite, AppUser user);
         public Task<bool> ClockInLunch(AppUser user);
         public Task<bool> ClockOut(AppUser user);
@@ -24,6 +23,8 @@ namespace Payroll.Data.Interfaces
         public Task<PagedList<Timestamp>> GetTimestampsForUserByDate(AppUser user, TimestampParameters timestampParameters);
         public Task<ICollection<Timestamp>> GetTimestampsForUserByWorkDate(AppUser user, WorkHistoryParameters workHistoryParameters);
         public Task<PagedList<Timestamp>> GetTimestampsForJobByDate(Jobsite jobsite, TimestampParameters timestampParameters);
+        public Task<Timestamp> GetClockedInTimestamp(AppUser user);
+        public Task<bool> JobsiteHasClockedInTimestamp(Jobsite jobsite);
         public Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn();
         public Task<Timestamp> GetUsersLastTimestamp(AppUser user);
     }

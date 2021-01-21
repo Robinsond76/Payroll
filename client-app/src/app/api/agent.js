@@ -23,6 +23,11 @@ const requests = {
 };
 
 const Jobsites = {
+  getJobsite: (moniker) => requests.get(`/jobsites/${moniker}`),
+  addJobsite: (jobsite) => requests.post('/jobsites', jobsite),
+  editJobsite: (moniker, jobsite) =>
+    requests.put(`/jobsites/${moniker}`, jobsite),
+  deleteJobsite: (moniker) => requests.del(`/jobsites/${moniker}`),
   listJobsites: (query, pageSize, pageNumber) =>
     axios.get(
       `/jobsites/search?q=${query}&pagesize=${pageSize}&pagenumber=${pageNumber}`

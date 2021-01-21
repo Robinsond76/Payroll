@@ -3,7 +3,11 @@ import { Table } from 'semantic-ui-react';
 import { format, intervalToDuration } from 'date-fns';
 import { Link } from 'react-router-dom';
 
-const TimestampsTable = ({ timestamps, forOneUser = false }) => {
+const TimestampsTable = ({
+  timestamps,
+  forOneUser = false,
+  showEditDelete = false,
+}) => {
   return (
     <Table padded size='small' celled selectable>
       <Table.Header>
@@ -15,6 +19,7 @@ const TimestampsTable = ({ timestamps, forOneUser = false }) => {
           <Table.HeaderCell>Clocked In</Table.HeaderCell>
           <Table.HeaderCell>Clocked Out</Table.HeaderCell>
           <Table.HeaderCell>Time Worked</Table.HeaderCell>
+          {showEditDelete && <Table.HeaderCell>Manage</Table.HeaderCell>}
         </Table.Row>
       </Table.Header>
       <Table.Body>
@@ -32,16 +37,9 @@ const TimestampsTable = ({ timestamps, forOneUser = false }) => {
           return (
             <Table.Row key={timestamp.clockedInStamp}>
               <Table.Cell>
-                {' '}
-                {forOneUser ? (
-                  <Link to={`/timestamps/user/${timestamp.moniker}`}>
-                    {timestamp.moniker}
-                  </Link>
-                ) : (
-                  <Link to={`/jobsites/${timestamp.moniker}`}>
-                    {timestamp.moniker}
-                  </Link>
-                )}
+                <Link to={`/jobsites/${timestamp.moniker}`}>
+                  {timestamp.moniker}
+                </Link>
               </Table.Cell>
               <Table.Cell>{timestamp.jobsite}</Table.Cell>
               <Table.Cell>{date}</Table.Cell>
@@ -52,6 +50,11 @@ const TimestampsTable = ({ timestamps, forOneUser = false }) => {
                 {duration.days}:{duration.hours}:{duration.minutes}:
                 {duration.seconds}
               </Table.Cell>
+              {showEditDelete && (
+                <Table.Cell>
+                  <Link to={'/'}>Edit</Link> | <Link to={'/'}>Delete</Link>
+                </Table.Cell>
+              )}
             </Table.Row>
           );
         })}

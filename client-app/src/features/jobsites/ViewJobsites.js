@@ -1,9 +1,10 @@
 import React, { Fragment } from 'react';
-import { Header, Input, Form } from 'semantic-ui-react';
+import { Header, Input, Form, Button, Divider } from 'semantic-ui-react';
 import ListJobsites from '../tables/ListJobsites';
 
 import { getJobsites } from '../../app/context/jobsites/jobsiteActions';
 import { useJobsiteDispatch } from '../../app/context/jobsites/jobsiteContext';
+import { Link } from 'react-router-dom';
 
 const ViewJobsites = () => {
   const jobsiteDispatch = useJobsiteDispatch();
@@ -21,6 +22,12 @@ const ViewJobsites = () => {
   return (
     <Fragment>
       <Header as='h2' icon='map' content='Jobsites' />
+
+      <Button as={Link} to='jobsites/create'>
+        Add New Jobsite
+      </Button>
+
+      <Divider />
 
       <Form onSubmit={() => searchJobsites(query)}>
         <Input

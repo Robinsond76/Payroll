@@ -17,6 +17,7 @@ namespace Payroll.Data.Models
         [MaxLength(6)]
         public string Moniker { get; set; }
 
+        [Required]
         public LocationDto Location { get; set; }
     }
 }

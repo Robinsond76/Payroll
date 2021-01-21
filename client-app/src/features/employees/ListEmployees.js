@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Pagination, Table } from 'semantic-ui-react';
+import { Divider, Pagination, Table } from 'semantic-ui-react';
 import { User } from '../../app/api/agent';
+import { Button } from 'semantic-ui-react';
 
 const ListEmployees = () => {
   const [users, setUsers] = React.useState([]);
@@ -23,6 +24,12 @@ const ListEmployees = () => {
   return (
     <Fragment>
       <h2>Employees</h2>
+
+      <Button as={Link} to='employees/register'>
+        Add New Employee
+      </Button>
+
+      <Divider />
 
       <Table selectable celled>
         <Table.Header>

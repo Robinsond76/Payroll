@@ -115,6 +115,14 @@ namespace Payroll.Data.Services
                 .SingleOrDefaultAsync(
                 t => t.AppUserId == user.Id && t.ClockedIn == true);
         }
+        
+        public async Task<bool> JobsiteHasClockedInTimestamp(Jobsite jobsite)
+        {
+            return await _db.Timestamps
+                .Include(t => t.Jobsite)
+                .AnyAsync(
+                t => t.Jobsite == jobsite && t.ClockedIn == true);
+        }
 
         public async Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn()
         {

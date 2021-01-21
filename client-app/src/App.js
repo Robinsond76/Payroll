@@ -17,7 +17,7 @@ import NotFound from './app/layout/NotFound';
 import ViewUserTimestamps from './features/timestamps/ViewUserTimestamps';
 import UserJobsiteTimestamps from './features/jobsites/UserJobsiteTimestamps';
 import ClockedIn from './features/employees/ClockedIn';
-import JobsiteInfo from './features/jobsites/JobsiteInfo';
+import JobsiteHistory from './features/jobsites/JobsiteHistory';
 import ListEmployees from './features/employees/ListEmployees';
 import ViewEmployee from './features/employees/ViewEmployee';
 import Homepage from './features/home/Homepage';
@@ -25,17 +25,20 @@ import EmployeeJobsite from './features/employees/EmployeeJobsite';
 import Payroll from './features/employees/Payroll';
 import EmployeeWorkHistory from './features/employees/EmployeeWorkHistory';
 import ViewAllTimestamps from './features/timestamps/ViewAllTimestamps';
+import AddJobsite from './features/jobsites/AddJobsite';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
   const token = window.localStorage.getItem('token');
+  const [isLoaded, setIsLoaded] = React.useState(false);
 
   //get user if logged in
   useEffect(() => {
-    if (token) {
+    if (token && isLoaded === false) {
       loadUser(authDispatch);
+      setIsLoaded(true);
     }
-  }, [token, authDispatch]);
+  }, [token, authDispatch, isLoaded]);
 
   return (
     <Fragment>
@@ -60,8 +63,18 @@ const App = () => {
                       />
                       <PrivateRoute
                         exact
+                        path='/jobsites/create'
+                        component={AddJobsite}
+                      />
+                      <PrivateRoute
+                        exact
+                        path='/jobsites/:moniker/edit'
+                        component={AddJobsite}
+                      />
+                      <PrivateRoute
+                        exact
                         path='/jobsites/:moniker'
-                        component={JobsiteInfo}
+                        component={JobsiteHistory}
                       />
                       <PrivateRoute
                         exact
@@ -70,7 +83,7 @@ const App = () => {
                       />
                       <PrivateRoute
                         exact
-                        path='/register'
+                        path='/employees/register'
                         component={RegisterForm}
                       />
                       <PrivateRoute
