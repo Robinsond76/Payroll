@@ -7,6 +7,7 @@ import { registerUser } from '../../app/context/auth/authActions';
 import { FORM_ERROR } from 'final-form';
 import { combineValidators, isRequired } from 'revalidate';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
 
 const validate = combineValidators({
   username: isRequired('Username'),
@@ -15,13 +16,16 @@ const validate = combineValidators({
   password: isRequired('password'),
 });
 
-const RegisterForm = () => {
+const AddEmployee = () => {
+  const modalDispatch = useModalDispatch();
   const authDispatch = useAuthDispatch();
 
   const handleFinalFormSubmit = (values) =>
-    registerUser(values, authDispatch).catch((error) => ({
-      [FORM_ERROR]: error.response,
-    }));
+    registerUser(values, authDispatch)
+      .then(() => modalDispatch({ type: 'CLOSE_MODAL' }))
+      .catch((error) => ({
+        [FORM_ERROR]: error,
+      }));
 
   return (
     <Fragment>
@@ -35,6 +39,7 @@ const RegisterForm = () => {
           invalid,
           pristine,
           dirtySinceLastSubmit,
+          form,
         }) => (
           <Form onSubmit={handleSubmit} error>
             <Header
@@ -78,4 +83,4 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;
+export default AddEmployee;

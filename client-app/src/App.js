@@ -11,7 +11,6 @@ import PrivateRoute from './app/layout/PrivateRoute';
 //components
 import Navbar from './features/nav/Navbar.js';
 import ViewJobsites from './features/jobsites/ViewJobsites';
-import RegisterForm from './features/user/RegisterForm';
 import ModalContainer from './app/common/modals/ModalContainer';
 import NotFound from './app/layout/NotFound';
 import ViewUserTimestamps from './features/timestamps/ViewUserTimestamps';
@@ -25,7 +24,6 @@ import EmployeeJobsite from './features/employees/EmployeeJobsite';
 import Payroll from './features/employees/Payroll';
 import EmployeeWorkHistory from './features/employees/EmployeeWorkHistory';
 import ViewAllTimestamps from './features/timestamps/ViewAllTimestamps';
-import AddJobsite from './features/jobsites/AddJobsite';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -63,16 +61,6 @@ const App = () => {
                       />
                       <PrivateRoute
                         exact
-                        path='/jobsites/create'
-                        component={AddJobsite}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/jobsites/:moniker/edit'
-                        component={AddJobsite}
-                      />
-                      <PrivateRoute
-                        exact
                         path='/jobsites/:moniker'
                         component={JobsiteHistory}
                       />
@@ -80,11 +68,6 @@ const App = () => {
                         exact
                         path='/jobsites/:moniker/:username'
                         component={EmployeeJobsite}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/employees/register'
-                        component={RegisterForm}
                       />
                       <PrivateRoute
                         exact

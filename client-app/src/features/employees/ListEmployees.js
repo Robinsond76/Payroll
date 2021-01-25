@@ -4,9 +4,14 @@ import { Divider, Pagination, Table } from 'semantic-ui-react';
 import { User } from '../../app/api/agent';
 import { Button } from 'semantic-ui-react';
 
+import { openModal } from '../../app/context/modal/modalActions';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
+import AddEmployee from './AddEmployee';
+
 const ListEmployees = () => {
   const [users, setUsers] = React.useState([]);
   const [pagination, setPagination] = React.useState(0);
+  const modalDispatch = useModalDispatch();
 
   React.useEffect(() => {
     User.getUsers(3, 1).then((result) => {
@@ -25,8 +30,15 @@ const ListEmployees = () => {
     <Fragment>
       <h2>Employees</h2>
 
-      <Button as={Link} to='employees/register'>
+      <Button
+        color='green'
+        onClick={() => openModal(<AddEmployee />, modalDispatch)}
+      >
         Add New Employee
+      </Button>
+
+      <Button color='teal' as={Link} to={'/employees/clockedin'}>
+        Currently Clocked In
       </Button>
 
       <Divider />

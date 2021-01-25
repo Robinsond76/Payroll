@@ -25,6 +25,7 @@ namespace Payroll.Data.Profiles
 
             //users
             CreateMap<UserRegisterDto, AppUser>();
+            CreateMap<UserUpdateDto, AppUser>().ReverseMap();
             CreateMap<AppUser, UserInfoDto>();
             CreateMap<AppUser, UserInfoWithTimestampsDto>();
             CreateMap<AppUser, UserInfoWithHoursWorkedDto>();

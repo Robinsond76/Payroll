@@ -221,5 +221,17 @@ namespace Payroll.Data.Services
 
             return await query.ToListAsync();
         }
+
+        public async Task<bool> DeleteAllUserTimestamps(AppUser user)
+        {
+            var query = await _db.Timestamps
+                            .Include(t => t.AppUser)
+                            .Where(t => t.AppUser == user)
+                            .ToListAsync();
+
+             _db.RemoveRange(query);
+
+            return (await _db.SaveChangesAsync()) > 0;
+        }
     }
 }

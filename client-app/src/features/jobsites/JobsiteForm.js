@@ -7,6 +7,8 @@ import TextInput from '../../app/common/form/TextInput';
 import { combineValidators, isRequired } from 'revalidate';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
 import { history } from '../..';
+import { FORM_ERROR } from 'final-form';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
 
 const validate = combineValidators({
   name: isRequired('name'),
@@ -18,8 +20,8 @@ const validate = combineValidators({
   country: isRequired('country'),
 });
 
-const AddJobsite = ({ match }) => {
-  const moniker = match.params.moniker;
+const JobsiteForm = ({ moniker }) => {
+  const modalDispatch = useModalDispatch();
   const [loading, setLoading] = React.useState(false);
   const [jobsite, setJobsite] = React.useState({
     name: '',
@@ -44,7 +46,7 @@ const AddJobsite = ({ match }) => {
     }
   }, [moniker]);
 
-  const handleFinalFormSubmit = (values) => {
+  const handleFinalFormSubmit = async (values) => {
     const formValues = {
       name: values.name,
       moniker: values.moniker,
@@ -58,14 +60,20 @@ const AddJobsite = ({ match }) => {
         country: values.country,
       },
     };
-    if (moniker) {
-      Jobsites.editJobsite(moniker, formValues).then((res) => {
-        history.push('/jobsites');
-      });
-    } else {
-      Jobsites.addJobsite(formValues).then((res) => {
-        history.push('/jobsites');
-      });
+    try {
+      if (moniker) {
+        const editedJobsite = await Jobsites.editJobsite(moniker, formValues);
+        modalDispatch({ type: 'CLOSE_MODAL' });
+        history.push(`/jobsites/${editedJobsite.moniker}`);
+      } else {
+        const newJobsite = await Jobsites.addJobsite(formValues);
+        modalDispatch({ type: 'CLOSE_MODAL' });
+        history.push(`/jobsites/${newJobsite.moniker}`);
+      }
+    } catch (error) {
+      return {
+        [FORM_ERROR]: error,
+      };
     }
   };
 
@@ -76,7 +84,7 @@ const AddJobsite = ({ match }) => {
       <Divider />
 
       <FinalForm
-        onSubmit={handleFinalFormSubmit}
+        onSubmit={(values) => handleFinalFormSubmit(values)}
         validate={validate}
         initialValues={jobsite}
         render={({
@@ -169,4 +177,4 @@ const AddJobsite = ({ match }) => {
   );
 };
 
-export default AddJobsite;
+export default JobsiteForm;

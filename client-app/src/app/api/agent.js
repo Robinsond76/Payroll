@@ -1,4 +1,5 @@
 import axios from 'axios';
+// import { history } from '../..';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -12,6 +13,31 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+//for error messages
+axios.interceptors.response.use(undefined, (error) => {
+  // if (error.message === 'Network Error' && !error.response) {
+  //   console('Network error - confirm API is running');
+  // }
+  // console.log(error);
+  // const { status, data, config } = error.response;
+  // if (status === 404) {
+  //   history.push('/notfound');
+  // }
+  // if (
+  //   status === 400 &&
+  //   config.method === 'get' &&
+  //   data.errors.hasOwnProperty('id')
+  // ) {
+  //   history.push('/notfound');
+  // }
+
+  // if (status === 500) {
+  //   console.log('Server error - check the terminal for more info!');
+  // }
+
+  throw error.response;
+});
 
 const responseBody = (response) => response.data;
 
@@ -104,6 +130,10 @@ const User = {
   clockOut: (moniker) => requests.post(`/jobsites/${moniker}/clockout`),
   getUsers: (pageSize, pageNumber) =>
     axios.get(`/users?pagesize=${pageSize}&pagenumber=${pageNumber}`),
+  getUser: (username) => requests.get(`/user/${username}`),
+  updateUser: (username, updatedUser) =>
+    requests.put(`/user/${username}`, updatedUser),
+  deleteUser: (username) => requests.del(`/user/${username}`),
 };
 
 export { Jobsites, User, Timestamps };

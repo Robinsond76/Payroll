@@ -2,34 +2,42 @@ import React, { Fragment } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Button, Form, Header } from 'semantic-ui-react';
 import TextInput from '../../app/common/form/TextInput';
-import { useAuthDispatch } from '../../app/context/auth/authContext';
-import { loginUser } from '../../app/context/auth/authActions';
-import { FORM_ERROR } from 'final-form';
 import { combineValidators, isRequired } from 'revalidate';
+import { User } from '../../app/api/agent';
+import { FORM_ERROR } from 'final-form';
+
 import ErrorMessage from '../../app/common/form/ErrorMessage';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
+import { history } from '../..';
 
 const validate = combineValidators({
-  email: isRequired('email'),
-  password: isRequired('password'),
+  username: isRequired('Username'),
+  displayName: isRequired('Display Name'),
+  email: isRequired('Email'),
 });
 
-const LoginForm = () => {
-  const authDispatch = useAuthDispatch();
+const EditEmployee = ({ username }) => {
   const modalDispatch = useModalDispatch();
+  const [employee, setEmployee] = React.useState({});
+
+  React.useEffect(() => {
+    User.getUser(username).then((result) => setEmployee(result));
+  }, [username]);
 
   const handleFinalFormSubmit = (values) =>
-    loginUser(values, authDispatch)
-      .then(() => modalDispatch({ type: 'CLOSE_MODAL' }))
-      .catch((error) => ({
-        [FORM_ERROR]: error,
-      }));
+    User.updateUser(username, values)
+      .then((result) => {
+        modalDispatch({ type: 'CLOSE_MODAL' });
+        history.push('/employees');
+      })
+      .catch((error) => ({ [FORM_ERROR]: error }));
 
   return (
     <Fragment>
       <FinalForm
         onSubmit={handleFinalFormSubmit}
         validate={validate}
+        initialValues={employee}
         render={({
           handleSubmit,
           submitting,
@@ -37,22 +45,33 @@ const LoginForm = () => {
           invalid,
           pristine,
           dirtySinceLastSubmit,
-          form,
         }) => (
           <Form onSubmit={handleSubmit} error>
             <Header
               as='h2'
-              content='Login to Payroll App'
+              content='Edit employee'
               color='teal'
               textAlign='center'
             />
-            <Field name='email' component={TextInput} placeholder='Email' />
             <Field
-              name='password'
+              name='username'
               component={TextInput}
-              placeholder='Password'
-              type='password'
+              placeholder='Username'
+              value={employee.username}
             />
+            <Field
+              name='displayName'
+              component={TextInput}
+              placeholder='Display Name'
+              value={employee.displayName}
+            />
+            <Field
+              name='email'
+              component={TextInput}
+              placeholder='Email'
+              value={employee.email}
+            />
+
             {submitError && !dirtySinceLastSubmit && (
               <ErrorMessage error={submitError} />
             )}
@@ -60,10 +79,9 @@ const LoginForm = () => {
               disabled={(invalid && !dirtySinceLastSubmit) || pristine}
               loading={submitting}
               color='teal'
-              content='Login'
+              content='Submit'
               fluid
             />
-            {/* <pre>{JSON.stringify(form.getState(), null, 2)}</pre> */}
           </Form>
         )}
       />
@@ -71,4 +89,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default EditEmployee;

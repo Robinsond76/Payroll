@@ -13,6 +13,8 @@ using Payroll.Data.Services;
 using Payroll.Data.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
+using System.Net;
+using Payroll.Data.Errors;
 
 namespace API.Controllers
 {
@@ -141,7 +143,7 @@ namespace API.Controllers
                 //if (exists != null) return BadRequest("Job moniker already exists.");
 
                 var exists = await _repository.JobsiteExistsAsync(model.Moniker);
-                if (exists) return BadRequest("Job moniker already exists.");
+                if (exists) return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Moniker = $"Job moniker {model.Moniker} already exists" }));
 
                 var jobsite = _mapper.Map<Jobsite>(model);
                 _repository.Add(jobsite);
@@ -160,13 +162,16 @@ namespace API.Controllers
         {
             try
             {
-                var oldJobsite = await _repository.GetJobsiteAsync(moniker);
-                if (oldJobsite == null) return NotFound($"Could not find jobsite with moniker of {moniker}");
+                var jobsite = await _repository.GetJobsiteAsync(moniker);
+                if (jobsite == null) return NotFound($"Could not find jobsite with moniker of {moniker}");
 
-                _mapper.Map(model, oldJobsite);
+                var exists = await _repository.JobsiteExistsAsync(model.Moniker);
+                if (exists) return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Moniker = $"Job moniker {model.Moniker} already exists" }));
+
+                _mapper.Map(model, jobsite);
 
                 if (await _repository.SaveChangesAsync())
-                    return _mapper.Map<JobsiteDto>(oldJobsite);
+                    return _mapper.Map<JobsiteDto>(jobsite);
             }
             catch (Exception)
             {

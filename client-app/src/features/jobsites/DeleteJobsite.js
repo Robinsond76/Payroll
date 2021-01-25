@@ -4,7 +4,7 @@ import { Jobsites } from '../../app/api/agent';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { history } from '../..';
 
-const ConfirmDelete = ({ moniker }) => {
+const DeleteJobsite = ({ moniker }) => {
   const modalDispatch = useModalDispatch();
 
   const onDelete = () => {
@@ -43,4 +43,4 @@ const ConfirmDelete = ({ moniker }) => {
   );
 };
 
-export default ConfirmDelete;
+export default DeleteJobsite;

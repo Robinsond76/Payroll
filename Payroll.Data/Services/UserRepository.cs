@@ -28,15 +28,6 @@ namespace Payroll.Data.Services
             _db = db;
         }
 
-        public async Task<bool> EmailExists(string email)
-        {
-            return await _db.Users.AnyAsync(user => user.Email == email);
-        }
-
-        public async Task<bool> UsernameExists(string username)
-        {
-            return await _db.Users.AnyAsync(user => user.UserName == username);
-        }
 
         public async Task<AppUser> GetUser(string username, bool withTimestamps = false)
         {
@@ -57,6 +48,16 @@ namespace Payroll.Data.Services
             return await _userManager.FindByEmailAsync(email);
         }
 
+        public async Task<bool> EmailExists(string email)
+        {
+            return await _db.Users.AnyAsync(user => user.Email == email);
+        }
+
+        public async Task<bool> UsernameExists(string username)
+        {
+            return await _db.Users.AnyAsync(user => user.UserName == username);
+        }
+        
         public async Task<bool> ConfirmPassword(AppUser user, string password)
         {
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
@@ -84,6 +85,30 @@ namespace Payroll.Data.Services
                 query, 
                 pageParameters.PageNumber, 
                 pageParameters.PageSize);
+        }
+
+        public async Task<bool> DeleteUser(AppUser user)
+        {
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+                return true;
+            //else
+            return false;
+        }
+
+        public async Task<bool> UpdateUser(AppUser user)
+        {
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+                return true;
+            //else
+            return false;
+        }
+
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return (await _db.SaveChangesAsync()) > 0;
         }
     }
 }

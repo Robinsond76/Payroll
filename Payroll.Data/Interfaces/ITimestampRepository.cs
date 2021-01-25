@@ -27,5 +27,6 @@ namespace Payroll.Data.Interfaces
         public Task<bool> JobsiteHasClockedInTimestamp(Jobsite jobsite);
         public Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn();
         public Task<Timestamp> GetUsersLastTimestamp(AppUser user);
+        public Task<bool> DeleteAllUserTimestamps(AppUser user);
     }
 }

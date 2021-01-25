@@ -1,12 +1,15 @@
 import React, { Fragment } from 'react';
 import { Header, Input, Form, Button, Divider } from 'semantic-ui-react';
 import ListJobsites from '../tables/ListJobsites';
+import { openModal } from '../../app/context/modal/modalActions';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
+import JobsiteForm from './JobsiteForm';
 
 import { getJobsites } from '../../app/context/jobsites/jobsiteActions';
 import { useJobsiteDispatch } from '../../app/context/jobsites/jobsiteContext';
-import { Link } from 'react-router-dom';
 
 const ViewJobsites = () => {
+  const modalDispatch = useModalDispatch();
   const jobsiteDispatch = useJobsiteDispatch();
   const [query, setQuery] = React.useState('');
   const pageSize = 3;
@@ -23,7 +26,10 @@ const ViewJobsites = () => {
     <Fragment>
       <Header as='h2' icon='map' content='Jobsites' />
 
-      <Button as={Link} to='jobsites/create'>
+      <Button
+        color='green'
+        onClick={() => openModal(<JobsiteForm />, modalDispatch)}
+      >
         Add New Jobsite
       </Button>
 

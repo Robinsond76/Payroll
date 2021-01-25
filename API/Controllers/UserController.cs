@@ -114,6 +114,61 @@ namespace API.Controllers
             return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: failed to save");
 
         }
+        
+        [HttpPut("{username}")]
+        public async Task<ActionResult<UserUpdateDto>> UpdateUser(string username, UserUpdateDto userUpdateValues)
+        {
+            try
+            {
+                var user = await _userRepository.GetUser(username);
+                //if user not found
+                if (user == null)
+                    return NotFound($"Username {username} not found.");
+
+                //validate just like in register
+                //email
+                if (await _userRepository.EmailExists(userUpdateValues.Email))
+                    return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Email = "Email already exists" }));
+
+                //username
+                if (await _userRepository.UsernameExists(userUpdateValues.Username))
+                    return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Username = "This username is already registered" }));
+
+
+                _mapper.Map(userUpdateValues, user);
+
+                if (await _userRepository.UpdateUser(user))
+                    return _mapper.Map<UserUpdateDto>(user);
+            }
+            catch (Exception err)
+            {
+                throw err;
+                //return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to edit user");
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete("{username}")]
+        public async Task<IActionResult> DeleteUser(string username)
+        {
+            try
+            {
+                var user = await _userRepository.GetUser(username);
+                //if user not found
+                if (user == null)
+                    return NotFound($"Username {username} not found.");
+
+
+                await _timestampRepository.DeleteAllUserTimestamps(user);
+
+                await _userRepository.DeleteUser(user);
+                return Ok($"{username} deleted.");
+
+            } catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to communicate with database");
+            }
+        }
 
         [HttpGet]
         public async Task<UserDto> GetLoggedInUser()
@@ -146,7 +201,7 @@ namespace API.Controllers
 
         //Get's a user's display name, user name and login status
         [HttpGet("{username}")]
-        public async Task<IActionResult> CurrentUserInfo(string username)
+        public async Task<IActionResult> GetUser(string username)
         {
             try
             {

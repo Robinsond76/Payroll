@@ -16,6 +16,9 @@ namespace Payroll.Data.Interfaces
         Task<AppUser> GetUserByEmail(string email);
         Task<bool> ConfirmPassword(AppUser user, string password);
         Task<bool> SaveNewUser(AppUser user, string password);
+        Task<bool> DeleteUser(AppUser user);
+        Task<bool> SaveChangesAsync();
+        Task<bool> UpdateUser(AppUser user);
 
         Task<AppUser> GetUser(string username, bool withTimestamps = false);
         Task<PagedList<AppUser>> GetAllUsers(PageParameters pageParameters);

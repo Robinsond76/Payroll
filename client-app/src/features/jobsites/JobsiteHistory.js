@@ -9,7 +9,8 @@ import FilterDateForm from '../../app/layout/FilterDateForm';
 
 import { openModal } from '../../app/context/modal/modalActions';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
-import ConfirmDelete from '../../app/layout/ConfirmDelete';
+import JobsiteForm from './JobsiteForm';
+import DeleteJobsite from './DeleteJobsite';
 
 const JobsiteHistory = ({ match }) => {
   const moniker = match.params.moniker;
@@ -50,12 +51,18 @@ const JobsiteHistory = ({ match }) => {
         {jobsite && jobsite.name} - {jobsite && jobsite.moniker}
       </h2>
 
-      <Button as={Link} to={`${moniker}/edit`}>
+      <Button
+        color='blue'
+        onClick={() =>
+          openModal(<JobsiteForm moniker={moniker} />, modalDispatch)
+        }
+      >
         Edit Jobsite
       </Button>
       <Button
+        color='red'
         onClick={() =>
-          openModal(<ConfirmDelete moniker={moniker} />, modalDispatch)
+          openModal(<DeleteJobsite moniker={moniker} />, modalDispatch)
         }
       >
         Delete Jobsite
