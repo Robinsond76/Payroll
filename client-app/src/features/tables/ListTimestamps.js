@@ -59,6 +59,7 @@ const ListTimestamps = ({ pageSize, username, showEditDelete = false }) => {
       <TimestampTable
         timestamps={timestamps}
         forOneUser={username ? true : false}
+        username={username}
         showEditDelete={showEditDelete}
       />
       {timestampPagination && (

@@ -2,12 +2,19 @@ import React from 'react';
 import { Table } from 'semantic-ui-react';
 import { format, intervalToDuration } from 'date-fns';
 import { Link } from 'react-router-dom';
+import TimestampForm from '../timestamps/TimestampForm';
+import { openModal } from '../../app/context/modal/modalActions';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
+import DeleteTimestamp from '../timestamps/DeleteTimestamp';
 
 const TimestampsTable = ({
   timestamps,
   forOneUser = false,
+  username = '',
   showEditDelete = false,
 }) => {
+  const modalDispatch = useModalDispatch();
+
   return (
     <Table padded size='small' celled selectable>
       <Table.Header>
@@ -52,7 +59,36 @@ const TimestampsTable = ({
               </Table.Cell>
               {showEditDelete && (
                 <Table.Cell>
-                  <Link to={'/'}>Edit</Link> | <Link to={'/'}>Delete</Link>
+                  <p>
+                    <span
+                      className='manage-edit'
+                      onClick={() =>
+                        openModal(
+                          <TimestampForm
+                            username={username}
+                            editTimestamp={timestamp}
+                          />,
+                          modalDispatch
+                        )
+                      }
+                    >
+                      Edit
+                    </span>{' '}
+                    |{' '}
+                    <span
+                      className='manage-delete'
+                      onClick={() =>
+                        openModal(
+                          <DeleteTimestamp
+                            timestampId={timestamp.timestampId}
+                          />,
+                          modalDispatch
+                        )
+                      }
+                    >
+                      Delete
+                    </span>
+                  </p>
                 </Table.Cell>
               )}
             </Table.Row>

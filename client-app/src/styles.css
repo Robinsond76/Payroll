@@ -6,6 +6,24 @@ body {
   background-color: #bf953f;
 }
 
+.manage-edit {
+  color: #4183c4;
+  cursor: pointer;
+}
+
+.manage-delete {
+  color: red;
+  cursor: pointer;
+}
+
+.margin-right-40 {
+  margin-right: 38px;
+}
+
+.ui.input {
+  width: 100%;
+}
+
 /*home page styles*/
 
 .masthead {

@@ -126,6 +126,7 @@ namespace API.Controllers
                     return NotFound($"Username {username} not found.");
 
                 //validate just like in register
+
                 //email
                 if (await _userRepository.EmailExists(userUpdateValues.Email))
                     return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Email = "Email already exists" }));

@@ -8,6 +8,7 @@ import JobsiteForm from './JobsiteForm';
 import { getJobsites } from '../../app/context/jobsites/jobsiteActions';
 import { useJobsiteDispatch } from '../../app/context/jobsites/jobsiteContext';
 
+// url: /jobsites
 const ViewJobsites = () => {
   const modalDispatch = useModalDispatch();
   const jobsiteDispatch = useJobsiteDispatch();
@@ -36,13 +37,15 @@ const ViewJobsites = () => {
       <Divider />
 
       <Form onSubmit={() => searchJobsites(query)}>
-        <Input
-          name='query'
-          value={query}
-          onChange={onChange}
-          action={{ icon: 'search' }}
-          placeholder='Search...'
-        />
+        <div className='margin-right-40'>
+          <Input
+            name='query'
+            value={query}
+            onChange={onChange}
+            action={{ icon: 'search' }}
+            placeholder='Search...'
+          />
+        </div>
       </Form>
 
       <ListJobsites query={query} pageSize={pageSize} />

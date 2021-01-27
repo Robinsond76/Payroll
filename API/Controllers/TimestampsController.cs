@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Payroll.Core;
+using Payroll.Data.Errors;
 using Payroll.Data.Helpers;
 using Payroll.Data.Interfaces;
 using Payroll.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -20,14 +22,70 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly ITimestampRepository _timestampRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IJobsiteRepository _jobsiteRepository;
 
         //constructor
-        public TimestampsController(IMapper imapper, ITimestampRepository timestampRepository, IUserRepository userRepository)
+        public TimestampsController(IMapper imapper, ITimestampRepository timestampRepository, IUserRepository userRepository, IJobsiteRepository jobsiteRepository)
         {
             _mapper = imapper;
             _timestampRepository = timestampRepository;
             _userRepository = userRepository;
+            _jobsiteRepository = jobsiteRepository;
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] TimestampNewDto timestampNewDto)
+        {
+            //get user
+            var user = await _userRepository.GetUser(timestampNewDto.Username);
+            if (user == null)
+                return NotFound(new RestError(HttpStatusCode.NotFound, new { User = $"User {timestampNewDto.Username} not found" }));
+
+            //get jobsite
+            var jobsite = await _jobsiteRepository.GetJobsiteAsync(timestampNewDto.Moniker);
+            if (jobsite == null)
+                return NotFound(new RestError(HttpStatusCode.NotFound, new { Jobsite = $"Jobsite {timestampNewDto.Moniker} not found" }));
+
+
+            if (await _timestampRepository.AddTimestamp(jobsite, user, timestampNewDto.ClockedInStamp, timestampNewDto.ClockedOutStamp))
+                return Ok("Successfully created new timestamp.");
+
+            return BadRequest();
+        }
+
+        [HttpDelete("{timestampId}")]
+        public async Task<IActionResult> Delete(int timestampId)
+        {
+
+            if (await _timestampRepository.DeleteTimestamp(timestampId))
+                return Ok("timestamp deleted");
+            //else
+            return NotFound(new RestError(HttpStatusCode.NotFound, new { Timestamp = $"Timestamp with id {timestampId} not found" }));
+        }
+
+        [HttpPut("{timestampId}")]
+        public async Task<IActionResult> Edit(int timestampId, [FromBody] TimestampEditDto timestampEditDto)
+        {
+            try
+            {
+                var timestamp = await _timestampRepository.GetTimestamp(timestampId);
+                if (timestamp == null)
+                    return NotFound(new RestError(HttpStatusCode.NotFound, new { Timestamp = $"Timestamp with id {timestampId} not found" }));
+
+                _mapper.Map(timestampEditDto, timestamp);
+
+                if (await _timestampRepository.SaveChangesAsync())
+                    return Ok($"Successfully edited timestamp {timestampId}");
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to communciate with server.");
+            }
+            
+            //else
+            return BadRequest();
+        }
+
 
         [HttpGet("info")]
         public async Task<ActionResult<object>> TimestampInfo()
@@ -80,7 +138,7 @@ namespace API.Controllers
                 if (user == null)
                     return NotFound($"Username {username} not found.");
 
-                //max 30 days
+                //max 45 days
                 var timestamps = await _timestampRepository.GetTimestampsForUserByWorkDate(user, workHistoryParameters);
                 //form custom DTO based on timestamps
                 var history = TimestampActions.GetUserWorkHistory(timestamps);
@@ -104,7 +162,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetWorkHistory(
             [FromQuery] WorkHistoryParameters workHistoryParameters)
         {
-            //max 30 days
+            //max 45 days
             var timestamps = await _timestampRepository.GetTimestamps(workHistoryParameters);
             //form custom DTO based on timestamps
             var history = TimestampActions.GetWorkHistory(timestamps);

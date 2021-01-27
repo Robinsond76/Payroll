@@ -37,8 +37,12 @@ const ListEmployees = () => {
         Add New Employee
       </Button>
 
-      <Button color='teal' as={Link} to={'/employees/clockedin'}>
-        Currently Clocked In
+      <Button as={Link} to={'/employees/clockedin'}>
+        Clocked In
+      </Button>
+
+      <Button as={Link} to={'/employees/payroll'}>
+        Payroll
       </Button>
 
       <Divider />

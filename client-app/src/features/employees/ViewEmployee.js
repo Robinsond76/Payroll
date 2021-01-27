@@ -6,6 +6,7 @@ import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { openModal } from '../../app/context/modal/modalActions';
 import EditEmployee from './EditEmployee';
 import DeleteEmployee from './DeleteEmployee';
+import TimestampForm from '../timestamps/TimestampForm';
 
 // /employees/:username
 const ViewEmployee = ({ match }) => {
@@ -18,7 +19,14 @@ const ViewEmployee = ({ match }) => {
     <Fragment>
       <h3>{username}'s Timestamps</h3>
 
-      <Button color='grey'>Add Timestamp</Button>
+      <Button
+        color='teal'
+        onClick={() =>
+          openModal(<TimestampForm username={username} />, modalDispatch)
+        }
+      >
+        Add Timestamp
+      </Button>
       <Button
         color='blue'
         onClick={() =>

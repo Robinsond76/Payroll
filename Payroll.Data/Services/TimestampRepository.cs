@@ -21,6 +21,43 @@ namespace Payroll.Data.Services
             _db = db;
         }
 
+        public async Task<bool> AddTimestamp(Jobsite jobsite, AppUser user, DateTime clockedIn, DateTime clockedOut)
+        {
+            var timestamp = new Timestamp
+            {
+                Jobsite = jobsite,
+                AppUser = user,
+                ClockedIn = false,
+                ClockedInStamp = clockedIn,
+                ClockedOutStamp = clockedOut
+                
+            };
+            _db.Timestamps.Add(timestamp);
+
+            return await _db.SaveChangesAsync() > 0;
+
+        }
+
+        public async Task<bool> DeleteTimestamp(int timestampId)
+        {
+            var timestamp = await _db.Timestamps.FirstOrDefaultAsync(t => t.TimestampId == timestampId);
+            if (timestamp != null)
+            {
+            _db.Timestamps.Remove(timestamp);
+            return await _db.SaveChangesAsync() > 0;
+            } else
+            {
+                return false;
+            }
+        }
+
+        public async Task<Timestamp> GetTimestamp(int timestampId)
+        {
+            //this is solely for the purpose of editing. There is no GetTimestamp route.
+            var timestamp = await _db.Timestamps.FirstOrDefaultAsync(t => t.TimestampId == timestampId);
+            return timestamp;            
+        }
+
         public async Task<bool> ClockIn(Jobsite jobsite, AppUser user)
         {
             var timestamp = new Timestamp
@@ -231,6 +268,11 @@ namespace Payroll.Data.Services
 
              _db.RemoveRange(query);
 
+            return (await _db.SaveChangesAsync()) > 0;
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
             return (await _db.SaveChangesAsync()) > 0;
         }
     }

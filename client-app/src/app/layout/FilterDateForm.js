@@ -6,7 +6,7 @@ import {
   useTimestampDispatch,
 } from '../context/timestamps/timestampContext';
 
-const FilterDateForm = () => {
+const FilterDateForm = ({ open = false }) => {
   const { fromDate, toDate } = useTimestampState();
   const timestampDispatch = useTimestampDispatch();
 
@@ -20,8 +20,9 @@ const FilterDateForm = () => {
   };
 
   React.useEffect(() => {
+    if (open) setActiveIndex(0);
     return timestampDispatch({ type: 'CLEAR_DATES' });
-  }, [timestampDispatch]);
+  }, [open, timestampDispatch]);
 
   const handleFromDate = (event, { name, value }) => {
     timestampDispatch({ type: 'SET_FROM_DATE', payload: value });

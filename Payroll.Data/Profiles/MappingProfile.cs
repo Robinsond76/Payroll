@@ -55,6 +55,7 @@ namespace Payroll.Data.Profiles
             CreateMap<Timestamp, TimestampWithBasicJobsiteInfoDto>()
                 .ForMember(t => t.Jobsite, o => o.MapFrom(e => e.Jobsite.Name))
                 .ForMember(t => t.Moniker, o => o.MapFrom(e => e.Jobsite.Moniker));
+            CreateMap<TimestampEditDto, Timestamp>();
         }
     }
 }

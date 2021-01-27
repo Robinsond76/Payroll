@@ -81,6 +81,10 @@ const Jobsites = {
 };
 
 const Timestamps = {
+  addTimestamp: (values) => requests.post('/timestamps', values),
+  editTimestamp: (timestampId, values) =>
+    requests.put(`/timestamps/${timestampId}`, values),
+  deleteTimestamp: (timestampId) => requests.del(`/timestamps/${timestampId}`),
   getUserTimestamps: (
     username,
     pageSize,
@@ -109,9 +113,20 @@ const Timestamps = {
     return axios.get(url + parameters);
   },
   getClockedInTimestamps: () => requests.get('/timestamps/clockedin'),
-  getWorkHistory: () => axios.get('/timestamps/workhistory?fromDate=01/01'),
-  getUserWorkHistory: (username) =>
-    axios.get(`/timestamps/workhistory/${username}?fromDate=01/01`),
+  getWorkHistory: (fromDate, toDate) => {
+    let url = `/timestamps/workhistory?`;
+    let parameters = '';
+    if (fromDate) parameters = `&fromDate=${fromDate}`;
+    if (toDate) parameters += `&toDate=${toDate}`;
+    return axios.get(url + parameters);
+  },
+  getUserWorkHistory: (username, fromDate, toDate) => {
+    let url = `/timestamps/workhistory/${username}?`;
+    let parameters = '';
+    if (fromDate) parameters = `&fromDate=${fromDate}`;
+    if (toDate) parameters += `&toDate=${toDate}`;
+    return axios.get(url + parameters);
+  },
   getAllTimestamps: (pageSize, pageNumber, fromDate = '', toDate = '') => {
     let url = `/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`;
     let parameters = '';

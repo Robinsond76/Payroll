@@ -7,8 +7,9 @@ namespace Payroll.Data.Models
 {
     public class TimestampWithJobsiteDto
     {
-        private String _totalTimeWorked = "test";
+        private string _totalTimeWorked;
 
+        public int TimestampId { get; set; }
         public string Jobsite { get; set; }
         public string Moniker { get; set; }
 
@@ -17,7 +18,7 @@ namespace Payroll.Data.Models
         public DateTime ClockedInStamp { get; set; }
         public DateTime LunchStamp { get; set; }
         public DateTime ClockedOutStamp { get; set; }
-        public String TotalTimeWorked { 
+        public string TotalTimeWorked { 
             get 
             {
                 TimeSpan timeWorked;
