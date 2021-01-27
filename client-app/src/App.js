@@ -24,6 +24,7 @@ import EmployeeJobsite from './features/employees/EmployeeJobsite';
 import Payroll from './features/employees/Payroll';
 import EmployeeWorkHistory from './features/employees/EmployeeWorkHistory';
 import ViewAllTimestamps from './features/timestamps/ViewAllTimestamps';
+import Refresh from './features/home/Refresh';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -109,6 +110,7 @@ const App = () => {
                         path='/employees/:username'
                         component={ViewEmployee}
                       />
+                      <PrivateRoute exact path='/refresh' component={Refresh} />
                       <PrivateRoute component={NotFound} />
                     </Switch>
                   </Container>

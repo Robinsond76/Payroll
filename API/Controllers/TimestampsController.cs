@@ -46,6 +46,14 @@ namespace API.Controllers
             if (jobsite == null)
                 return NotFound(new RestError(HttpStatusCode.NotFound, new { Jobsite = $"Jobsite {timestampNewDto.Moniker} not found" }));
 
+            //confirm clockedOutTimestamp is not passed Now
+            if (timestampNewDto.ClockedOutStamp > DateTime.Now)
+                return BadRequest(new RestError(HttpStatusCode.BadRequest, new { ClockedOutStamp = $"Clocked-Out time cannot be in the future." }));
+            
+            //confirm clockedInTimestamp is not passed clockedOutTimestamp
+            if (timestampNewDto.ClockedInStamp > timestampNewDto.ClockedOutStamp)
+                return BadRequest(new RestError(HttpStatusCode.BadRequest, new { ClockedInStamp = $"Clocked-In time cannot be past Clocked-Out time" }));
+
 
             if (await _timestampRepository.AddTimestamp(jobsite, user, timestampNewDto.ClockedInStamp, timestampNewDto.ClockedOutStamp))
                 return Ok("Successfully created new timestamp.");
@@ -71,6 +79,14 @@ namespace API.Controllers
                 var timestamp = await _timestampRepository.GetTimestamp(timestampId);
                 if (timestamp == null)
                     return NotFound(new RestError(HttpStatusCode.NotFound, new { Timestamp = $"Timestamp with id {timestampId} not found" }));
+
+                //confirm clockedOutTimestamp is not passed Now
+                if (timestampEditDto.ClockedOutStamp > DateTime.Now)
+                    return BadRequest(new RestError(HttpStatusCode.BadRequest, new { ClockedOutStamp = $"Clocked Out time cannot be in the future." }));
+
+                //confirm clockedInTimestamp is not passed clockedOutTimestamp
+                if (timestampEditDto.ClockedInStamp > timestampEditDto.ClockedOutStamp)
+                    return BadRequest(new RestError(HttpStatusCode.BadRequest, new { ClockedInStamp = $"Clocked In time cannot be past Clocked Out time" }));
 
                 _mapper.Map(timestampEditDto, timestamp);
 

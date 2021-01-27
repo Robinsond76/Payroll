@@ -1,11 +1,12 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
-import { format, intervalToDuration } from 'date-fns';
+import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import TimestampForm from '../timestamps/TimestampForm';
 import { openModal } from '../../app/context/modal/modalActions';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import DeleteTimestamp from '../timestamps/DeleteTimestamp';
+import { getDuration } from '../../app/common/util';
 
 const TimestampsTable = ({
   timestamps,
@@ -25,7 +26,9 @@ const TimestampsTable = ({
           {!forOneUser && <Table.HeaderCell>Employee</Table.HeaderCell>}
           <Table.HeaderCell>Clocked In</Table.HeaderCell>
           <Table.HeaderCell>Clocked Out</Table.HeaderCell>
-          <Table.HeaderCell>Time Worked</Table.HeaderCell>
+          <Table.HeaderCell>
+            Time Worked <span className='duration'>(hh:mm:ss)</span>
+          </Table.HeaderCell>
           {showEditDelete && <Table.HeaderCell>Manage</Table.HeaderCell>}
         </Table.Row>
       </Table.Header>
@@ -36,10 +39,7 @@ const TimestampsTable = ({
           const date = format(dateClockedIn, 'eeee, MMMM do, yyyy');
           const clockedIn = `${format(dateClockedIn, 'h:mm a')}`;
           const clockedOut = `${format(dateClockedOut, 'h:mm a')}`;
-          const duration = intervalToDuration({
-            start: dateClockedIn,
-            end: dateClockedOut,
-          });
+          const duration = getDuration(dateClockedIn, dateClockedOut);
 
           return (
             <Table.Row key={timestamp.clockedInStamp}>
@@ -53,10 +53,7 @@ const TimestampsTable = ({
               {!forOneUser && <Table.Cell>{timestamp.displayName}</Table.Cell>}
               <Table.Cell>{clockedIn}</Table.Cell>
               <Table.Cell>{clockedOut}</Table.Cell>
-              <Table.Cell>
-                {duration.days}:{duration.hours}:{duration.minutes}:
-                {duration.seconds}
-              </Table.Cell>
+              <Table.Cell>{duration}</Table.Cell>
               {showEditDelete && (
                 <Table.Cell>
                   <p>

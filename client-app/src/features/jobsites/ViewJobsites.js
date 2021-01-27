@@ -37,7 +37,7 @@ const ViewJobsites = () => {
       <Divider />
 
       <Form onSubmit={() => searchJobsites(query)}>
-        <div className='margin-right-40'>
+        <div className='view-jobsites-search'>
           <Input
             name='query'
             value={query}

@@ -6,6 +6,7 @@ body {
   background-color: #bf953f;
 }
 
+/* For managing user Timestamps*/
 .manage-edit {
   color: #4183c4;
   cursor: pointer;
@@ -16,12 +17,18 @@ body {
   cursor: pointer;
 }
 
-.margin-right-40 {
+.view-jobsites-search {
   margin-right: 38px;
 }
 
+/*Search Jobsites Bar */
 .ui.input {
   width: 100%;
+}
+
+/* for hh:mm:ss */
+.duration {
+  font-size: 0.7rem;
 }
 
 /*home page styles*/

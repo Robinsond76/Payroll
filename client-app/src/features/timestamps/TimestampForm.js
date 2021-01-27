@@ -5,6 +5,7 @@ import TextInput from '../../app/common/form/TextInput';
 import { FORM_ERROR } from 'final-form';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { formatDateTime, reverseFormatDateTime } from '../../app/common/util';
+import { history } from '../..';
 
 import { combineValidators, isRequired } from 'revalidate';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
@@ -41,13 +42,14 @@ const TimestampForm = ({ username, editTimestamp = false }) => {
   }, [editTimestamp, username]);
 
   const handleFinalFormSubmit = async (values) => {
-    const timestamp = {
-      username: values.username,
-      moniker: values.moniker,
-      clockedInStamp: formatDateTime(values.clockedInStamp),
-      clockedOutStamp: formatDateTime(values.clockedOutStamp),
-    };
     try {
+      const timestamp = {
+        username: values.username,
+        moniker: values.moniker,
+        clockedInStamp: formatDateTime(values.clockedInStamp),
+        clockedOutStamp: formatDateTime(values.clockedOutStamp),
+      };
+
       if (editTimestamp) {
         const clockedStamps = {
           clockedInStamp: timestamp.clockedInStamp,
@@ -61,6 +63,7 @@ const TimestampForm = ({ username, editTimestamp = false }) => {
         await Timestamps.addTimestamp(timestamp);
       }
       modalDispatch({ type: 'CLOSE_MODAL' });
+      history.push('/refresh');
     } catch (error) {
       return { [FORM_ERROR]: error };
     }
