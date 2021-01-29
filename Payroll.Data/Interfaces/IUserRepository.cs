@@ -20,7 +20,11 @@ namespace Payroll.Data.Interfaces
         Task<bool> SaveChangesAsync();
         Task<bool> UpdateUser(AppUser user);
 
+        Task<bool> ConfirmCurrentPassword(AppUser user, string password);
+        Task<bool> UpdateUserPassword(AppUser user, string currentPassword, string newPassword);
+
         Task<AppUser> GetUser(string username, bool withTimestamps = false);
         Task<PagedList<AppUser>> GetAllUsers(PageParameters pageParameters);
+        Task<PagedList<AppUser>> GetAllManagers(PageParameters pageParameters);
     }
 }

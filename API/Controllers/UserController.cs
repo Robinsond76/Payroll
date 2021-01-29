@@ -259,7 +259,7 @@ namespace API.Controllers
 
         //Get all timestamps for current user - can sort by date
         [HttpGet("timestamps")]
-        public async Task<ActionResult<UserInfoWithHoursWorkedDto>> GetAllUserTimeStamps([FromQuery] TimestampParameters timestampParameters)
+        public async Task<ActionResult<UserInfoWithHoursWorkedDto>> GetAllUserTimestamps([FromQuery] TimestampParameters timestampParameters)
         {
             try
             {
@@ -367,28 +367,71 @@ namespace API.Controllers
             }
         }
 
-        //[HttpGet("{username}/manager")]
-        //public async Task<IActionResult> MakeManager(string username)
-        //{
-        //    try
-        //    {
-        //        var user = await _userRepository.GetUser(username);
-        //        //if user not found
-        //        if (user == null)
-        //            return NotFound($"Username {username} not found.");
+        //For Admin only : Get all managers
+        [HttpGet("/api/managers")]
+        public async Task<IActionResult> GetAllManagers([FromQuery] PageParameters pageParameters)
+        {
+            try
+            {
+                //admin status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Admin == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
 
-        //        //validate just like in register
-        //        user.Manager = true;
+                var managers = await _userRepository.GetAllManagers(pageParameters);
 
-        //        if (await _userRepository.UpdateUser(user))
-        //            return Ok();
-        //    }
-        //    catch (Exception err)
-        //    {
-        //        throw err;
-        //        //return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to edit user");
-        //    }
-        //    return BadRequest();
-        //}
+                var metadata = new
+                {
+                    managers.TotalCount,
+                    managers.PageSize,
+                    managers.CurrentPage,
+                    managers.HasNext,
+                    managers.HasPrevious
+                };
+
+                //Add page info to header
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+                return Ok(_mapper.Map<ICollection<UserGeneralInfoDto>>(managers));
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to query database.");
+            }
+        }
+
+        //For Admin only : Add or Remove Manager Status
+        [HttpPost("{username}")]
+        public async Task<IActionResult> ManagerStatus(string username, [FromQuery] bool manager)
+        {
+            try
+            {
+                //admin status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Admin == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
+
+                //find user
+                var user = await _userRepository.GetUser(username);
+                if (user == null)
+                    return NotFound($"Username {username} not found.");
+
+                if (manager == true)
+                {
+                    user.Manager = true;
+                } else 
+                {
+                    user.Manager = false;
+                }
+
+                if (await _userRepository.UpdateUser(user))
+                    return Ok();
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to edit user");
+            }
+            return BadRequest();
+        }
     }
 }

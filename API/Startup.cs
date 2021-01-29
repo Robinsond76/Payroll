@@ -42,6 +42,7 @@ namespace API
                 .AddFluentValidation(cfg => 
                 {
                     cfg.RegisterValidatorsFromAssemblyContaining<UserRegisterDto>();
+                    cfg.RegisterValidatorsFromAssemblyContaining<UpdatePasswordDto>();
                 });
 
             services.AddDbContext<PayrollContext>();

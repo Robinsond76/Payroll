@@ -76,6 +76,20 @@ namespace Payroll.Data.Services
             return false;
         }
 
+        //Next two tasks for updating password - feature not implemented
+        public async Task<bool> ConfirmCurrentPassword(AppUser user, string password)
+        {
+            return await _userManager.CheckPasswordAsync(user, password);
+        }
+        public async Task<bool> UpdateUserPassword(AppUser user, string currentPassword, string newPassword)
+        {
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            if (result.Succeeded)
+                return true;
+            //else
+            return false;
+        }
+
         public async Task<PagedList<AppUser>> GetAllUsers(PageParameters pageParameters)
         {
             var query = from u in _db.Users
@@ -112,6 +126,22 @@ namespace Payroll.Data.Services
         public async Task<bool> SaveChangesAsync()
         {
             return (await _db.SaveChangesAsync()) > 0;
+        }
+
+        public async Task<PagedList<AppUser>> GetAllManagers(PageParameters pageParameters)
+        {
+            var query = from u in _db.Users
+                        select u;
+
+            query = query
+                .Where(u => u.Manager == true 
+                            && u.Admin == false)
+                .OrderBy(u => u.DisplayName);
+
+            return await PagedList<AppUser>.ToPagedList(
+                query,
+                pageParameters.PageNumber,
+                pageParameters.PageSize);
         }
     }
 }
