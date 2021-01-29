@@ -12,5 +12,7 @@ namespace Payroll.Data.Models
         public bool CurrentlyClockedIn { get; set; }
         public TimestampClockedInBasicDto ClockedInTimestamp { get; set; }
         public TimestampWithBasicJobsiteInfoDto LastJobsiteVisited { get; set; }
+        public bool Manager { get; set; }
+        public bool Admin { get; set; }
     }
 }

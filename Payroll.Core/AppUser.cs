@@ -9,6 +9,8 @@ namespace Payroll.Core
     {
         public string DisplayName { get; set; }
         public ICollection<Timestamp> Timestamps { get; set; }
+        public bool Manager { get; set; }
+        public bool Admin { get; set; }
 
     }
 }

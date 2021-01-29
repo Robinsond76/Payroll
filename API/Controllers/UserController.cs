@@ -61,7 +61,9 @@ namespace API.Controllers
                 {
                     DisplayName = user.DisplayName,
                     Token = _jwtGenerator.CreateToken(user),
-                    Username = user.UserName
+                    Username = user.UserName,
+                    Manager = user.Manager,
+                    Admin = user.Admin
                 };
 
                 //get last timestamp for LastJobsiteVisited
@@ -88,10 +90,14 @@ namespace API.Controllers
             return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Invalid email or password" }));
         }
 
-        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(UserRegisterDto userRegisterDto)
         {
+            //manager status
+            var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+            if (loggedInUser.Manager == false)
+                return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
+
             if (await _userRepository.EmailExists(userRegisterDto.Email))
                 return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Email = "Email already exists" }));
 
@@ -107,7 +113,7 @@ namespace API.Controllers
                 {
                     DisplayName = user.DisplayName,
                     Token = _jwtGenerator.CreateToken(user),
-                    Username = user.UserName
+                    Username = user.UserName,
                 };
             };
 
@@ -120,6 +126,11 @@ namespace API.Controllers
         {
             try
             {
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
+
                 var user = await _userRepository.GetUser(username);
                 //if user not found
                 if (user == null)
@@ -128,12 +139,13 @@ namespace API.Controllers
                 //validate just like in register
 
                 //email
-                if (await _userRepository.EmailExists(userUpdateValues.Email))
+                if (userUpdateValues.Email != user.Email && await _userRepository.EmailExists(userUpdateValues.Email))
                     return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Email = "Email already exists" }));
 
                 //username
-                if (await _userRepository.UsernameExists(userUpdateValues.Username))
+                if (userUpdateValues.Username != user.UserName && await _userRepository.UsernameExists(userUpdateValues.Username))
                     return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Username = "This username is already registered" }));
+
 
 
                 _mapper.Map(userUpdateValues, user);
@@ -154,6 +166,12 @@ namespace API.Controllers
         {
             try
             {
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
+
+
                 var user = await _userRepository.GetUser(username);
                 //if user not found
                 if (user == null)
@@ -171,6 +189,7 @@ namespace API.Controllers
             }
         }
 
+        //Get current user's info including manager status
         [HttpGet]
         public async Task<UserDto> GetLoggedInUser()
         {
@@ -200,12 +219,18 @@ namespace API.Controllers
             return userDto;
         }
 
-        //Get's a user's display name, user name and login status
+        //Gets any user's display name, username and login status
+        //needs manager status
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUser(string username)
         {
             try
             {
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
+
                 var user = await _userRepository.GetUser(username);
 
                 var userInfoDto = _mapper.Map<UserInfoDto>(user);
@@ -232,17 +257,14 @@ namespace API.Controllers
             }
         }
 
-        //Get all timestamps from a user - can sort by date
-        [HttpGet("{username}/timestamps")]
-        public async Task<ActionResult<UserInfoWithHoursWorkedDto>> GetAllTimeStamps(string username, [FromQuery] TimestampParameters timestampParameters)
+        //Get all timestamps for current user - can sort by date
+        [HttpGet("timestamps")]
+        public async Task<ActionResult<UserInfoWithHoursWorkedDto>> GetAllUserTimeStamps([FromQuery] TimestampParameters timestampParameters)
         {
             try
             {
-                var user = await _userRepository.GetUser(username);
-
-                //if user not found
-                if (user == null)
-                    return NotFound($"Username {username} not found.");
+                //code below will only run if already logged in
+                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
 
                 //Get timestamps by date
                 var filteredTimestamps = await _timestampRepository.GetTimestampsForUserByDate(user, timestampParameters);
@@ -270,18 +292,14 @@ namespace API.Controllers
             }
         }
 
-        //Get all timestamps from a user by jobsite - can sort by date
-        [HttpGet("{username}/timestamps/{moniker}")]
-        public async Task<ActionResult<UserInfoWithHoursWorkedDto>> GetUserTimestampsFromJobsite(string username, 
-            string moniker, [FromQuery] TimestampParameters timestampParameters)
+        //Get all timestamps for current user by jobsite - can sort by date
+        [HttpGet("timestamps/{moniker}")]
+        public async Task<ActionResult<UserInfoWithHoursWorkedDto>> GetUserTimestampsFromJobsite(string moniker, [FromQuery] TimestampParameters timestampParameters)
         {
             try
             {
-                var user = await _userRepository.GetUser(username);
-
-                //error if user not found
-                if (user == null)
-                    return NotFound($"Error: user '{username}' not found");
+                //code below will only run if already logged in
+                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
 
                 //error if jobsite not found
                 var jobsiteId = await _jobsiteRepository.GetJobsiteIdByMoniker(moniker);
@@ -316,11 +334,17 @@ namespace API.Controllers
             }
         }
 
+        //Get all users
         [HttpGet("/api/users")]
         public async Task<IActionResult> GetAllUsers([FromQuery] PageParameters pageParameters)
         {
             try
             {
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
+
                 var users = await _userRepository.GetAllUsers(pageParameters);
 
                 var metadata = new
@@ -342,5 +366,29 @@ namespace API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to query database.");
             }
         }
+
+        //[HttpGet("{username}/manager")]
+        //public async Task<IActionResult> MakeManager(string username)
+        //{
+        //    try
+        //    {
+        //        var user = await _userRepository.GetUser(username);
+        //        //if user not found
+        //        if (user == null)
+        //            return NotFound($"Username {username} not found.");
+
+        //        //validate just like in register
+        //        user.Manager = true;
+
+        //        if (await _userRepository.UpdateUser(user))
+        //            return Ok();
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        throw err;
+        //        //return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to edit user");
+        //    }
+        //    return BadRequest();
+        //}
     }
 }

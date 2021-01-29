@@ -11,8 +11,10 @@ import { getDuration } from '../../app/common/util';
 const TimestampsTable = ({
   timestamps,
   forOneUser = false,
+  forEmployeeView = false,
   username = '',
   showEditDelete = false,
+  noLinksInTable = false,
 }) => {
   const modalDispatch = useModalDispatch();
 
@@ -41,13 +43,27 @@ const TimestampsTable = ({
           const clockedOut = `${format(dateClockedOut, 'h:mm a')}`;
           const duration = getDuration(dateClockedIn, dateClockedOut);
 
+          //Links in Table
+          let monikerLink;
+          if (forEmployeeView && !noLinksInTable) {
+            monikerLink = (
+              <Link to={`/timestamps/user/${timestamp.moniker}`}>
+                {timestamp.moniker}
+              </Link>
+            );
+          } else if (noLinksInTable) {
+            monikerLink = timestamp.moniker;
+          } else {
+            monikerLink = (
+              <Link to={`/jobsites/${timestamp.moniker}`}>
+                {timestamp.moniker}
+              </Link>
+            );
+          }
+
           return (
             <Table.Row key={timestamp.clockedInStamp}>
-              <Table.Cell>
-                <Link to={`/jobsites/${timestamp.moniker}`}>
-                  {timestamp.moniker}
-                </Link>
-              </Table.Cell>
+              <Table.Cell>{monikerLink}</Table.Cell>
               <Table.Cell>{timestamp.jobsite}</Table.Cell>
               <Table.Cell>{date}</Table.Cell>
               {!forOneUser && <Table.Cell>{timestamp.displayName}</Table.Cell>}

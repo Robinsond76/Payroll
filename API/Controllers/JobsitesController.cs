@@ -44,7 +44,6 @@ namespace API.Controllers
             _timestampRepository = timestampRepository;
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<JobsiteDto>>> GetAllJobsites([FromQuery] PageParameters pageParameters)
         {
@@ -97,6 +96,11 @@ namespace API.Controllers
         {
             try
             {
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
+
                 var jobsite = await _repository.GetJobsiteAsync(moniker);
 
                 if (jobsite == null)
@@ -139,9 +143,12 @@ namespace API.Controllers
         {
             try
             {
-                //var exists = await _repository.GetJobsiteAsync(model.Moniker);
-                //if (exists != null) return BadRequest("Job moniker already exists.");
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
 
+                //confirm if jobsite moniker already exists
                 var exists = await _repository.JobsiteExistsAsync(model.Moniker);
                 if (exists) return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Moniker = $"Job moniker {model.Moniker} already exists" }));
 
@@ -162,11 +169,19 @@ namespace API.Controllers
         {
             try
             {
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
+
+                //Find jobsite to be updated
                 var jobsite = await _repository.GetJobsiteAsync(moniker);
                 if (jobsite == null) return NotFound($"Could not find jobsite with moniker of {moniker}");
 
+                //Confirm new update's moniker does not already exist
                 var exists = await _repository.JobsiteExistsAsync(model.Moniker);
-                if (exists) return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Moniker = $"Job moniker {model.Moniker} already exists" }));
+                if (exists && jobsite.Moniker != model.Moniker) 
+                    return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Moniker = $"Job moniker {model.Moniker} already exists" }));
 
                 _mapper.Map(model, jobsite);
 
@@ -185,6 +200,12 @@ namespace API.Controllers
         {
             try
             {
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
+
+                //find jobsite
                 var jobsite = await _repository.GetJobsiteAsync(moniker);
                 if (jobsite == null) return NotFound($"Could not find jobsite with moniker of {moniker}");
 

@@ -27,6 +27,35 @@ const getAllTimestamps = async (
   }
 };
 
+const getCurrentUserTimestamps = async (
+  dispatch,
+  username,
+  pageSize,
+  pageNumber = 1,
+  fromDate = '',
+  toDate = ''
+) => {
+  dispatch({ type: 'LOADING' });
+  try {
+    const result = await Timestamps.getCurrentUserTimestamps(
+      username,
+      pageSize,
+      pageNumber,
+      fromDate,
+      toDate
+    );
+
+    dispatch({
+      type: 'GET_USER_TIMESTAMPS',
+      payload: result.data.timestamps,
+      pagination: JSON.parse(result.headers['x-pagination']),
+    });
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
 const getUserTimestamps = async (
   dispatch,
   username,
@@ -37,7 +66,7 @@ const getUserTimestamps = async (
 ) => {
   dispatch({ type: 'LOADING' });
   try {
-    const result = await Timestamps.getUserTimestamps(
+    const result = await Timestamps.getAnyUserTimestamps(
       username,
       pageSize,
       pageNumber,
@@ -91,4 +120,5 @@ export {
   getUserTimestamps,
   getJobsiteTimestampsByUser,
   clearJobsiteTimestamps,
+  getCurrentUserTimestamps,
 };

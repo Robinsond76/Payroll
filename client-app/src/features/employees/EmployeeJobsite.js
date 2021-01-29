@@ -5,6 +5,9 @@ import { Button } from 'semantic-ui-react';
 import ListJobsiteTimestamps from '../tables/ListJobsiteTimestamps';
 
 // url: '/jobsites/:moniker/:username'
+
+//This page lists all timestamps at a jobsite for a particular user (manager viewing)
+
 const EmployeeJobsite = ({ match }) => {
   const username = match.params.username;
   const moniker = match.params.moniker;
@@ -21,7 +24,6 @@ const EmployeeJobsite = ({ match }) => {
         pageSize={pageSize}
         username={username}
         moniker={moniker}
-        forOneUser={true}
       />
     </Fragment>
   );

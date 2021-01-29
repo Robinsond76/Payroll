@@ -4,6 +4,7 @@ import TimestampTable from './TimestampTable';
 
 // import actions
 import {
+  getCurrentUserTimestamps,
   getUserTimestamps,
   getAllTimestamps,
 } from '../../app/context/timestamps/timestampActions';
@@ -14,7 +15,13 @@ import {
   useTimestampDispatch,
 } from '../../app/context/timestamps/timestampContext';
 
-const ListTimestamps = ({ pageSize, username, showEditDelete = false }) => {
+const ListTimestamps = ({
+  pageSize,
+  username,
+  forCurrentUser = false,
+  showEditDelete = false,
+  forEmployeeView = false,
+}) => {
   const pageOne = 1;
 
   const tDispatch = useTimestampDispatch();
@@ -27,7 +34,16 @@ const ListTimestamps = ({ pageSize, username, showEditDelete = false }) => {
 
   const loadUserTimestamps = useCallback(
     (activePage) => {
-      if (username) {
+      if (forCurrentUser) {
+        getCurrentUserTimestamps(
+          tDispatch,
+          username,
+          pageSize,
+          activePage,
+          fromDate,
+          toDate
+        );
+      } else if (username) {
         getUserTimestamps(
           tDispatch,
           username,
@@ -40,7 +56,7 @@ const ListTimestamps = ({ pageSize, username, showEditDelete = false }) => {
         getAllTimestamps(tDispatch, pageSize, activePage, fromDate, toDate);
       }
     },
-    [fromDate, pageSize, tDispatch, toDate, username]
+    [forCurrentUser, fromDate, pageSize, tDispatch, toDate, username]
   );
 
   React.useEffect(() => {
@@ -61,6 +77,7 @@ const ListTimestamps = ({ pageSize, username, showEditDelete = false }) => {
         forOneUser={username ? true : false}
         username={username}
         showEditDelete={showEditDelete}
+        forEmployeeView={forEmployeeView}
       />
       {timestampPagination && (
         <Pagination

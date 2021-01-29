@@ -19,6 +19,7 @@ import { Jobsites } from '../../app/api/agent';
 import { clockInUser, clockOutUser } from '../../app/context/auth/authActions';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { history } from '../..';
 
 const TestHome = () => {
   const { isAuthenticated, user } = useAuthState();
@@ -59,6 +60,11 @@ const TestHome = () => {
     return `${date} at ${time}`;
   };
 
+  //if manager logs in, redirect
+  React.useEffect(() => {
+    if (user && user.manager === true) history.push('/jobsites');
+  }, [user]);
+
   return (
     <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
       <Grid.Column style={{ maxWidth: 450 }}>
@@ -78,7 +84,7 @@ const TestHome = () => {
               <Fragment>
                 <Header as='h2' content={`Welcome back ${user.displayName},`} />
 
-                {/* If user is clocked in */}
+                {/* If user is CLOCKED in */}
                 {user.currentlyClockedIn ? (
                   <Fragment>
                     <h3>Currently clocked in at:</h3>
@@ -129,11 +135,11 @@ const TestHome = () => {
                 <br />
                 <Button
                   as={Link}
-                  to='/jobsites'
+                  to='/timestamps/user'
                   size='small'
                   style={{ marginTop: '1rem' }}
                 >
-                  Take me to Jobsites
+                  My Timestamps
                 </Button>
               </Fragment>
             ) : (

@@ -85,20 +85,20 @@ const Timestamps = {
   editTimestamp: (timestampId, values) =>
     requests.put(`/timestamps/${timestampId}`, values),
   deleteTimestamp: (timestampId) => requests.del(`/timestamps/${timestampId}`),
-  getUserTimestamps: (
+  getCurrentUserTimestamps: (
     username,
     pageSize,
     pageNumber,
     fromDate = '',
     toDate = ''
   ) => {
-    let url = `/user/${username}/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`;
+    let url = `/user/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`;
     let parameters = '';
     if (fromDate) parameters = `&fromDate=${fromDate}`;
     if (toDate) parameters += `&toDate=${toDate}`;
     return axios.get(url + parameters);
   },
-  getUserJobsiteTimestamps: (
+  getCurrentUserJobsiteTimestamps: (
     moniker,
     username,
     pageSize,
@@ -106,7 +106,34 @@ const Timestamps = {
     fromDate = '',
     toDate = ''
   ) => {
-    let url = `/user/${username}/timestamps/${moniker}?pagesize=${pageSize}&pagenumber=${pageNumber}`;
+    let url = `/user/timestamps/${moniker}?pagesize=${pageSize}&pagenumber=${pageNumber}`;
+    let parameters = '';
+    if (fromDate) parameters = `&fromDate=${fromDate}`;
+    if (toDate) parameters += `&toDate=${toDate}`;
+    return axios.get(url + parameters);
+  },
+  getAnyUserTimestamps: (
+    username,
+    pageSize,
+    pageNumber,
+    fromDate = '',
+    toDate = ''
+  ) => {
+    let url = `/timestamps/${username}?pagesize=${pageSize}&pagenumber=${pageNumber}`;
+    let parameters = '';
+    if (fromDate) parameters = `&fromDate=${fromDate}`;
+    if (toDate) parameters += `&toDate=${toDate}`;
+    return axios.get(url + parameters);
+  },
+  getAnyUserJobsiteTimestamps: (
+    moniker,
+    username,
+    pageSize,
+    pageNumber,
+    fromDate = '',
+    toDate = ''
+  ) => {
+    let url = `/timestamps/${username}/${moniker}?pagesize=${pageSize}&pagenumber=${pageNumber}`;
     let parameters = '';
     if (fromDate) parameters = `&fromDate=${fromDate}`;
     if (toDate) parameters += `&toDate=${toDate}`;

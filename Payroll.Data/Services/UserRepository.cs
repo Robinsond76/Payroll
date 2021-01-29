@@ -81,6 +81,10 @@ namespace Payroll.Data.Services
             var query = from u in _db.Users
                         select u;
 
+            query = query
+                .Where(u => u.Manager == false)
+                .OrderBy(u => u.DisplayName);
+
             return await PagedList<AppUser>.ToPagedList(
                 query, 
                 pageParameters.PageNumber, 
@@ -104,7 +108,6 @@ namespace Payroll.Data.Services
             //else
             return false;
         }
-
 
         public async Task<bool> SaveChangesAsync()
         {

@@ -36,12 +36,13 @@ export const getDuration = (ClockedInStamp, clockedOutStamp) => {
     start: ClockedInStamp,
     end: clockedOutStamp,
   });
-  let days = duration.days > 9 ? duration.days : `${duration.days}`;
-  let hours = duration.hours > 9 ? duration.hours : `0${duration.hours}`;
+  let hours =
+    duration.days > 0 ? duration.days * 24 + duration.hours : duration.hours;
+  hours = hours > 9 ? hours : `0${hours}`;
   let minutes =
     duration.minutes > 9 ? duration.minutes : `0${duration.minutes}`;
   let seconds =
     duration.seconds > 9 ? duration.seconds : `0${duration.seconds}`;
 
-  return `${days > 0 ? `${days}d ` : ''}${hours}:${minutes}:${seconds}`;
+  return `${hours}:${minutes}:${seconds}`;
 };

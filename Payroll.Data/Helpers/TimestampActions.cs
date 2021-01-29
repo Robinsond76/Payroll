@@ -48,6 +48,23 @@ namespace Payroll.Data.Helpers
             return employees;
         }
 
+        public static ICollection<object> ClockedInJobsites(ICollection<Timestamp> timestamps)
+        {
+            var jobsites = new Dictionary<string, object>();
+            foreach (Timestamp timestamp in timestamps)
+            {
+                if (!jobsites.ContainsKey(timestamp.Jobsite.Moniker))
+                    jobsites.Add(timestamp.Jobsite.Moniker, new 
+                    {
+                        moniker = timestamp.Jobsite.Moniker,
+                        name = timestamp.Jobsite.Name
+                    });
+                //else
+                continue;
+            }
+            return jobsites.Values.ToList();
+        }
+
         public static ICollection<UserWorkHistoryDto> GetWorkHistory(ICollection<Timestamp> timestamps)
         {
             Dictionary<string, UserWorkHistoryDto> userWorkHistory = new Dictionary<string, UserWorkHistoryDto>();
