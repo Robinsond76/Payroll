@@ -161,15 +161,28 @@ namespace Payroll.Data.Services
                 t => t.Jobsite == jobsite && t.ClockedIn == true);
         }
 
-        public async Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn()
+        public async Task<PagedList<Timestamp>> TimestampsCurrentlyClockedInPaged(PageParameters pageParameters)
         {
             var query = _db.Timestamps
                 .Where(t => t.ClockedIn == true)
                 .Include(t => t.AppUser)
-                .Include(t => t.Jobsite);
+                .Include(t => t.Jobsite)
+                .OrderBy(t => t.AppUser.DisplayName);
+
+                return await PagedList<Timestamp>.ToPagedList(
+                   query,
+                   pageParameters.PageNumber,
+                   pageParameters.PageSize);
+        }
+
+        public async Task<ICollection<Timestamp>> TimestampsCurrentlyClockedIn()
+        {
+            var query = _db.Timestamps
+                .Where(t => t.ClockedIn == true)
+                .Include(t => t.Jobsite)
+                .OrderBy(t => t.Jobsite.Moniker);
 
             return await query.ToListAsync();
-
         }
 
         public async Task<PagedList<Timestamp>> GetTimestampsForJobByUser(

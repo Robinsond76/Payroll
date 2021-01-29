@@ -354,28 +354,65 @@ namespace API.Controllers
             return Ok(pagedJobsitesVisited);
         }
 
+
         [HttpGet("clockedin")]
-        public async Task<ActionResult<object>> CurrentlyClockedIn()
+        public async Task<ActionResult<TimestampClockedInDto>> EmployeesCurrentlyClockedIn([FromQuery] PageParameters pageParameters)
         {
             //manager status
             var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
             if (loggedInUser.Manager == false)
                 return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
 
-            var timestamps = await _timestampRepository.TimestampsCurrentlyClockedIn();
-            //get list of strings of employee names 
-            var clockedInEmployees = TimestampActions.ClockedInEmployees(timestamps);
+            var timestamps = await _timestampRepository.TimestampsCurrentlyClockedInPaged(pageParameters);
 
-            //get list of Clocked In Jobsites
+            var metadata = new
+            {
+                timestamps.TotalCount,
+                timestamps.PageSize,
+                timestamps.CurrentPage,
+                timestamps.HasNext,
+                timestamps.HasPrevious
+            };
+
+            //Add page info to header
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+            return Ok(_mapper.Map<ICollection<TimestampClockedInDto>>(timestamps));
+        }
+
+        [HttpGet("Jobsitesclockedin")]
+        public async Task<ActionResult<TimestampClockedInDto>> JobsitesCurrentlyClockedIn([FromQuery] PageParameters pageParameters)
+        {
+            //manager status
+            var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+            if (loggedInUser.Manager == false)
+                return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
+
+            //get clocked In timestamps
+            var timestamps = await _timestampRepository.TimestampsCurrentlyClockedIn();
+
+            //get list of Clocked In Jobsites from timestamps
             var clockedInJobsites = TimestampActions.ClockedInJobsites(timestamps);
 
-            var dto = new
-            {
-                currentlyClockedIn = clockedInEmployees,
+            //page the clockedInJobsites
+            var pagedClockedInJobsites = PagedList<object>.ToPagedListFromList(
                 clockedInJobsites,
-                timestamps = _mapper.Map<ICollection<TimestampClockedInDto>>(timestamps)
+                pageParameters.PageNumber,
+                pageParameters.PageSize);
+
+            var metadata = new
+            {
+                pagedClockedInJobsites.TotalCount,
+                pagedClockedInJobsites.PageSize,
+                pagedClockedInJobsites.CurrentPage,
+                pagedClockedInJobsites.HasNext,
+                pagedClockedInJobsites.HasPrevious
             };
-            return Ok(dto);
+
+            //Add page info to header
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+            return Ok(pagedClockedInJobsites);
         }
     }
 }

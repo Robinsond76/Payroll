@@ -8,8 +8,8 @@ const TimestampProvider = ({ children }) => {
   const initialState = {
     timestamps: [],
     jobsiteTimestamps: [],
-    timestampPagination: 0,
-    jobsitePagination: 0,
+    timestampPagination: null,
+    jobsitePagination: null,
     loading: false,
     fromDate: '',
     toDate: '',

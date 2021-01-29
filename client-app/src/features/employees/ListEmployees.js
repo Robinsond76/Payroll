@@ -37,10 +37,6 @@ const ListEmployees = () => {
         Add New Employee
       </Button>
 
-      <Button as={Link} to={'/employees/clockedin'}>
-        Clocked In
-      </Button>
-
       <Button as={Link} to={'/employees/payroll'}>
         Payroll
       </Button>

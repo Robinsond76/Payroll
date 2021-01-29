@@ -23,7 +23,7 @@ const ListJobsiteTimestamps = ({
 }) => {
   const { fromDate, toDate } = useTimestampState();
   const [timestamps, setTimestamps] = React.useState([]);
-  const [pagination, setPagination] = React.useState(0);
+  const [pagination, setPagination] = React.useState(null);
   const pageOne = 1;
 
   const loadTimestamps = useCallback(
@@ -31,7 +31,6 @@ const ListJobsiteTimestamps = ({
       if (forCurrentUser) {
         Timestamps.getCurrentUserJobsiteTimestamps(
           moniker,
-          username,
           pageSize,
           activePage,
           fromDate,

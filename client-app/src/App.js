@@ -15,7 +15,7 @@ import ModalContainer from './app/common/modals/ModalContainer';
 import NotFound from './app/layout/NotFound';
 import ViewUserTimestamps from './features/timestamps/ViewUserTimestamps';
 import UserJobsiteTimestamps from './features/jobsites/UserJobsiteTimestamps';
-import ClockedIn from './features/employees/ClockedIn';
+import Dashboard from './features/employees/Dashboard';
 import JobsiteHistory from './features/jobsites/JobsiteHistory';
 import ListEmployees from './features/employees/ListEmployees';
 import ViewEmployee from './features/employees/ViewEmployee';
@@ -92,8 +92,8 @@ const App = () => {
                       />
                       <PrivateRoute
                         exact
-                        path='/employees/clockedIn'
-                        component={ClockedIn}
+                        path='/dashboard'
+                        component={Dashboard}
                       />
                       <PrivateRoute
                         exact

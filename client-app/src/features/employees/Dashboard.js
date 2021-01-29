@@ -1,19 +1,44 @@
 import React, { Fragment } from 'react';
-import { Table } from 'semantic-ui-react';
+import { Pagination, Table } from 'semantic-ui-react';
 import { Timestamps } from '../../app/api/agent';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 
-const ClockedIn = () => {
-  React.useEffect(() => {
-    Timestamps.getClockedInTimestamps().then((result) => {
-      setClockedInJobsites(result.clockedInJobsites);
-      setClockedInTimestamps(result.timestamps);
+const Dashboard = () => {
+  const pageSize = 3;
+  const pageOne = 1;
+
+  const [clockedInJobsites, setClockedInJobsites] = React.useState([]);
+  const [jobsitesPagination, setJobsitesPagination] = React.useState(null);
+  const [clockedInTimestamps, setClockedInTimestamps] = React.useState([]);
+  const [timestampsPagination, setTimestampsPagination] = React.useState(null);
+
+  const loadJobsites = React.useCallback((pageSize, pageNumber) => {
+    Timestamps.getClockedInJobsites(pageSize, pageNumber).then((result) => {
+      setClockedInJobsites(result.data);
+      setJobsitesPagination(JSON.parse(result.headers['x-pagination']));
     });
   }, []);
 
-  const [clockedInJobsites, setClockedInJobsites] = React.useState([]);
-  const [clockedInTimestamps, setClockedInTimestamps] = React.useState([]);
+  const loadTimestamps = React.useCallback((pageSize, pageNumber) => {
+    Timestamps.getClockedInTimestamps(pageSize, pageNumber).then((result) => {
+      setClockedInTimestamps(result.data);
+      setTimestampsPagination(JSON.parse(result.headers['x-pagination']));
+    });
+  }, []);
+
+  React.useEffect(() => {
+    loadJobsites(pageSize, pageOne);
+    loadTimestamps(pageSize, pageOne);
+  }, [loadJobsites, loadTimestamps]);
+
+  const jobsitePageChangeHandler = (e, { activePage }) => {
+    loadJobsites(pageSize, activePage);
+  };
+
+  const timestampPageChangeHandler = (e, { activePage }) => {
+    loadTimestamps(pageSize, activePage);
+  };
 
   return (
     <Fragment>
@@ -41,6 +66,20 @@ const ClockedIn = () => {
           })}
         </Table.Body>
       </Table>
+      {jobsitesPagination && (
+        <Pagination
+          boundaryRange={0}
+          activePage={jobsitesPagination.CurrentPage}
+          onPageChange={jobsitePageChangeHandler}
+          siblingRange={1}
+          totalPages={Math.ceil(
+            jobsitesPagination.TotalCount / jobsitesPagination.PageSize
+          )}
+          borderless
+          size='small'
+          floated='right'
+        />
+      )}
 
       <h3>Employees Currently Clocked In</h3>
       <Table celled selectable>
@@ -80,8 +119,22 @@ const ClockedIn = () => {
           })}
         </Table.Body>
       </Table>
+      {timestampsPagination && (
+        <Pagination
+          boundaryRange={0}
+          activePage={timestampsPagination.CurrentPage}
+          onPageChange={timestampPageChangeHandler}
+          siblingRange={1}
+          totalPages={Math.ceil(
+            timestampsPagination.TotalCount / timestampsPagination.PageSize
+          )}
+          borderless
+          size='small'
+          floated='right'
+        />
+      )}
     </Fragment>
   );
 };
 
-export default ClockedIn;
+export default Dashboard;

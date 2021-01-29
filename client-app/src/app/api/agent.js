@@ -86,7 +86,6 @@ const Timestamps = {
     requests.put(`/timestamps/${timestampId}`, values),
   deleteTimestamp: (timestampId) => requests.del(`/timestamps/${timestampId}`),
   getCurrentUserTimestamps: (
-    username,
     pageSize,
     pageNumber,
     fromDate = '',
@@ -100,7 +99,6 @@ const Timestamps = {
   },
   getCurrentUserJobsiteTimestamps: (
     moniker,
-    username,
     pageSize,
     pageNumber,
     fromDate = '',
@@ -139,7 +137,14 @@ const Timestamps = {
     if (toDate) parameters += `&toDate=${toDate}`;
     return axios.get(url + parameters);
   },
-  getClockedInTimestamps: () => requests.get('/timestamps/clockedin'),
+  getClockedInTimestamps: (pageSize, pageNumber) =>
+    axios.get(
+      `/timestamps/clockedin?pagesize=${pageSize}&pagenumber=${pageNumber}`
+    ),
+  getClockedInJobsites: (pageSize, pageNumber) =>
+    axios.get(
+      `/timestamps/jobsitesclockedin?pagesize=${pageSize}&pagenumber=${pageNumber}`
+    ),
   getWorkHistory: (fromDate, toDate) => {
     let url = `/timestamps/workhistory?`;
     let parameters = '';

@@ -62,7 +62,7 @@ const TestHome = () => {
 
   //if manager logs in, redirect
   React.useEffect(() => {
-    if (user && user.manager === true) history.push('/jobsites');
+    if (user && user.manager === true) history.push('/dashboard');
   }, [user]);
 
   return (

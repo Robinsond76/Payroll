@@ -37,7 +37,6 @@ const ListTimestamps = ({
       if (forCurrentUser) {
         getCurrentUserTimestamps(
           tDispatch,
-          username,
           pageSize,
           activePage,
           fromDate,
