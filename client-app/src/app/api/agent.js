@@ -177,6 +177,10 @@ const User = {
   clockOut: (moniker) => requests.post(`/jobsites/${moniker}/clockout`),
   getUsers: (pageSize, pageNumber) =>
     axios.get(`/users?pagesize=${pageSize}&pagenumber=${pageNumber}`),
+  getManagers: (pageSize, pageNumber) =>
+    axios.get(`/managers?pagesize=${pageSize}&pagenumber=${pageNumber}`),
+  editManager: (username, managerStatus) =>
+    axios.post(`/user/${username}?manager=${managerStatus}`),
   getUser: (username) => requests.get(`/user/${username}`),
   updateUser: (username, updatedUser) =>
     requests.put(`/user/${username}`, updatedUser),

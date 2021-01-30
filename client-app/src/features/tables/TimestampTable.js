@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { Table, Icon } from 'semantic-ui-react';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import TimestampForm from '../timestamps/TimestampForm';
@@ -72,9 +72,11 @@ const TimestampsTable = ({
               <Table.Cell>{duration}</Table.Cell>
               {showEditDelete && (
                 <Table.Cell>
-                  <p>
-                    <span
-                      className='manage-edit'
+                  <div style={{ margin: 'auto' }}>
+                    <Icon
+                      name='edit'
+                      color='blue'
+                      style={{ marginLeft: '10px', cursor: 'pointer' }}
                       onClick={() =>
                         openModal(
                           <TimestampForm
@@ -84,12 +86,14 @@ const TimestampsTable = ({
                           modalDispatch
                         )
                       }
-                    >
-                      Edit
-                    </span>{' '}
-                    |{' '}
-                    <span
-                      className='manage-delete'
+                    />
+                    <Icon
+                      name='cancel'
+                      style={{
+                        marginLeft: '10px',
+                        cursor: 'pointer',
+                        color: 'crimson',
+                      }}
                       onClick={() =>
                         openModal(
                           <DeleteTimestamp
@@ -98,10 +102,8 @@ const TimestampsTable = ({
                           modalDispatch
                         )
                       }
-                    >
-                      Delete
-                    </span>
-                  </p>
+                    />
+                  </div>
                 </Table.Cell>
               )}
             </Table.Row>

@@ -28,6 +28,9 @@ const Navbar = () => {
               <Menu.Item name='Jobsites' as={NavLink} to='/jobsites' />
               <Menu.Item name='Timestamps' as={NavLink} to='/timestamps' />
               <Menu.Item name='Employees' as={NavLink} to='/employees' />
+              {user.admin && (
+                <Menu.Item name='Managers' as={NavLink} to='/managers' />
+              )}
             </Fragment>
           )}
           {user && !user.manager && (

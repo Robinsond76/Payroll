@@ -43,7 +43,7 @@ const ListEmployees = () => {
 
       <Divider />
 
-      <Table selectable celled>
+      <Table selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Name</Table.HeaderCell>

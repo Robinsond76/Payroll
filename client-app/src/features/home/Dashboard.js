@@ -42,7 +42,7 @@ const Dashboard = () => {
 
   return (
     <Fragment>
-      <h3>Active Jobsites</h3>
+      <h3>Jobsites Clocked Into</h3>
       <Table celled selectable>
         <Table.Header>
           <Table.Row>

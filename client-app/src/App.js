@@ -15,7 +15,7 @@ import ModalContainer from './app/common/modals/ModalContainer';
 import NotFound from './app/layout/NotFound';
 import ViewUserTimestamps from './features/timestamps/ViewUserTimestamps';
 import UserJobsiteTimestamps from './features/jobsites/UserJobsiteTimestamps';
-import Dashboard from './features/employees/Dashboard';
+import Dashboard from './features/home/Dashboard';
 import JobsiteHistory from './features/jobsites/JobsiteHistory';
 import ListEmployees from './features/employees/ListEmployees';
 import ViewEmployee from './features/employees/ViewEmployee';
@@ -25,6 +25,7 @@ import Payroll from './features/employees/Payroll';
 import EmployeeWorkHistory from './features/employees/EmployeeWorkHistory';
 import ViewAllTimestamps from './features/timestamps/ViewAllTimestamps';
 import Refresh from './features/home/Refresh';
+import ListManagers from './features/managers/ListManagers';
 
 const App = () => {
   const authDispatch = useAuthDispatch();
@@ -109,6 +110,11 @@ const App = () => {
                         exact
                         path='/employees/:username'
                         component={ViewEmployee}
+                      />
+                      <PrivateRoute
+                        exact
+                        path='/managers'
+                        component={ListManagers}
                       />
                       <PrivateRoute exact path='/refresh' component={Refresh} />
                       <PrivateRoute component={NotFound} />

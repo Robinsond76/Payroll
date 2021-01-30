@@ -16,7 +16,7 @@ const validate = combineValidators({
   email: isRequired('Email'),
 });
 
-const EditEmployee = ({ username }) => {
+const EditEmployee = ({ username, manager = false }) => {
   const modalDispatch = useModalDispatch();
   const [employee, setEmployee] = React.useState({});
 
@@ -28,7 +28,11 @@ const EditEmployee = ({ username }) => {
     User.updateUser(username, values)
       .then((result) => {
         modalDispatch({ type: 'CLOSE_MODAL' });
-        history.push('/employees');
+        if (manager) {
+          history.push('/refresh');
+        } else {
+          history.push('/employees');
+        }
       })
       .catch((error) => ({ [FORM_ERROR]: error }));
 
@@ -49,7 +53,7 @@ const EditEmployee = ({ username }) => {
           <Form onSubmit={handleSubmit} error>
             <Header
               as='h2'
-              content='Edit employee'
+              content={manager ? 'Edit Manager' : 'Edit Employee'}
               color='teal'
               textAlign='center'
             />
