@@ -290,7 +290,7 @@ namespace API.Controllers
         }
 
         [HttpPost("{moniker}/clockout")]
-        public async Task<IActionResult> ClockOut(string moniker)
+        public async Task<IActionResult> ClockOut(string moniker, [FromQuery] string username)
         {
             try
             {
@@ -298,16 +298,31 @@ namespace API.Controllers
                 if (jobsite == null)
                     return NotFound();
 
-                var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                AppUser user;
+
+                //code below is for managers to clock out employees
+                if(username != null)
+                {
+                    //manager status
+                    var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                    if (loggedInUser.Manager == false)
+                        return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
+
+                        user = await _userRepository.GetUser(username);
+                } else
+                {
+                    user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                }
+
 
                 //If not already clocked in, bad request
                 var currentlyClockedin = await _timestampRepository.GetClockedInTimestamp(user);
                 if (currentlyClockedin == null)
-                    return BadRequest($"You must first be clocked in to {jobsite.Moniker} to clock out. ");
+                    return BadRequest($"User must first be clocked in to {jobsite.Moniker} to clock out. ");
 
                 //if clocked in to another job, bad request
                 if (currentlyClockedin.JobsiteId != jobsite.JobsiteId)
-                    return BadRequest($"You're currently clocked in to another job: {currentlyClockedin.Jobsite.Moniker}");
+                    return BadRequest($"User currently clocked in to another job: {currentlyClockedin.Jobsite.Moniker}");
 
                 //if clockedin to the correct jobsite, clock out
                 var success = await _timestampRepository.ClockOut(user);

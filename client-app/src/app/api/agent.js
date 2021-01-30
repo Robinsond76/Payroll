@@ -175,6 +175,8 @@ const User = {
   status: (username) => requests.get(`/user/${username}`),
   clockIn: (moniker) => requests.post(`/jobsites/${moniker}/clockin`),
   clockOut: (moniker) => requests.post(`/jobsites/${moniker}/clockout`),
+  clockOutEmployee: (moniker, username) =>
+    requests.post(`/jobsites/${moniker}/clockout?username=${username}`),
   getUsers: (pageSize, pageNumber) =>
     axios.get(`/users?pagesize=${pageSize}&pagenumber=${pageNumber}`),
   getManagers: (pageSize, pageNumber) =>

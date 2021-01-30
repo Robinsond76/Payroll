@@ -17,6 +17,12 @@ body {
   cursor: pointer;
 }
 
+.clockOut {
+  color: red;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
 .view-jobsites-search {
   margin-right: 38px;
 }

@@ -1,10 +1,14 @@
 import React, { Fragment } from 'react';
-import { Pagination, Table } from 'semantic-ui-react';
+import { Icon, Pagination, Table } from 'semantic-ui-react';
 import { Timestamps } from '../../app/api/agent';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { openModal } from '../../app/context/modal/modalActions';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
+import ClockOutEmployee from '../employees/ClockOutEmployee';
 
 const Dashboard = () => {
+  const modalDispatch = useModalDispatch();
   const pageSize = 3;
   const pageOne = 1;
 
@@ -82,7 +86,7 @@ const Dashboard = () => {
       )}
 
       <h3>Employees Currently Clocked In</h3>
-      <Table celled selectable>
+      <Table selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Name</Table.HeaderCell>
@@ -90,6 +94,7 @@ const Dashboard = () => {
             <Table.HeaderCell>Jobsite</Table.HeaderCell>
             <Table.HeaderCell>Date</Table.HeaderCell>
             <Table.HeaderCell>Clocked In</Table.HeaderCell>
+            <Table.HeaderCell width={1}>Manage</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
@@ -114,6 +119,22 @@ const Dashboard = () => {
                 <Table.Cell>{timestamp.jobsite}</Table.Cell>
                 <Table.Cell>{date}</Table.Cell>
                 <Table.Cell>{clockedIn}</Table.Cell>
+                <Table.Cell>
+                  <span className='clockOut'>
+                    <Icon
+                      name='stopwatch'
+                      onClick={() =>
+                        openModal(
+                          <ClockOutEmployee
+                            moniker={timestamp.moniker}
+                            username={timestamp.username}
+                          />,
+                          modalDispatch
+                        )
+                      }
+                    />
+                  </span>
+                </Table.Cell>
               </Table.Row>
             );
           })}
