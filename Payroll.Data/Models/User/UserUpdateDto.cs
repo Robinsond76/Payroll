@@ -17,8 +17,12 @@ namespace Payroll.Data.Models
     {
         public UserUpdateValidator()
         {
+
             RuleFor(x => x.DisplayName).NotEmpty();
-            RuleFor(x => x.Username).NotEmpty();
+            RuleFor(x => x.Username)
+                .NotEmpty()
+                .Matches(@"^[\S]+$")
+                .WithMessage("Spaces in username not allowed.");
             RuleFor(x => x.Email).NotEmpty().EmailAddress();
         }
     }
