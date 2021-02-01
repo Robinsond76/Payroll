@@ -1,7 +1,8 @@
 import React from 'react';
-import { format, intervalToDuration } from 'date-fns';
+import { format } from 'date-fns';
 import { Table } from 'semantic-ui-react';
 import { v4 as uuidv4 } from 'uuid';
+import { getDuration } from '../../app/common/util';
 
 const JobsiteHistoryTable = ({ timestamps }) => {
   return (
@@ -24,10 +25,7 @@ const JobsiteHistoryTable = ({ timestamps }) => {
           const date = format(dateClockedIn, 'eeee, MMMM do, yyyy');
           const clockedIn = `${format(dateClockedIn, 'h:mm a')}`;
           const clockedOut = `${format(dateClockedOut, 'h:mm a')}`;
-          const duration = intervalToDuration({
-            start: dateClockedIn,
-            end: dateClockedOut,
-          });
+          const duration = getDuration(dateClockedIn, dateClockedOut);
 
           return (
             <Table.Row key={uuidv4()}>
@@ -41,10 +39,7 @@ const JobsiteHistoryTable = ({ timestamps }) => {
                 {timestamp.CurrentlyClockedIn ? '--' : `${clockedOut}`}
               </Table.Cell>
               <Table.Cell>
-                {timestamp.CurrentlyClockedIn
-                  ? '--'
-                  : `${duration.days}:${duration.hours}:${duration.minutes}:
-                    ${duration.seconds}`}
+                {timestamp.CurrentlyClockedIn ? '--' : duration}
               </Table.Cell>
             </Table.Row>
           );

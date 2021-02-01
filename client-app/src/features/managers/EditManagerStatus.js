@@ -4,19 +4,29 @@ import { User } from '../../app/api/agent';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { history } from '../..';
 
+import { useAlertDispatch } from '../../app/context/alerts/alertContext';
+import { setAlert } from '../../app/context/alerts/alertActions';
+
 const EditManagerStatus = ({ username, revoke = false }) => {
   const modalDispatch = useModalDispatch();
+  const alertDispatch = useAlertDispatch();
 
   const onDelete = () => {
     if (revoke) {
       User.editManager(username, false).then(() => {
         modalDispatch({ type: 'CLOSE_MODAL' });
         history.push('/refresh');
+        setAlert(
+          alertDispatch,
+          `${username} - Manager status revoked`,
+          'error'
+        );
       });
     } else {
       User.editManager(username, true).then(() => {
         modalDispatch({ type: 'CLOSE_MODAL' });
         history.push('/employees');
+        setAlert(alertDispatch, `${username} is now a manager`, 'update');
       });
     }
   };

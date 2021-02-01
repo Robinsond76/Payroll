@@ -91,6 +91,9 @@ const JobsiteHistory = ({ match }) => {
           onPageChange={pageChangeHandler}
           siblingRange={1}
           totalPages={Math.ceil(pagination.TotalCount / pagination.PageSize)}
+          borderless
+          size='small'
+          floated='right'
         />
       )}
     </Fragment>

@@ -92,27 +92,21 @@ const ListJobsites = ({ pageSize, query = '', basicView = false }) => {
             );
           })}
         </Table.Body>
-        <Table.Footer>
-          <Table.Row>
-            <Table.HeaderCell colSpan={basicView ? '2' : '9'}>
-              {jobsitePagination && (
-                <Pagination
-                  boundaryRange={0}
-                  activePage={jobsitePagination.CurrentPage}
-                  onPageChange={pageChangeHandler}
-                  siblingRange={1}
-                  totalPages={Math.ceil(
-                    jobsitePagination.TotalCount / jobsitePagination.PageSize
-                  )}
-                  borderless
-                  size='small'
-                  floated='right'
-                />
-              )}
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Footer>
       </Table>
+      {jobsitePagination && (
+        <Pagination
+          boundaryRange={0}
+          activePage={jobsitePagination.CurrentPage}
+          onPageChange={pageChangeHandler}
+          siblingRange={1}
+          totalPages={Math.ceil(
+            jobsitePagination.TotalCount / jobsitePagination.PageSize
+          )}
+          borderless
+          size='small'
+          floated='right'
+        />
+      )}
     </Fragment>
   );
 };

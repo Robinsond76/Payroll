@@ -3,14 +3,18 @@ import { Button, Header, Icon } from 'semantic-ui-react';
 import { Jobsites } from '../../app/api/agent';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { history } from '../..';
+import { useAlertDispatch } from '../../app/context/alerts/alertContext';
+import { setAlert } from '../../app/context/alerts/alertActions';
 
 const DeleteJobsite = ({ moniker }) => {
   const modalDispatch = useModalDispatch();
+  const alertDispatch = useAlertDispatch();
 
   const onDelete = () => {
     Jobsites.deleteJobsite(moniker).then(() => {
       modalDispatch({ type: 'CLOSE_MODAL' });
       history.push('/jobsites');
+      setAlert(alertDispatch, 'Jobsite Deleted', 'error');
     });
   };
 

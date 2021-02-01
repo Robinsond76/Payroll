@@ -5,11 +5,13 @@ import { TimestampProvider } from './app/context/timestamps/timestampContext';
 import { JobsiteProvider } from './app/context/jobsites/jobsiteContext';
 import { ModalProvider } from './app/context/modal/modalContext';
 import { useAuthDispatch } from './app/context/auth/authContext';
+import { AlertProvider } from './app/context/alerts/alertContext';
 import { loadUser } from './app/context/auth/authActions';
 import PrivateRoute from './app/layout/PrivateRoute';
 
 //components
 import Navbar from './features/nav/Navbar.js';
+import Alerts from './app/layout/Alerts';
 import ViewJobsites from './features/jobsites/ViewJobsites';
 import ModalContainer from './app/common/modals/ModalContainer';
 import NotFound from './app/layout/NotFound';
@@ -44,86 +46,93 @@ const App = () => {
     <Fragment>
       <JobsiteProvider>
         <TimestampProvider>
-          <ModalProvider>
-            <ModalContainer />
-            <Route exact path='/' component={Homepage} />
-            <Route
-              path={'/(.+)'}
-              render={() => (
-                <Fragment>
-                  <Navbar />
-                  <Container style={{ marginTop: '7em' }}>
-                    {/* <Header as='h2' icon='users' content='Payroll App' /> */}
-                    {/* <Link to='/oogabooga'>Test link for notfound page </Link> */}
-                    <Switch>
-                      <PrivateRoute
-                        exact
-                        path='/jobsites'
-                        component={ViewJobsites}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/jobsites/:moniker'
-                        component={JobsiteHistory}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/jobsites/:moniker/:username'
-                        component={EmployeeJobsite}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/timestamps'
-                        component={ViewAllTimestamps}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/timestamps/user'
-                        component={ViewUserTimestamps}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/timestamps/user/:moniker'
-                        component={UserJobsiteTimestamps}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/employees'
-                        component={ListEmployees}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/dashboard'
-                        component={Dashboard}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/employees/payroll'
-                        component={Payroll}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/employees/payroll/:username'
-                        component={EmployeeWorkHistory}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/employees/:username'
-                        component={ViewEmployee}
-                      />
-                      <PrivateRoute
-                        exact
-                        path='/managers'
-                        component={ListManagers}
-                      />
-                      <PrivateRoute exact path='/refresh' component={Refresh} />
-                      <PrivateRoute component={NotFound} />
-                    </Switch>
-                  </Container>
-                </Fragment>
-              )}
-            />
-          </ModalProvider>
+          <AlertProvider>
+            <ModalProvider>
+              <ModalContainer />
+
+              <Route exact path='/' component={Homepage} />
+              <Route
+                path={'/(.+)'}
+                render={() => (
+                  <Fragment>
+                    <Navbar />
+                    <Container style={{ marginTop: '7em' }}>
+                      <Alerts />
+
+                      <Switch>
+                        <PrivateRoute
+                          exact
+                          path='/jobsites'
+                          component={ViewJobsites}
+                        />
+                        <PrivateRoute
+                          exact
+                          path='/jobsites/:moniker'
+                          component={JobsiteHistory}
+                        />
+                        <PrivateRoute
+                          exact
+                          path='/jobsites/:moniker/:username'
+                          component={EmployeeJobsite}
+                        />
+                        <PrivateRoute
+                          exact
+                          path='/timestamps'
+                          component={ViewAllTimestamps}
+                        />
+                        <PrivateRoute
+                          exact
+                          path='/timestamps/user'
+                          component={ViewUserTimestamps}
+                        />
+                        <PrivateRoute
+                          exact
+                          path='/timestamps/user/:moniker'
+                          component={UserJobsiteTimestamps}
+                        />
+                        <PrivateRoute
+                          exact
+                          path='/employees'
+                          component={ListEmployees}
+                        />
+                        <PrivateRoute
+                          exact
+                          path='/dashboard'
+                          component={Dashboard}
+                        />
+                        <PrivateRoute
+                          exact
+                          path='/employees/payroll'
+                          component={Payroll}
+                        />
+                        <PrivateRoute
+                          exact
+                          path='/employees/payroll/:username'
+                          component={EmployeeWorkHistory}
+                        />
+                        <PrivateRoute
+                          exact
+                          path='/employees/:username'
+                          component={ViewEmployee}
+                        />
+                        <PrivateRoute
+                          exact
+                          path='/managers'
+                          component={ListManagers}
+                        />
+                        <PrivateRoute
+                          exact
+                          path='/refresh'
+                          component={Refresh}
+                        />
+                        <PrivateRoute component={NotFound} />
+                      </Switch>
+                    </Container>
+                  </Fragment>
+                )}
+              />
+            </ModalProvider>
+          </AlertProvider>
         </TimestampProvider>
       </JobsiteProvider>
     </Fragment>

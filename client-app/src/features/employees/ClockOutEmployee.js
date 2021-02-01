@@ -3,14 +3,22 @@ import { Button, Header, Icon } from 'semantic-ui-react';
 import { User } from '../../app/api/agent';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { history } from '../..';
+import { useAlertDispatch } from '../../app/context/alerts/alertContext';
+import { setAlert } from '../../app/context/alerts/alertActions';
 
 const ClockOutEmployee = ({ moniker, username }) => {
   const modalDispatch = useModalDispatch();
+  const alertDispatch = useAlertDispatch();
 
   const onDelete = () => {
     User.clockOutEmployee(moniker, username).then(() => {
       modalDispatch({ type: 'CLOSE_MODAL' });
       history.push('/refresh');
+      setAlert(
+        alertDispatch,
+        `Successfully clocked out ${username}`,
+        'success'
+      );
     });
   };
 

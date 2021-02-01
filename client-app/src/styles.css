@@ -1,3 +1,10 @@
+:root {
+  --light-color: #f4f4f4;
+  --update-color: #3594f3;
+  --error-color: #f51b30;
+  --success-color: #2db94e;
+}
+
 body {
   background-color: rgb(234, 234, 234) !important;
 }
@@ -35,6 +42,31 @@ body {
 /* for hh:mm:ss */
 .duration {
   font-size: 0.7rem;
+}
+
+/*Alert Styles ------ */
+.alert {
+  padding: 0.7rem;
+  margin: 1rem 0;
+  opacity: 0.9;
+  background: var(--light-color);
+  color: #333;
+  border-radius: 5px;
+}
+
+.alert-success {
+  background: var(--success-color);
+  color: #fff;
+}
+
+.alert-update {
+  background: var(--update-color);
+  color: #fff;
+}
+
+.alert-error {
+  background: var(--error-color);
+  color: #fff;
 }
 
 /*home page styles*/

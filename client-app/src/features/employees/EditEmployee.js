@@ -6,6 +6,8 @@ import { combineValidators, isRequired } from 'revalidate';
 import { User } from '../../app/api/agent';
 import { FORM_ERROR } from 'final-form';
 
+import { useAlertDispatch } from '../../app/context/alerts/alertContext';
+import { setAlert } from '../../app/context/alerts/alertActions';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { history } from '../..';
@@ -18,6 +20,8 @@ const validate = combineValidators({
 
 const EditEmployee = ({ username, manager = false }) => {
   const modalDispatch = useModalDispatch();
+  const alertDispatch = useAlertDispatch();
+
   const [employee, setEmployee] = React.useState({});
 
   React.useEffect(() => {
@@ -28,6 +32,7 @@ const EditEmployee = ({ username, manager = false }) => {
     User.updateUser(username, values)
       .then((result) => {
         modalDispatch({ type: 'CLOSE_MODAL' });
+        setAlert(alertDispatch, `${username} updated`, 'update');
         if (manager) {
           history.push('/refresh');
         } else {

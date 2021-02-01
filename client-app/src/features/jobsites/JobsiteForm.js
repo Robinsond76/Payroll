@@ -10,6 +10,9 @@ import { history } from '../..';
 import { FORM_ERROR } from 'final-form';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 
+import { useAlertDispatch } from '../../app/context/alerts/alertContext';
+import { setAlert } from '../../app/context/alerts/alertActions';
+
 const validate = combineValidators({
   name: isRequired('name'),
   moniker: isRequired('moniker'),
@@ -22,6 +25,7 @@ const validate = combineValidators({
 
 const JobsiteForm = ({ moniker }) => {
   const modalDispatch = useModalDispatch();
+  const alertDispatch = useAlertDispatch();
   const [loading, setLoading] = React.useState(false);
   const [jobsite, setJobsite] = React.useState({
     name: '',
@@ -62,13 +66,17 @@ const JobsiteForm = ({ moniker }) => {
     };
     try {
       if (moniker) {
-        const editedJobsite = await Jobsites.editJobsite(moniker, formValues);
+        await Jobsites.editJobsite(moniker, formValues);
         modalDispatch({ type: 'CLOSE_MODAL' });
-        history.push(`/jobsites/${editedJobsite.moniker}`);
+        history.push(`/jobsites`);
+
+        setAlert(alertDispatch, 'Edit Successful', 'update');
       } else {
         const newJobsite = await Jobsites.addJobsite(formValues);
         modalDispatch({ type: 'CLOSE_MODAL' });
         history.push(`/jobsites/${newJobsite.moniker}`);
+
+        setAlert(alertDispatch, 'Jobsite Added', 'success');
       }
     } catch (error) {
       return {

@@ -9,6 +9,9 @@ import { combineValidators, isRequired } from 'revalidate';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 
+import { useAlertDispatch } from '../../app/context/alerts/alertContext';
+import { setAlert } from '../../app/context/alerts/alertActions';
+
 const validate = combineValidators({
   username: isRequired('Username'),
   displayName: isRequired('Display Name'),
@@ -19,10 +22,12 @@ const validate = combineValidators({
 const AddEmployee = () => {
   const modalDispatch = useModalDispatch();
   const authDispatch = useAuthDispatch();
+  const alertDispatch = useAlertDispatch();
 
   const handleFinalFormSubmit = (values) =>
     registerUser(values, authDispatch)
       .then(() => modalDispatch({ type: 'CLOSE_MODAL' }))
+      .then(() => setAlert(alertDispatch, 'Added New Employee', 'success'))
       .catch((error) => ({
         [FORM_ERROR]: error,
       }));

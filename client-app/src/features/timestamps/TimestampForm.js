@@ -7,6 +7,9 @@ import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { formatDateTime, reverseFormatDateTime } from '../../app/common/util';
 import { history } from '../..';
 
+import { useAlertDispatch } from '../../app/context/alerts/alertContext';
+import { setAlert } from '../../app/context/alerts/alertActions';
+
 import { combineValidators, isRequired } from 'revalidate';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
 import DateTimeCustomInput from '../../app/common/form/DateTimeCustomInput';
@@ -21,6 +24,7 @@ const validate = combineValidators({
 
 const TimestampForm = ({ username, editTimestamp = false }) => {
   const modalDispatch = useModalDispatch();
+  const alertDispatch = useAlertDispatch();
 
   const [timestamp, setTimestamp] = React.useState({
     username: username,
@@ -59,11 +63,15 @@ const TimestampForm = ({ username, editTimestamp = false }) => {
           editTimestamp.timestampId,
           clockedStamps
         );
+        modalDispatch({ type: 'CLOSE_MODAL' });
+        history.push('/refresh');
+        setAlert(alertDispatch, `Timestamp Updated`, 'update');
       } else {
         await Timestamps.addTimestamp(timestamp);
+        modalDispatch({ type: 'CLOSE_MODAL' });
+        history.push('/refresh');
+        setAlert(alertDispatch, `New Timestamp added`, 'success');
       }
-      modalDispatch({ type: 'CLOSE_MODAL' });
-      history.push('/refresh');
     } catch (error) {
       return { [FORM_ERROR]: error };
     }
