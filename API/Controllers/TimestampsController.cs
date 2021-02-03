@@ -40,48 +40,62 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TimestampNewDto timestampNewDto)
         {
-            //manager status
-            var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
-            if (loggedInUser.Manager == false)
-                return this.StatusCode(StatusCodes.Status401Unauthorized, "Unauthorized: You must be a manager to perform this operation.");
+            try
+            {
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return this.StatusCode(StatusCodes.Status401Unauthorized, "Unauthorized: You must be a manager to perform this operation.");
 
-            //get user
-            var user = await _userRepository.GetUser(timestampNewDto.Username);
-            if (user == null)
-                return NotFound(new RestError(HttpStatusCode.NotFound, new { User = $"User {timestampNewDto.Username} not found" }));
+                //get user
+                var user = await _userRepository.GetUser(timestampNewDto.Username);
+                if (user == null)
+                    return NotFound(new RestError(HttpStatusCode.NotFound, new { User = $"User {timestampNewDto.Username} not found" }));
 
-            //get jobsite
-            var jobsite = await _jobsiteRepository.GetJobsiteAsync(timestampNewDto.Moniker);
-            if (jobsite == null)
-                return NotFound(new RestError(HttpStatusCode.NotFound, new { Jobsite = $"Jobsite {timestampNewDto.Moniker} not found" }));
+                //get jobsite
+                var jobsite = await _jobsiteRepository.GetJobsiteAsync(timestampNewDto.Moniker);
+                if (jobsite == null)
+                    return NotFound(new RestError(HttpStatusCode.NotFound, new { Jobsite = $"Jobsite {timestampNewDto.Moniker} not found" }));
 
-            //confirm clockedOutTimestamp is not passed Now
-            if (timestampNewDto.ClockedOutStamp > DateTime.Now)
-                return BadRequest(new RestError(HttpStatusCode.BadRequest, new { ClockedOutStamp = $"Clocked-Out time cannot be in the future." }));
-            
-            //confirm clockedInTimestamp is not passed clockedOutTimestamp
-            if (timestampNewDto.ClockedInStamp > timestampNewDto.ClockedOutStamp)
-                return BadRequest(new RestError(HttpStatusCode.BadRequest, new { ClockedInStamp = $"Clocked-In time cannot be past Clocked-Out time" }));
+                //confirm clockedOutTimestamp is not past this moment
+                if (timestampNewDto.ClockedOutStamp > DateTime.Now)
+                    return BadRequest(new RestError(HttpStatusCode.BadRequest, new { ClockedOutStamp = $"Clocked-Out time cannot be in the future." }));
+
+                //confirm clockedInTimestamp is not past clockedOutTimestamp
+                if (timestampNewDto.ClockedInStamp > timestampNewDto.ClockedOutStamp)
+                    return BadRequest(new RestError(HttpStatusCode.BadRequest, new { ClockedInStamp = $"Clocked-In time cannot be past Clocked-Out time" }));
 
 
-            if (await _timestampRepository.AddTimestamp(jobsite, user, timestampNewDto.ClockedInStamp, timestampNewDto.ClockedOutStamp))
-                return Ok("Successfully created new timestamp.");
-
+                if (await _timestampRepository.AddTimestamp(jobsite, user, timestampNewDto.ClockedInStamp, timestampNewDto.ClockedOutStamp))
+                    return Ok("Successfully created new timestamp.");
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to create Timestamp.");
+            }
             return BadRequest();
         }
 
         [HttpDelete("{timestampId}")]
         public async Task<IActionResult> Delete(int timestampId)
         {
-            //manager status
-            var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
-            if (loggedInUser.Manager == false)
-                return this.StatusCode(StatusCodes.Status401Unauthorized, "Unauthorized: You must be a manager to perform this operation.");
+            try
+            {
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return this.StatusCode(StatusCodes.Status401Unauthorized, "Unauthorized: You must be a manager to perform this operation.");
 
-            if (await _timestampRepository.DeleteTimestamp(timestampId))
-                return Ok("timestamp deleted");
+                if (await _timestampRepository.DeleteTimestamp(timestampId))
+                    return Ok("timestamp deleted"); 
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to delete timestamp.");
+            }
             //else
             return NotFound(new RestError(HttpStatusCode.NotFound, new { Timestamp = $"Timestamp with id {timestampId} not found" }));
+
         }
 
         [HttpPut("{timestampId}")]
@@ -99,11 +113,11 @@ namespace API.Controllers
                 if (timestamp == null)
                     return NotFound(new RestError(HttpStatusCode.NotFound, new { Timestamp = $"Timestamp with id {timestampId} not found" }));
 
-                //confirm clockedOutTimestamp is not passed Now
+                //confirm clockedOutTimestamp is not past Now
                 if (timestampEditDto.ClockedOutStamp > DateTime.Now)
                     return BadRequest(new RestError(HttpStatusCode.BadRequest, new { ClockedOutStamp = $"Clocked Out time cannot be in the future." }));
 
-                //confirm clockedInTimestamp is not passed clockedOutTimestamp
+                //confirm clockedInTimestamp is not past clockedOutTimestamp
                 if (timestampEditDto.ClockedInStamp > timestampEditDto.ClockedOutStamp)
                     return BadRequest(new RestError(HttpStatusCode.BadRequest, new { ClockedInStamp = $"Clocked In time cannot be past Clocked Out time" }));
 
@@ -160,7 +174,7 @@ namespace API.Controllers
                 return Ok(userWithTimestamps);
             }
             catch (Exception)
-            {
+            { 
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to retrieve user data");
             }
         }
@@ -219,54 +233,71 @@ namespace API.Controllers
         [HttpGet("info")]
         public async Task<ActionResult<object>> TimestampInfo()
         {
-            //manager status
-            var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
-            if (loggedInUser.Manager == false)
-                return this.StatusCode(StatusCodes.Status401Unauthorized, "Unauthorized: You must be a manager to perform this operation.");
-
-            var timestamps = await _timestampRepository.GetTimestamps();
-            var employeeCount = TimestampActions.UniqueEmployeeCount(timestamps);
-            var jobsitesCount = TimestampActions.UniqueJobsiteCount(timestamps);
-
-            var dto = new
+            try
             {
-                TotalTimestamps = timestamps.Count,
-                TotalUniqueEmployees = employeeCount,
-                TotalUniqueJobsites = jobsitesCount
-            };
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return this.StatusCode(StatusCodes.Status401Unauthorized, "Unauthorized: You must be a manager to perform this operation.");
 
-            return Ok(dto);
+                //get all timestamps
+                var timestamps = await _timestampRepository.GetTimestamps();
+                var employeeCount = TimestampActions.UniqueEmployeeCount(timestamps);
+                var jobsitesCount = TimestampActions.UniqueJobsiteCount(timestamps);
+
+                var dto = new
+                {
+                    TotalTimestamps = timestamps.Count,
+                    TotalUniqueEmployees = employeeCount,
+                    TotalUniqueJobsites = jobsitesCount
+                };
+
+                return Ok(dto);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to query database.");
+            }
+
+            
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTimestamps(
+        public async Task<ActionResult<TimestampGeneralDto>> GetTimestamps(
             [FromQuery] TimestampParameters timestampParameters)
         {
-            //manager status
-            var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
-            if (loggedInUser.Manager == false)
-                return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
-
-            //returns a paged list
-            var timestamps = await _timestampRepository.GetTimestamps(timestampParameters);
-
-            var metadata = new
+            try
             {
-               timestamps.TotalCount,
-               timestamps.PageSize,
-               timestamps.CurrentPage,
-               timestamps.HasNext,
-               timestamps.HasPrevious
-            };
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
 
-            //Add page info to header
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                //returns a paged list
+                var timestamps = await _timestampRepository.GetTimestamps(timestampParameters);
 
-            return Ok(_mapper.Map<ICollection<TimestampGeneralDto>>(timestamps));
+                var metadata = new
+                {
+                    timestamps.TotalCount,
+                    timestamps.PageSize,
+                    timestamps.CurrentPage,
+                    timestamps.HasNext,
+                    timestamps.HasPrevious
+                };
+
+                //Add page info to header
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+                return Ok(_mapper.Map<ICollection<TimestampGeneralDto>>(timestamps));
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to query database.");
+            }   
         }
 
         [HttpGet("workhistory/{username}")]
-        public async Task<IActionResult> GetUserWorkHistory(string username,
+        public async Task<ActionResult<UserWorkHistoryWithTotalDto>> GetUserWorkHistory(string username,
             [FromQuery] WorkHistoryParameters workHistoryParameters)
         {
             try
@@ -303,116 +334,151 @@ namespace API.Controllers
         }
         
         [HttpGet("workhistory")]
-        public async Task<IActionResult> GetWorkHistory(
+        public async Task<ActionResult<UserWorkHistoryWithTotalDto>> GetWorkHistory(
             [FromQuery] WorkHistoryParameters workHistoryParameters)
         {
-            //manager status
-            var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
-            if (loggedInUser.Manager == false)
-                return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
+            try
+            {
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
 
-            //max 45 days
-            var timestamps = await _timestampRepository.GetTimestamps(workHistoryParameters);
-            //form custom DTO based on timestamps
-            var history = TimestampActions.GetWorkHistory(timestamps);
+                //max 45 days
+                var timestamps = await _timestampRepository.GetTimestamps(workHistoryParameters);
+                //form custom DTO based on timestamps
+                var history = TimestampActions.GetWorkHistory(timestamps);
 
-            return Ok(history);
+                return Ok(history);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to query database.");
+            }
         }
 
         [HttpGet("jobsitesVisited")]
-        public async Task<IActionResult> GetJobsitesVisited(
+        public async Task<ActionResult<PagedList<JobsiteBasicDto>>> GetJobsitesVisited(
             [FromQuery] TimestampParameters timestampParameters)
         {
-            //manager status
-            var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
-            if (loggedInUser.Manager == false)
-                return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
-
-            var timestamps = await _timestampRepository.GetTimestampsUnpaged(timestampParameters);
-
-            //get Jobsites visited
-            var jobsitesVisited = TimestampActions.GetJobsitesFromTimestamps(timestamps);
-
-            //page the results
-            var pagedJobsitesVisited = PagedList<JobsiteBasicDto>.ToPagedListFromList(
-                jobsitesVisited, 
-                timestampParameters.PageNumber, 
-                timestampParameters.PageSize);
-
-            var metadata = new
+            try
             {
-                pagedJobsitesVisited.TotalCount,
-                pagedJobsitesVisited.PageSize,
-                pagedJobsitesVisited.CurrentPage,
-                pagedJobsitesVisited.HasNext,
-                pagedJobsitesVisited.HasPrevious
-            };
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
 
-            //Add page info to header
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                //get all timestamps within the time parameters
+                var timestamps = await _timestampRepository.GetTimestampsUnpaged(timestampParameters);
 
-            return Ok(pagedJobsitesVisited);
+                //get Jobsites visited from these timestamps
+                var jobsitesVisited = TimestampActions.GetJobsitesFromTimestamps(timestamps);
+
+                //page the results of the jobsites visited
+                var pagedJobsitesVisited = PagedList<JobsiteBasicDto>.ToPagedListFromList(
+                    jobsitesVisited,
+                    timestampParameters.PageNumber,
+                    timestampParameters.PageSize);
+
+                var metadata = new
+                {
+                    pagedJobsitesVisited.TotalCount,
+                    pagedJobsitesVisited.PageSize,
+                    pagedJobsitesVisited.CurrentPage,
+                    pagedJobsitesVisited.HasNext,
+                    pagedJobsitesVisited.HasPrevious
+                };
+
+                //Add page info to header
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+                return Ok(pagedJobsitesVisited);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to query database.");
+            }
+
+            
         }
-
 
         [HttpGet("clockedin")]
         public async Task<ActionResult<TimestampClockedInDto>> EmployeesCurrentlyClockedIn([FromQuery] PageParameters pageParameters)
         {
-            //manager status
-            var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
-            if (loggedInUser.Manager == false)
-                return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
-
-            var timestamps = await _timestampRepository.TimestampsCurrentlyClockedInPaged(pageParameters);
-
-            var metadata = new
+            try
             {
-                timestamps.TotalCount,
-                timestamps.PageSize,
-                timestamps.CurrentPage,
-                timestamps.HasNext,
-                timestamps.HasPrevious
-            };
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
 
-            //Add page info to header
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                //get all timestamps that are currently clockedIn, paged
+                var timestamps = await _timestampRepository.TimestampsCurrentlyClockedInPaged(pageParameters);
 
-            return Ok(_mapper.Map<ICollection<TimestampClockedInDto>>(timestamps));
+                var metadata = new
+                {
+                    timestamps.TotalCount,
+                    timestamps.PageSize,
+                    timestamps.CurrentPage,
+                    timestamps.HasNext,
+                    timestamps.HasPrevious
+                };
+
+                //Add page info to header
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+                return Ok(_mapper.Map<ICollection<TimestampClockedInDto>>(timestamps));
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to query database.");
+            }
+
+            
+
+            
         }
 
         [HttpGet("Jobsitesclockedin")]
         public async Task<ActionResult<TimestampClockedInDto>> JobsitesCurrentlyClockedIn([FromQuery] PageParameters pageParameters)
         {
-            //manager status
-            var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
-            if (loggedInUser.Manager == false)
-                return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
-
-            //get clocked In timestamps
-            var timestamps = await _timestampRepository.TimestampsCurrentlyClockedIn();
-
-            //get list of Clocked In Jobsites from timestamps
-            var clockedInJobsites = TimestampActions.ClockedInJobsites(timestamps);
-
-            //page the clockedInJobsites
-            var pagedClockedInJobsites = PagedList<object>.ToPagedListFromList(
-                clockedInJobsites,
-                pageParameters.PageNumber,
-                pageParameters.PageSize);
-
-            var metadata = new
+            try
             {
-                pagedClockedInJobsites.TotalCount,
-                pagedClockedInJobsites.PageSize,
-                pagedClockedInJobsites.CurrentPage,
-                pagedClockedInJobsites.HasNext,
-                pagedClockedInJobsites.HasPrevious
-            };
+                //manager status
+                var loggedInUser = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
+                if (loggedInUser.Manager == false)
+                    return Unauthorized(new RestError(HttpStatusCode.Unauthorized, new { Unauthorized = "Unauthorized to perform action" }));
 
-            //Add page info to header
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                //get clocked In timestamps
+                var timestamps = await _timestampRepository.TimestampsCurrentlyClockedIn();
 
-            return Ok(pagedClockedInJobsites);
+                //get list of Clocked In Jobsites from timestamps
+                var clockedInJobsites = TimestampActions.ClockedInJobsites(timestamps);
+
+                //page the clockedInJobsites
+                var pagedClockedInJobsites = PagedList<object>.ToPagedListFromList(
+                    clockedInJobsites,
+                    pageParameters.PageNumber,
+                    pageParameters.PageSize);
+
+                var metadata = new
+                {
+                    pagedClockedInJobsites.TotalCount,
+                    pagedClockedInJobsites.PageSize,
+                    pagedClockedInJobsites.CurrentPage,
+                    pagedClockedInJobsites.HasNext,
+                    pagedClockedInJobsites.HasPrevious
+                };
+
+                //Add page info to header
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+                return Ok(pagedClockedInJobsites);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Server Error: Failed to retrieve all jobsites.");
+            }
         }
     }
 }

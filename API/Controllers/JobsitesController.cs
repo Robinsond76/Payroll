@@ -51,6 +51,7 @@ namespace API.Controllers
             {
                 var results = await _repository.GetAllJobsitesAsync(pageParameters);
 
+                //create metadata based on PagedList pagination
                 var metadata = new
                 {
                     results.TotalCount,
@@ -106,10 +107,11 @@ namespace API.Controllers
                 if (jobsite == null)
                     return NotFound($"Could not find jobsite with moniker of {moniker}");
 
+                //get the timestamps for the jobsite in paged format
                 var pagedTimestamps = await _timestampRepository.GetTimestampsForJobByDate(jobsite, timestampParameters);
                 jobsite.Timestamps = pagedTimestamps;
 
-                //Create MetaData
+                //Create metadata based on PagedList pagination
                 var metadata = new
                 {
                     pagedTimestamps.TotalCount,
@@ -152,8 +154,10 @@ namespace API.Controllers
                 var exists = await _repository.JobsiteExistsAsync(model.Moniker);
                 if (exists) return BadRequest(new RestError(HttpStatusCode.BadRequest, new { Moniker = $"Job moniker {model.Moniker} already exists" }));
 
+                //add jobsite to database
                 var jobsite = _mapper.Map<Jobsite>(model);
                 _repository.Add(jobsite);
+
                 if (await _repository.SaveChangesAsync())
                     return CreatedAtRoute("GetJobsiteAsync", new { moniker = model.Moniker }, _mapper.Map<JobsiteDto>(jobsite));
             }
@@ -230,10 +234,12 @@ namespace API.Controllers
         {
             try
             {
+                //find jobsite
                 var jobsite = await _repository.GetJobsiteAsync(moniker);
                 if (jobsite == null)
                     return NotFound();
 
+                //get current user
                 var user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
 
                 //if already clocked in, bad request
@@ -294,13 +300,14 @@ namespace API.Controllers
         {
             try
             {
+                //find jobsite
                 var jobsite = await _repository.GetJobsiteAsync(moniker);
                 if (jobsite == null)
                     return NotFound();
 
                 AppUser user;
 
-                //code below is for managers to clock out employees
+                //code below is for managers to clock out other employees
                 if(username != null)
                 {
                     //manager status
@@ -311,6 +318,7 @@ namespace API.Controllers
                         user = await _userRepository.GetUser(username);
                 } else
                 {
+                    //if not manager, clock-out functionality limited to self
                     user = await _userRepository.GetUser(_userAccessor.GetCurrentUsername());
                 }
 
@@ -337,11 +345,12 @@ namespace API.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> SearchJobsites([FromQuery] string q, 
+        public async Task<ActionResult<List<JobsiteDto>>> SearchJobsites([FromQuery] string q, 
             [FromQuery] PageParameters pageParameters)
         {
             try
             {
+                //returns a paged list of query matches
                 var searchResults = await _repository.SearchJobsites(q, pageParameters);
 
                 var metadata = new
