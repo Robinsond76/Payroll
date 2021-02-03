@@ -3,17 +3,15 @@ import { Form as FinalForm, Field } from 'react-final-form';
 import { Button, Form, Header, Search } from 'semantic-ui-react';
 import TextInput from '../../app/common/form/TextInput';
 import { FORM_ERROR } from 'final-form';
-import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { formatDateTime, reverseFormatDateTime } from '../../app/common/util';
-import { history } from '../..';
-
-import { useAlertDispatch } from '../../app/context/alerts/alertContext';
-import { setAlert } from '../../app/context/alerts/alertActions';
-
 import { combineValidators, isRequired } from 'revalidate';
+import { history } from '../..';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
 import DateTimeCustomInput from '../../app/common/form/DateTimeCustomInput';
 import { Timestamps, Jobsites } from '../../app/api/agent';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
+import { useAlertDispatch } from '../../app/context/alerts/alertContext';
+import { setAlert } from '../../app/context/alerts/alertActions';
 
 const validate = combineValidators({
   username: isRequired('Username'),
@@ -22,9 +20,13 @@ const validate = combineValidators({
   clockedOutStamp: isRequired('Clocked Out Time'),
 });
 
+// modal - form used to add/edit a timestamp
+//if editTimestamp is true, will load form with data and prevent changing jobsite
+
 const TimestampForm = ({ username, editTimestamp = false }) => {
   const modalDispatch = useModalDispatch();
   const alertDispatch = useAlertDispatch();
+  const pageSize = 10;
 
   const [timestamp, setTimestamp] = React.useState({
     username: username,
@@ -47,6 +49,7 @@ const TimestampForm = ({ username, editTimestamp = false }) => {
 
   const handleFinalFormSubmit = async (values) => {
     try {
+      //format values into a timestamp
       const timestamp = {
         username: values.username,
         moniker: values.moniker,
@@ -54,6 +57,7 @@ const TimestampForm = ({ username, editTimestamp = false }) => {
         clockedOutStamp: formatDateTime(values.clockedOutStamp),
       };
 
+      //editing timestamp requires only two fields
       if (editTimestamp) {
         const clockedStamps = {
           clockedInStamp: timestamp.clockedInStamp,
@@ -77,7 +81,7 @@ const TimestampForm = ({ username, editTimestamp = false }) => {
     }
   };
 
-  //Rest of code supports the job search component
+  //Ccode here supports the job search bar component----------------
   const [results, setResults] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [selectionValue, setSelectionValue] = React.useState('');
@@ -85,7 +89,7 @@ const TimestampForm = ({ username, editTimestamp = false }) => {
   const handleSearchChange = async (e, { value }) => {
     setSelectionValue(value);
     setLoading(true);
-    let searchResults = await Jobsites.listJobsites(value, 10, 1);
+    let searchResults = await Jobsites.listJobsites(value, pageSize, 1);
     searchResults = searchResults.data;
 
     let newResults = [];
@@ -104,6 +108,7 @@ const TimestampForm = ({ username, editTimestamp = false }) => {
     setTimestamp({ ...timestamp, moniker: result.title });
   };
 
+  // end of job search bar component -----------------------------
   return (
     <Fragment>
       <FinalForm

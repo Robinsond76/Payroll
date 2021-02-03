@@ -1,11 +1,12 @@
 import React, { Fragment } from 'react';
 import { Button, Header, Icon } from 'semantic-ui-react';
+import { history } from '../..';
 import { Jobsites } from '../../app/api/agent';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
-import { history } from '../..';
 import { useAlertDispatch } from '../../app/context/alerts/alertContext';
 import { setAlert } from '../../app/context/alerts/alertActions';
 
+//modal to delete jobsites
 const DeleteJobsite = ({ moniker }) => {
   const modalDispatch = useModalDispatch();
   const alertDispatch = useAlertDispatch();

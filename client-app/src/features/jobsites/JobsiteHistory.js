@@ -11,14 +11,13 @@ import {
 } from 'semantic-ui-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Jobsites } from '../../app/api/agent';
-import { useTimestampState } from '../../app/context/timestamps/timestampContext';
 import JobsiteHistoryTable from '../tables/JobsiteHistoryTable';
 import FilterDateForm from '../../app/layout/FilterDateForm';
-
-import { openModal } from '../../app/context/modal/modalActions';
-import { useModalDispatch } from '../../app/context/modal/modalContext';
 import JobsiteForm from './JobsiteForm';
 import DeleteJobsite from './DeleteJobsite';
+import { useTimestampState } from '../../app/context/timestamps/timestampContext';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
+import { openModal } from '../../app/context/modal/modalActions';
 
 const JobsiteHistory = ({ match }) => {
   const moniker = match.params.moniker;

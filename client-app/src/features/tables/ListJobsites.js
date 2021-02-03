@@ -1,6 +1,12 @@
 import React, { Fragment, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Pagination, Table } from 'semantic-ui-react';
+//import context
+import {
+  useJobsiteState,
+  useJobsiteDispatch,
+} from '../../app/context/jobsites/jobsiteContext';
+import { useTimestampState } from '../../app/context/timestamps/timestampContext';
 
 // import actions
 import {
@@ -8,12 +14,11 @@ import {
   getJobsitesVisitedByDate,
 } from '../../app/context/jobsites/jobsiteActions';
 
-//import context
-import {
-  useJobsiteState,
-  useJobsiteDispatch,
-} from '../../app/context/jobsites/jobsiteContext';
-import { useTimestampState } from '../../app/context/timestamps/timestampContext';
+//this is a table component
+//pageSize: determines how many results to return per page on table
+//query: The query is necessary for loading pages beyond page one of query in the
+//'View Jobsites' component
+//basicView: used to display only two columns. If true, returns jobsites visited
 
 const ListJobsites = ({ pageSize, query = '', basicView = false }) => {
   const jDispatch = useJobsiteDispatch();

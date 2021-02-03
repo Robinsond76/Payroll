@@ -1,16 +1,16 @@
 import React, { Fragment } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Button, Form, Header } from 'semantic-ui-react';
-import TextInput from '../../app/common/form/TextInput';
 import { combineValidators, isRequired } from 'revalidate';
+import TextInput from '../../app/common/form/TextInput';
 import { User } from '../../app/api/agent';
+import { history } from '../..';
 import { FORM_ERROR } from 'final-form';
 
-import { useAlertDispatch } from '../../app/context/alerts/alertContext';
-import { setAlert } from '../../app/context/alerts/alertActions';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
+import { useAlertDispatch } from '../../app/context/alerts/alertContext';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
-import { history } from '../..';
+import { setAlert } from '../../app/context/alerts/alertActions';
 
 const validate = combineValidators({
   username: isRequired('Username'),
@@ -18,6 +18,7 @@ const validate = combineValidators({
   email: isRequired('Email'),
 });
 
+//modal to Edit Employee
 const EditEmployee = ({ username, manager = false }) => {
   const modalDispatch = useModalDispatch();
   const alertDispatch = useAlertDispatch();

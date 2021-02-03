@@ -10,12 +10,11 @@ import {
   Segment,
 } from 'semantic-ui-react';
 import ListJobsites from '../tables/ListJobsites';
-import { openModal } from '../../app/context/modal/modalActions';
-import { useModalDispatch } from '../../app/context/modal/modalContext';
 import JobsiteForm from './JobsiteForm';
-
-import { getJobsites } from '../../app/context/jobsites/jobsiteActions';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { useJobsiteDispatch } from '../../app/context/jobsites/jobsiteContext';
+import { getJobsites } from '../../app/context/jobsites/jobsiteActions';
+import { openModal } from '../../app/context/modal/modalActions';
 
 // url: /jobsites
 const ViewJobsites = () => {
@@ -24,10 +23,13 @@ const ViewJobsites = () => {
   const [query, setQuery] = React.useState('');
   const pageSize = 10;
 
+  //getJobsites loads the results and pagination into context upon searching,
+  //which is then retrieved by the 'ListJobsites' table component to display results
   const searchJobsites = (query) => {
     getJobsites(jobsiteDispatch, query, pageSize);
   };
 
+  //set query on search input change
   const onChange = (e) => {
     setQuery(e.target.value);
   };

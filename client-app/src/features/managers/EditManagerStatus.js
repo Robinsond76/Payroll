@@ -7,11 +7,15 @@ import { history } from '../..';
 import { useAlertDispatch } from '../../app/context/alerts/alertContext';
 import { setAlert } from '../../app/context/alerts/alertActions';
 
+//modal to edit manager status
+//if revoke is true, component's purpose is confirm revoking a user
+//if false, component's purpose is to confirm making a user a manager
+
 const EditManagerStatus = ({ username, revoke = false }) => {
   const modalDispatch = useModalDispatch();
   const alertDispatch = useAlertDispatch();
 
-  const onDelete = () => {
+  const onSubmit = () => {
     if (revoke) {
       User.editManager(username, false).then(() => {
         modalDispatch({ type: 'CLOSE_MODAL' });
@@ -49,7 +53,7 @@ const EditManagerStatus = ({ username, revoke = false }) => {
         <Button
           color='green'
           inverted
-          onClick={onDelete}
+          onClick={onSubmit}
           style={{ marginBottom: '5px' }}
         >
           <Icon name='checkmark' /> Yes

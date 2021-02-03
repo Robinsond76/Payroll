@@ -2,15 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Divider, Header, Icon, Popup, Table } from 'semantic-ui-react';
 import { Timestamps } from '../../app/api/agent';
+import addDays from 'date-fns/addDays';
+import format from 'date-fns/format';
+import FilterDateForm from '../../app/layout/FilterDateForm';
 import {
   useTimestampState,
   useTimestampDispatch,
 } from '../../app/context/timestamps/timestampContext';
-import FilterDateForm from '../../app/layout/FilterDateForm';
-import addDays from 'date-fns/addDays';
-import format from 'date-fns/format';
 
 // url: /employees/payroll/{username}
+
 const EmployeeWorkHistory = ({ match }) => {
   const username = match.params.username;
 
@@ -18,13 +19,14 @@ const EmployeeWorkHistory = ({ match }) => {
   const { fromDate, toDate } = useTimestampState();
   const timestampDispatch = useTimestampDispatch();
 
-  //set initial FromDate
+  //set initial FromDate on load
   React.useEffect(() => {
     const oneWeekAgo = addDays(new Date(), -7);
     const formattedOneWeekAgo = format(oneWeekAgo, 'MM/dd/yyyy');
     timestampDispatch({ type: 'SET_FROM_DATE', payload: formattedOneWeekAgo });
   }, [timestampDispatch]);
 
+  //get work history on load
   React.useEffect(() => {
     Timestamps.getUserWorkHistory(username, fromDate, toDate).then((result) => {
       setEmployee(result.data);

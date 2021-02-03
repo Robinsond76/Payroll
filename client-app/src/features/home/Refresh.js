@@ -6,12 +6,7 @@ const Refresh = (props) => {
     props.history.goBack();
   }, [props.history]);
 
-  return (
-    <React.Fragment>
-      Loading...
-      <LoadingComponent />
-    </React.Fragment>
-  );
+  return <LoadingComponent />;
 };
 
 export default Refresh;

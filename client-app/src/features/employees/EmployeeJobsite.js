@@ -9,11 +9,9 @@ import {
   Segment,
 } from 'semantic-ui-react';
 import FilterDateForm from '../../app/layout/FilterDateForm';
-
 import ListJobsiteTimestamps from '../tables/ListJobsiteTimestamps';
 
 // url: '/jobsites/:moniker/:username'
-
 //This page lists all timestamps at a jobsite for a particular user (manager viewing)
 
 const EmployeeJobsite = ({ match }) => {
@@ -26,10 +24,13 @@ const EmployeeJobsite = ({ match }) => {
       <Header as='h2' color='teal'>
         Jobsite: {moniker}
       </Header>
+
       <Button color='blue' as={Link} to={`/jobsites/${moniker}`} size='small'>
         See all timestamps
       </Button>
+
       <Divider />
+
       <Header
         as='h4'
         color='teal'

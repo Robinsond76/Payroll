@@ -27,6 +27,7 @@ const ListJobsiteTimestamps = ({
 
   const loadTimestamps = useCallback(
     (activePage) => {
+      //retrieves timestamps at jobsite for current logged-in user
       if (forCurrentUser) {
         Timestamps.getCurrentUserJobsiteTimestamps(
           moniker,
@@ -39,6 +40,7 @@ const ListJobsiteTimestamps = ({
           setPagination(JSON.parse(result.headers['x-pagination']));
         });
       } else if (!forCurrentUser && username) {
+        //retrieves timestamps at jobsite for any user
         Timestamps.getAnyUserJobsiteTimestamps(
           moniker,
           username,
@@ -51,6 +53,7 @@ const ListJobsiteTimestamps = ({
           setPagination(JSON.parse(result.headers['x-pagination']));
         });
       } else {
+        //retrieves all timestamps at a jobsite. Not used right now
         Timestamps.getJobsiteTimestamps(
           moniker,
           pageSize,

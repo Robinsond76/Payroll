@@ -9,103 +9,7 @@ body {
   background-color: rgb(234, 234, 234) !important;
 }
 
-.ui.inverted.top.fixed.menu {
-  background-color: #125031;
-}
-
-/* For managing user Timestamps*/
-.manage-edit {
-  color: #4183c4;
-  cursor: pointer;
-}
-
-.manage-delete {
-  color: red;
-  cursor: pointer;
-}
-
-.clockOut {
-  color: red;
-  font-size: 1.1rem;
-  cursor: pointer;
-}
-
-.view-jobsites-search {
-  margin-right: 38px;
-}
-
-/*Search Jobsites Bar */
-.ui.input {
-  width: 100%;
-}
-
-/* for hh:mm:ss */
-.duration {
-  font-size: 0.7rem;
-}
-
-/*Alert Styles ------ */
-.alert {
-  padding: 0.7rem;
-  margin: 1rem 0;
-  opacity: 0.9;
-  background: var(--light-color);
-  color: #333;
-  border-radius: 5px;
-}
-
-.alert-success {
-  background: var(--success-color);
-  color: #fff;
-}
-
-.alert-update {
-  background: var(--update-color);
-  color: #fff;
-}
-
-.alert-error {
-  background: var(--error-color);
-  color: #fff;
-}
-
-.employee-name {
-  color: #333;
-  font-size: 1.1rem;
-  margin-left: 5px;
-}
-
-.employees-list {
-  margin: 0 5px 20px 0;
-  padding: 0;
-  list-style: none;
-  display: column;
-}
-
-.employees-list li {
-  margin-left: 10px;
-  text-decoration: none;
-  font-size: 1.1rem;
-}
-
-.employees-list li a {
-  color: #333;
-}
-
-.payroll-notes {
-  margin-bottom: 15px;
-}
-
-.payroll-notes h4.ui.teal.header {
-  margin-bottom: 0;
-}
-
-.payroll-notes p {
-  margin: 0 5px;
-  font-style: italic;
-}
-
-/*home page styles*/
+/*home page styles -----------------------------*/
 
 .masthead {
   display: flex;
@@ -136,7 +40,99 @@ body {
 
 /*end home page styles*/
 
-/*Search Filter Form */
+/*Top Nav bar */
+.ui.inverted.top.fixed.menu {
+  background-color: #125031;
+}
+
+/*Clock out button used in dashboard */
+.clockOut {
+  color: red;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+/*Search Jobsites Bar in ViewJobsites, places bar within container */
+.view-jobsites-search {
+  margin-right: 38px;
+}
+
+/*Search Jobsites Bar in general */
+.ui.input {
+  width: 100%;
+}
+
+/* for hh:mm:ss */
+.duration {
+  font-size: 0.7rem;
+}
+
+/*Alert Styles -------------------------- */
+.alert {
+  padding: 0.7rem;
+  margin: 1rem 0;
+  opacity: 0.9;
+  background: var(--light-color);
+  color: #333;
+  border-radius: 5px;
+}
+
+.alert-success {
+  background: var(--success-color);
+  color: #fff;
+}
+
+.alert-update {
+  background: var(--update-color);
+  color: #fff;
+}
+
+.alert-error {
+  background: var(--error-color);
+  color: #fff;
+}
+
+/* for employee name in EmployeeJobsite title*/
+.employee-name {
+  color: #333;
+  font-size: 1.1rem;
+  margin-left: 5px;
+}
+
+/* For the list of employees at JobsiteHistory */
+.employees-list {
+  margin: 0 5px 20px 0;
+  padding: 0;
+  list-style: none;
+  display: column;
+}
+
+.employees-list li {
+  margin-left: 10px;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.employees-list li a {
+  color: #333;
+}
+/*------------------------*/
+
+/*payroll Notes section in Payroll Page*/
+.payroll-notes {
+  margin-bottom: 15px;
+}
+
+.payroll-notes h4.ui.teal.header {
+  margin-bottom: 0;
+}
+
+.payroll-notes p {
+  margin: 0 5px;
+  font-style: italic;
+}
+
+/*Search Filter Form ------------ */
 
 .Filter-Date-Form {
   display: flex;
@@ -153,6 +149,7 @@ body {
   width: 200px;
 }
 
+/*Home page items ------------ */
 .homepage-log-out button.ui.button {
   width: 150px;
 }

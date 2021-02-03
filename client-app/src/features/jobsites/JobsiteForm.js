@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
 import { Jobsites } from '../../app/api/agent';
-import { getJobsite } from '../../app/context/jobsites/jobsiteActions';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Button, Form, Header, Divider } from 'semantic-ui-react';
 import TextInput from '../../app/common/form/TextInput';
@@ -9,10 +8,11 @@ import ErrorMessage from '../../app/common/form/ErrorMessage';
 import { history } from '../..';
 import { FORM_ERROR } from 'final-form';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
-
 import { useAlertDispatch } from '../../app/context/alerts/alertContext';
 import { setAlert } from '../../app/context/alerts/alertActions';
+import { getJobsite } from '../../app/context/jobsites/jobsiteActions';
 
+//validator to validate form
 const validate = combineValidators({
   name: isRequired('name'),
   moniker: isRequired('moniker'),
@@ -42,6 +42,7 @@ const JobsiteForm = ({ moniker }) => {
   useEffect(() => {
     if (moniker) {
       setLoading(true);
+      //the function below was necessary to work with final forms
       getJobsite(moniker)
         .then((result) => {
           setJobsite(result);
@@ -65,6 +66,7 @@ const JobsiteForm = ({ moniker }) => {
       },
     };
     try {
+      //if moniker is true, then submitting means editting the form
       if (moniker) {
         await Jobsites.editJobsite(moniker, formValues);
         modalDispatch({ type: 'CLOSE_MODAL' });
@@ -72,6 +74,7 @@ const JobsiteForm = ({ moniker }) => {
 
         setAlert(alertDispatch, 'Edit Successful', 'update');
       } else {
+        // if moniker is not present, form submission means new jobsite
         const newJobsite = await Jobsites.addJobsite(formValues);
         modalDispatch({ type: 'CLOSE_MODAL' });
         history.push(`/jobsites/${newJobsite.moniker}`);

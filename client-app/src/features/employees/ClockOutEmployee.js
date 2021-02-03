@@ -1,11 +1,12 @@
 import React, { Fragment } from 'react';
 import { Button, Header, Icon } from 'semantic-ui-react';
 import { User } from '../../app/api/agent';
-import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { history } from '../..';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { useAlertDispatch } from '../../app/context/alerts/alertContext';
 import { setAlert } from '../../app/context/alerts/alertActions';
 
+//modal to clock out employee
 const ClockOutEmployee = ({ moniker, username }) => {
   const modalDispatch = useModalDispatch();
   const alertDispatch = useAlertDispatch();

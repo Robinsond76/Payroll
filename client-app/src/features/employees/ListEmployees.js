@@ -23,6 +23,7 @@ const ListEmployees = () => {
   const pageSize = 10;
   const pageOne = 1;
 
+  //load employees on page load
   React.useEffect(() => {
     User.getUsers(pageSize, pageOne).then((result) => {
       setUsers(result.data);

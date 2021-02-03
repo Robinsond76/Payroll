@@ -1,15 +1,14 @@
 import React, { Fragment } from 'react';
+import { FORM_ERROR } from 'final-form';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Button, Form, Header } from 'semantic-ui-react';
-import TextInput from '../../app/common/form/TextInput';
-import { useAuthDispatch } from '../../app/context/auth/authContext';
-import { registerUser } from '../../app/context/auth/authActions';
-import { FORM_ERROR } from 'final-form';
 import { combineValidators, isRequired } from 'revalidate';
+import TextInput from '../../app/common/form/TextInput';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
+import { useAuthDispatch } from '../../app/context/auth/authContext';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
-
 import { useAlertDispatch } from '../../app/context/alerts/alertContext';
+import { registerUser } from '../../app/context/auth/authActions';
 import { setAlert } from '../../app/context/alerts/alertActions';
 
 const validate = combineValidators({
@@ -19,6 +18,7 @@ const validate = combineValidators({
   password: isRequired('password'),
 });
 
+//Modal form to add employee
 const AddEmployee = () => {
   const modalDispatch = useModalDispatch();
   const authDispatch = useAuthDispatch();

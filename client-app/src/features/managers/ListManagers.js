@@ -9,13 +9,13 @@ import {
   Divider,
 } from 'semantic-ui-react';
 import { User } from '../../app/api/agent';
-import { openModal } from '../../app/context/modal/modalActions';
-import { useModalDispatch } from '../../app/context/modal/modalContext';
 import EditEmployee from '../employees/EditEmployee';
 import EditManagerStatus from './EditManagerStatus';
+import { openModal } from '../../app/context/modal/modalActions';
+import { useModalDispatch } from '../../app/context/modal/modalContext';
 
 const ListManagers = () => {
-  const pageSize = 3;
+  const pageSize = 10;
   const pageOne = 1;
 
   const [managers, setManagers] = React.useState([]);

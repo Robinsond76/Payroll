@@ -15,6 +15,12 @@ import {
   useTimestampDispatch,
 } from '../../app/context/timestamps/timestampContext';
 
+//This is a table component
+//username: If username is provided, will retrieve that user's timestamps
+//forCurrentUser: table will load currently logged in user's timestamps, otherwise, everyone's
+//showEditDelete: Will show options to edit/delete the timestamps
+//forEmployeeView: If true, will change certain links on table
+
 const ListTimestamps = ({
   pageSize,
   username,

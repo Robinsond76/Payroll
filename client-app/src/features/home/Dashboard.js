@@ -31,6 +31,7 @@ const Dashboard = () => {
     });
   }, []);
 
+  //on load, load jobsites and timestamps
   React.useEffect(() => {
     loadJobsites(pageSize, pageOne);
     loadTimestamps(pageSize, pageOne);
@@ -44,6 +45,7 @@ const Dashboard = () => {
     loadTimestamps(pageSize, activePage);
   };
 
+  //below is the jobsites component that will load on a tab pane - minimize for better view
   const Jobsites = () => (
     <Fragment>
       <h3>Jobsites Currently Clocked Into</h3>
@@ -89,6 +91,7 @@ const Dashboard = () => {
     </Fragment>
   );
 
+  //below is the employees component that will load on a tab pane - minimize for better view
   const Employees = () => (
     <Fragment>
       <h3>Employees Currently Clocked In</h3>
@@ -165,6 +168,7 @@ const Dashboard = () => {
     </Fragment>
   );
 
+  //panes that will be loaded on the dashboard
   const panes = [
     {
       menuItem: 'Jobsites',
@@ -184,6 +188,7 @@ const Dashboard = () => {
     },
   ];
 
+  //the dashboard
   return (
     <>
       <Header
