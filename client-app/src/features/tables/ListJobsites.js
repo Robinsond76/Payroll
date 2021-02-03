@@ -93,20 +93,22 @@ const ListJobsites = ({ pageSize, query = '', basicView = false }) => {
           })}
         </Table.Body>
       </Table>
-      {jobsitePagination && (
-        <Pagination
-          boundaryRange={0}
-          activePage={jobsitePagination.CurrentPage}
-          onPageChange={pageChangeHandler}
-          siblingRange={1}
-          totalPages={Math.ceil(
-            jobsitePagination.TotalCount / jobsitePagination.PageSize
-          )}
-          borderless
-          size='small'
-          floated='right'
-        />
-      )}
+      <div style={{ width: '100%', overflow: 'auto' }}>
+        {jobsitePagination && (
+          <Pagination
+            boundaryRange={0}
+            activePage={jobsitePagination.CurrentPage}
+            onPageChange={pageChangeHandler}
+            siblingRange={1}
+            totalPages={Math.ceil(
+              jobsitePagination.TotalCount / jobsitePagination.PageSize
+            )}
+            borderless
+            size='small'
+            floated='right'
+          />
+        )}
+      </div>
     </Fragment>
   );
 };

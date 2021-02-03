@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import ListTimestamps from '../tables/ListTimestamps';
 import FilterDateForm from '../../app/layout/FilterDateForm';
-import { Button, Divider } from 'semantic-ui-react';
+import { Button, Divider, Header, Segment } from 'semantic-ui-react';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { openModal } from '../../app/context/modal/modalActions';
 import { useAuthState } from '../../app/context/auth/authContext';
@@ -13,17 +13,20 @@ import EditManagerStatus from '../managers/EditManagerStatus';
 // /employees/:username
 const ViewEmployee = ({ match }) => {
   const username = match.params.username;
-  const pageSize = 3;
+  const pageSize = 10;
 
   const modalDispatch = useModalDispatch();
   const { user } = useAuthState();
 
   return (
     <Fragment>
-      <h3>{username}'s Timestamps</h3>
+      <Header as='h2' color='teal'>
+        Employee: {username}
+      </Header>
 
       <Button
         color='teal'
+        size='small'
         onClick={() =>
           openModal(<TimestampForm username={username} />, modalDispatch)
         }
@@ -34,6 +37,7 @@ const ViewEmployee = ({ match }) => {
       {user.admin && (
         <Button
           color='green'
+          size='small'
           onClick={() =>
             openModal(
               <EditManagerStatus username={username} action='access' />,
@@ -47,6 +51,7 @@ const ViewEmployee = ({ match }) => {
 
       <Button
         color='blue'
+        size='small'
         onClick={() =>
           openModal(<EditEmployee username={username} />, modalDispatch)
         }
@@ -55,6 +60,7 @@ const ViewEmployee = ({ match }) => {
       </Button>
       <Button
         color='red'
+        size='small'
         onClick={() =>
           openModal(<DeleteEmployee username={username} />, modalDispatch)
         }
@@ -65,12 +71,15 @@ const ViewEmployee = ({ match }) => {
       <Divider />
 
       <FilterDateForm />
-      <ListTimestamps
-        username={username}
-        pageSize={pageSize}
-        forOneUser={true}
-        showEditDelete={true}
-      />
+      <Segment>
+        <h3>Timestamps</h3>
+        <ListTimestamps
+          username={username}
+          pageSize={pageSize}
+          forOneUser={true}
+          showEditDelete={true}
+        />
+      </Segment>
     </Fragment>
   );
 };

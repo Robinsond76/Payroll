@@ -1,5 +1,14 @@
 import React, { Fragment } from 'react';
-import { Header, Input, Form, Button, Divider } from 'semantic-ui-react';
+import {
+  Header,
+  Input,
+  Form,
+  Button,
+  Divider,
+  Popup,
+  Icon,
+  Segment,
+} from 'semantic-ui-react';
 import ListJobsites from '../tables/ListJobsites';
 import { openModal } from '../../app/context/modal/modalActions';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
@@ -13,7 +22,7 @@ const ViewJobsites = () => {
   const modalDispatch = useModalDispatch();
   const jobsiteDispatch = useJobsiteDispatch();
   const [query, setQuery] = React.useState('');
-  const pageSize = 3;
+  const pageSize = 10;
 
   const searchJobsites = (query) => {
     getJobsites(jobsiteDispatch, query, pageSize);
@@ -25,7 +34,20 @@ const ViewJobsites = () => {
 
   return (
     <Fragment>
-      <Header as='h2' icon='map' content='Jobsites' />
+      <div>
+        <Header
+          as='h2'
+          color='teal'
+          style={{ display: 'inline-block', marginRight: '5px' }}
+        >
+          Jobsites
+        </Header>
+        <Popup
+          trigger={<Icon name='question circle outline' />}
+          content='See all jobsites in the system'
+          position='right center'
+        />
+      </div>
 
       <Button
         color='green'
@@ -33,7 +55,6 @@ const ViewJobsites = () => {
       >
         Add New Jobsite
       </Button>
-
       <Divider />
 
       <Form onSubmit={() => searchJobsites(query)}>
@@ -48,7 +69,9 @@ const ViewJobsites = () => {
         </div>
       </Form>
 
-      <ListJobsites query={query} pageSize={pageSize} />
+      <Segment>
+        <ListJobsites query={query} pageSize={pageSize} />
+      </Segment>
     </Fragment>
   );
 };

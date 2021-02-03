@@ -2,7 +2,6 @@ import React, { Fragment, useCallback } from 'react';
 import { Pagination } from 'semantic-ui-react';
 import { Timestamps } from '../../app/api/agent';
 import { useTimestampState } from '../../app/context/timestamps/timestampContext';
-import FilterDateForm from '../../app/layout/FilterDateForm';
 import TimestampTable from './TimestampTable';
 
 //This is a tables page that fetches timestamps at a jobsite for one user or for all users
@@ -77,23 +76,26 @@ const ListJobsiteTimestamps = ({
 
   return (
     <Fragment>
-      <FilterDateForm />
-
       <TimestampTable
         timestamps={timestamps}
         forOneUser={username ? true : false}
         forEmployeeView={forEmployeeView}
         noLinksInTable={noLinksInTable}
       />
-      {pagination && (
-        <Pagination
-          boundaryRange={0}
-          activePage={pagination.CurrentPage}
-          onPageChange={pageChangeHandler}
-          siblingRange={1}
-          totalPages={Math.ceil(pagination.TotalCount / pagination.PageSize)}
-        />
-      )}
+      <div style={{ width: '100%', overflow: 'auto' }}>
+        {pagination && (
+          <Pagination
+            boundaryRange={0}
+            activePage={pagination.CurrentPage}
+            onPageChange={pageChangeHandler}
+            siblingRange={1}
+            totalPages={Math.ceil(pagination.TotalCount / pagination.PageSize)}
+            borderless
+            size='small'
+            floated='right'
+          />
+        )}
+      </div>
     </Fragment>
   );
 };

@@ -1,6 +1,14 @@
 import React, { Fragment, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Pagination, Button, Divider } from 'semantic-ui-react';
+import {
+  Pagination,
+  Button,
+  Divider,
+  Header,
+  Segment,
+  Popup,
+  Icon,
+} from 'semantic-ui-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Jobsites } from '../../app/api/agent';
 import { useTimestampState } from '../../app/context/timestamps/timestampContext';
@@ -18,9 +26,9 @@ const JobsiteHistory = ({ match }) => {
   const modalDispatch = useModalDispatch();
 
   const [jobsite, setJobsite] = React.useState(null);
-  const [pagination, setPagination] = React.useState('');
+  const [pagination, setPagination] = React.useState(null);
+  const pageSize = 10;
   const pageOne = 1;
-  const pageSize = 3;
 
   const loadJobsiteTimestamps = useCallback(
     async (activePage) => {
@@ -47,12 +55,13 @@ const JobsiteHistory = ({ match }) => {
 
   return (
     <Fragment>
-      <h2>
+      <Header as='h2' color='teal'>
         {jobsite && jobsite.name} - {jobsite && jobsite.moniker}
-      </h2>
+      </Header>
 
       <Button
         color='blue'
+        size='small'
         onClick={() =>
           openModal(<JobsiteForm moniker={moniker} />, modalDispatch)
         }
@@ -61,6 +70,7 @@ const JobsiteHistory = ({ match }) => {
       </Button>
       <Button
         color='red'
+        size='small'
         onClick={() =>
           openModal(<DeleteJobsite moniker={moniker} />, modalDispatch)
         }
@@ -69,8 +79,20 @@ const JobsiteHistory = ({ match }) => {
       </Button>
       <Divider />
 
-      <p>All employees who clocked into this location:</p>
-      <ul>
+      <Header
+        as='h4'
+        color='teal'
+        style={{ display: 'inline-block', margin: '5px 5px' }}
+      >
+        Employees:
+      </Header>
+      <Popup
+        trigger={<Icon name='question circle outline' />}
+        content='Employees who have clocked into this jobsite at least once. Click on a name to filter timestamps to only that user for this location'
+        position='right center'
+      />
+
+      <ul className='employees-list'>
         {jobsite &&
           jobsite.employeesThatClocked.map((employee) => (
             <li key={uuidv4()}>
@@ -82,20 +104,26 @@ const JobsiteHistory = ({ match }) => {
       </ul>
 
       <FilterDateForm />
-      {jobsite && <JobsiteHistoryTable timestamps={jobsite.timestamps} />}
-
-      {pagination !== '' && (
-        <Pagination
-          boundaryRange={0}
-          activePage={pagination.CurrentPage}
-          onPageChange={pageChangeHandler}
-          siblingRange={1}
-          totalPages={Math.ceil(pagination.TotalCount / pagination.PageSize)}
-          borderless
-          size='small'
-          floated='right'
-        />
-      )}
+      <Segment>
+        <h3>Timestamps</h3>
+        {jobsite && <JobsiteHistoryTable timestamps={jobsite.timestamps} />}
+        <div style={{ width: '100%', overflow: 'auto' }}>
+          {pagination && (
+            <Pagination
+              boundaryRange={0}
+              activePage={pagination.CurrentPage}
+              onPageChange={pageChangeHandler}
+              siblingRange={1}
+              totalPages={Math.ceil(
+                pagination.TotalCount / pagination.PageSize
+              )}
+              borderless
+              size='small'
+              floated='right'
+            />
+          )}
+        </div>
+      </Segment>
     </Fragment>
   );
 };

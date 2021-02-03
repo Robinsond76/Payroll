@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table } from 'semantic-ui-react';
+import { Divider, Header, Icon, Popup, Table } from 'semantic-ui-react';
 import { Timestamps } from '../../app/api/agent';
 import {
   useTimestampState,
@@ -30,13 +30,49 @@ const Payroll = () => {
 
   return (
     <div>
-      <p>This page will show employee payroll information</p>
+      <div>
+        <Header
+          as='h2'
+          color='teal'
+          style={{ display: 'inline-block', marginRight: '5px' }}
+        >
+          Payroll
+        </Header>
+        <Popup
+          trigger={<Icon name='question circle outline' />}
+          content='See hours worked per employee in a given time frame.'
+          position='right center'
+        />
+      </div>
+
+      <div className='payroll-notes'>
+        <Header as='h4' color='teal'>
+          Note:
+        </Header>
+        <p>
+          Default view with no dates in filter is from 7 days ago to this
+          moment.
+        </p>
+        <p>Maximum 'From Date' allowed is 45 days ago.</p>
+        <p>The 'To Date' includes timestamps for that date.</p>
+        <p>Clocked-in Stamps are not considered.</p>
+      </div>
+
+      <Divider />
+
       <FilterDateForm open={true} />
       <Table basic='very' size='small' celled selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Employee</Table.HeaderCell>
-            <Table.HeaderCell>Hours Worked</Table.HeaderCell>
+            <Table.HeaderCell>
+              Hours Worked{' '}
+              <Popup
+                trigger={<Icon name='question circle outline' />}
+                content='Decimal values represent a fractional hour, not minutes.'
+                position='right center'
+              />
+            </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>

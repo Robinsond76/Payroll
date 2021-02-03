@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Icon, Pagination, Table } from 'semantic-ui-react';
+import { Header, Icon, Pagination, Popup, Tab, Table } from 'semantic-ui-react';
 import { Timestamps } from '../../app/api/agent';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,7 @@ import ClockOutEmployee from '../employees/ClockOutEmployee';
 
 const Dashboard = () => {
   const modalDispatch = useModalDispatch();
-  const pageSize = 3;
+  const pageSize = 10;
   const pageOne = 1;
 
   const [clockedInJobsites, setClockedInJobsites] = React.useState([]);
@@ -44,9 +44,9 @@ const Dashboard = () => {
     loadTimestamps(pageSize, activePage);
   };
 
-  return (
+  const Jobsites = () => (
     <Fragment>
-      <h3>Jobsites Clocked Into</h3>
+      <h3>Jobsites Currently Clocked Into</h3>
       <Table celled selectable>
         <Table.Header>
           <Table.Row>
@@ -70,21 +70,27 @@ const Dashboard = () => {
           })}
         </Table.Body>
       </Table>
-      {jobsitesPagination && (
-        <Pagination
-          boundaryRange={0}
-          activePage={jobsitesPagination.CurrentPage}
-          onPageChange={jobsitePageChangeHandler}
-          siblingRange={1}
-          totalPages={Math.ceil(
-            jobsitesPagination.TotalCount / jobsitesPagination.PageSize
-          )}
-          borderless
-          size='small'
-          floated='right'
-        />
-      )}
+      <div style={{ width: '100%', overflow: 'auto' }}>
+        {jobsitesPagination && (
+          <Pagination
+            boundaryRange={0}
+            activePage={jobsitesPagination.CurrentPage}
+            onPageChange={jobsitePageChangeHandler}
+            siblingRange={1}
+            totalPages={Math.ceil(
+              jobsitesPagination.TotalCount / jobsitesPagination.PageSize
+            )}
+            borderless
+            size='small'
+            floated='right'
+          />
+        )}
+      </div>
+    </Fragment>
+  );
 
+  const Employees = () => (
+    <Fragment>
       <h3>Employees Currently Clocked In</h3>
       <Table selectable>
         <Table.Header>
@@ -140,21 +146,61 @@ const Dashboard = () => {
           })}
         </Table.Body>
       </Table>
-      {timestampsPagination && (
-        <Pagination
-          boundaryRange={0}
-          activePage={timestampsPagination.CurrentPage}
-          onPageChange={timestampPageChangeHandler}
-          siblingRange={1}
-          totalPages={Math.ceil(
-            timestampsPagination.TotalCount / timestampsPagination.PageSize
-          )}
-          borderless
-          size='small'
-          floated='right'
-        />
-      )}
+      <div style={{ width: '100%', overflow: 'auto' }}>
+        {timestampsPagination && (
+          <Pagination
+            boundaryRange={0}
+            activePage={timestampsPagination.CurrentPage}
+            onPageChange={timestampPageChangeHandler}
+            siblingRange={1}
+            totalPages={Math.ceil(
+              timestampsPagination.TotalCount / timestampsPagination.PageSize
+            )}
+            borderless
+            size='small'
+            floated='right'
+          />
+        )}
+      </div>
     </Fragment>
+  );
+
+  const panes = [
+    {
+      menuItem: 'Jobsites',
+      render: () => (
+        <Tab.Pane>
+          <Jobsites />
+        </Tab.Pane>
+      ),
+    },
+    {
+      menuItem: 'Employees',
+      render: () => (
+        <Tab.Pane>
+          <Employees />
+        </Tab.Pane>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <Header
+        as='h2'
+        color='teal'
+        style={{ display: 'inline-block', marginRight: '5px' }}
+      >
+        Dashboard
+      </Header>
+      <Popup
+        trigger={<Icon name='question circle outline' />}
+        content='See all jobsites and employees who are currently clocked in'
+        position='right center'
+      />
+
+      <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
+    </>
   );
 };
 

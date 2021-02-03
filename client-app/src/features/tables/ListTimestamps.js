@@ -78,20 +78,22 @@ const ListTimestamps = ({
         showEditDelete={showEditDelete}
         forEmployeeView={forEmployeeView}
       />
-      {timestampPagination && (
-        <Pagination
-          boundaryRange={0}
-          activePage={timestampPagination.CurrentPage}
-          onPageChange={pageChangeHandler}
-          siblingRange={1}
-          totalPages={Math.ceil(
-            timestampPagination.TotalCount / timestampPagination.PageSize
-          )}
-          borderless
-          size='small'
-          floated='right'
-        />
-      )}
+      <div style={{ width: '100%', overflow: 'auto' }}>
+        {timestampPagination && (
+          <Pagination
+            boundaryRange={0}
+            activePage={timestampPagination.CurrentPage}
+            onPageChange={pageChangeHandler}
+            siblingRange={1}
+            totalPages={Math.ceil(
+              timestampPagination.TotalCount / timestampPagination.PageSize
+            )}
+            borderless
+            size='small'
+            floated='right'
+          />
+        )}
+      </div>
     </Fragment>
   );
 };

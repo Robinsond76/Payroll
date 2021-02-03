@@ -10,7 +10,7 @@ body {
 }
 
 .ui.inverted.top.fixed.menu {
-  background-color: #bf953f;
+  background-color: #125031;
 }
 
 /* For managing user Timestamps*/
@@ -69,6 +69,42 @@ body {
   color: #fff;
 }
 
+.employee-name {
+  color: #333;
+  font-size: 1.1rem;
+  margin-left: 5px;
+}
+
+.employees-list {
+  margin: 0 5px 20px 0;
+  padding: 0;
+  list-style: none;
+  display: column;
+}
+
+.employees-list li {
+  margin-left: 10px;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.employees-list li a {
+  color: #333;
+}
+
+.payroll-notes {
+  margin-bottom: 15px;
+}
+
+.payroll-notes h4.ui.teal.header {
+  margin-bottom: 0;
+}
+
+.payroll-notes p {
+  margin: 0 5px;
+  font-style: italic;
+}
+
 /*home page styles*/
 
 .masthead {
@@ -76,9 +112,9 @@ body {
   align-items: center;
   background-image: linear-gradient(
     135deg,
-    #bf953f 0%,
-    #fcf6ba 69%,
-    #fbf5b7 89%
+    #125031 0%,
+    #6ba185 69%,
+    #7ca18f 89%
   ) !important;
   height: 100vh;
 }
@@ -115,4 +151,44 @@ body {
 .Filter-Date-Form .button {
   margin-left: 20px;
   width: 200px;
+}
+
+.homepage-log-out button.ui.button {
+  width: 150px;
+}
+
+@media (min-width: 600px) {
+  .homepage-header h3.ui.teal.header {
+    font-size: 2rem;
+  }
+
+  .homepage-clock-in button.ui.button {
+    width: 300px;
+  }
+
+  .homepage-clock-out button.ui.button {
+    width: 300px;
+  }
+}
+
+@media (max-width: 600px) {
+  .homepage-h3 {
+    font-size: 1.2rem;
+  }
+
+  .homepage-timestamps {
+    display: none;
+  }
+
+  .homepage-log-out button.ui.button {
+    width: 100%;
+  }
+
+  .homepage-clock-out button.ui.button {
+    width: 100%;
+  }
+
+  .homepage-clock-in button.ui.button {
+    width: 100%;
+  }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table } from 'semantic-ui-react';
+import { Divider, Header, Icon, Popup, Table } from 'semantic-ui-react';
 import { Timestamps } from '../../app/api/agent';
 import {
   useTimestampState,
@@ -10,6 +10,7 @@ import FilterDateForm from '../../app/layout/FilterDateForm';
 import addDays from 'date-fns/addDays';
 import format from 'date-fns/format';
 
+// url: /employees/payroll/{username}
 const EmployeeWorkHistory = ({ match }) => {
   const username = match.params.username;
 
@@ -32,14 +33,35 @@ const EmployeeWorkHistory = ({ match }) => {
 
   return (
     <div>
-      <p>This page will show one employee's payroll history</p>
+      <Header
+        as='h2'
+        color='teal'
+        style={{ display: 'inline-block', marginRight: '5px' }}
+      >
+        Payroll: {employee && employee.displayName}
+      </Header>
+      <Popup
+        trigger={<Icon name='question circle outline' />}
+        content='Showing hours worked per jobsite for this user, within the time frame'
+        position='right center'
+      />
+
+      <Divider />
+
       <FilterDateForm open={true} />
       <Table basic='very' size='small' celled selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Moniker</Table.HeaderCell>
             <Table.HeaderCell>Jobsite</Table.HeaderCell>
-            <Table.HeaderCell>Hours Worked</Table.HeaderCell>
+            <Table.HeaderCell>
+              Hours Worked{' '}
+              <Popup
+                trigger={<Icon name='question circle outline' />}
+                content='Decimal values represent a fractional hour, not minutes.'
+                position='right center'
+              />
+            </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>

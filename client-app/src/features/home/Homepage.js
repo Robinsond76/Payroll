@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import {
   Button,
   Container,
+  Divider,
   Grid,
   Header,
   Image,
@@ -12,6 +13,7 @@ import {
   useAuthDispatch,
   useAuthState,
 } from '../../app/context/auth/authContext';
+import { logoutUser } from '../../app/context/auth/authActions';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { openModal } from '../../app/context/modal/modalActions';
 import LoginForm from '../user/LoginForm';
@@ -37,7 +39,7 @@ const TestHome = () => {
   const handleSearchChange = async (e, { value }) => {
     setSelectionValue(value);
     setLoading(true);
-    let searchResults = await Jobsites.listJobsites(value, 10, 1);
+    let searchResults = await Jobsites.listJobsites(value, 4, 1);
     searchResults = searchResults.data;
 
     let newResults = [];
@@ -66,99 +68,135 @@ const TestHome = () => {
   }, [user]);
 
   return (
-    <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
-      <Grid.Column style={{ maxWidth: 450 }}>
-        <Header as='h1' color='teal' textAlign='center'>
-          <Image
-            size='massive'
-            src='/assets/logo.png'
-            alt='logo'
-            style={{ marginBottom: 12 }}
-          />{' '}
-          Payroll
-        </Header>
-        <Segment>
-          <Container>
-            {/* If user is logged in */}
-            {isAuthenticated && user ? (
-              <Fragment>
-                <Header as='h2' content={`Welcome back ${user.displayName},`} />
+    <Segment inverted textAlign='center' vertical className='masthead'>
+      <Grid
+        textAlign='center'
+        style={{ margin: 'auto' }}
+        verticalAlign='middle'
+      >
+        <Grid.Column style={{ maxWidth: 450 }}>
+          <span className='homepage-header'>
+            <Header as='h3' color='teal' textAlign='center'>
+              <Image
+                size='massive'
+                src='/assets/logo.png'
+                alt='logo'
+                style={{ marginBottom: 12 }}
+              />{' '}
+              Field Team Management
+            </Header>
+          </span>
+          <Segment>
+            <Container>
+              {/* If user is logged in */}
+              {isAuthenticated && user ? (
+                <Fragment>
+                  <Header
+                    as='h2'
+                    content={`Welcome back ${user.displayName},`}
+                  />
 
-                {/* If user is CLOCKED in */}
-                {user.currentlyClockedIn ? (
-                  <Fragment>
-                    <h3>Currently clocked in at:</h3>
-                    <p>
-                      {user.clockedInTimestamp.moniker} -{' '}
-                      {user.clockedInTimestamp.jobsite}
-                    </p>
-                    <p>{showClockedInDate()}</p>
+                  {/* If user is CLOCKED in */}
+                  {user.currentlyClockedIn ? (
+                    <Fragment>
+                      <h3>Currently clocked in at:</h3>
+                      <Header
+                        as='h2'
+                        color='teal'
+                        style={{ marginBottom: '25px' }}
+                      >
+                        {user.clockedInTimestamp.moniker} -{' '}
+                        {user.clockedInTimestamp.jobsite}
+                      </Header>
 
+                      <p>{showClockedInDate()}</p>
+
+                      <span className='homepage-clock-out'>
+                        <Button
+                          onClick={() =>
+                            clockOutUser(
+                              user.clockedInTimestamp.moniker,
+                              authDispatch
+                            )
+                          }
+                          color='teal'
+                        >
+                          Clock Out
+                        </Button>
+                      </span>
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      <h3 className='homepage-h3'>
+                        You are currently not clocked in.
+                      </h3>
+                      <p>
+                        Last jobsite visited:{' '}
+                        {user.lastJobsiteVisited &&
+                          user.lastJobsiteVisited.moniker}{' '}
+                        -{' '}
+                        {user.lastJobsiteVisited &&
+                          user.lastJobsiteVisited.jobsite}
+                      </p>
+                      <div style={{ maxWidth: '300px', margin: 'auto' }}>
+                        <Search
+                          placeholder='search jobsite...'
+                          loading={loading}
+                          onResultSelect={handleResultSelect}
+                          onSearchChange={handleSearchChange}
+                          results={results}
+                          value={selectionValue}
+                        />
+                      </div>
+                      <span className='homepage-clock-in'>
+                        <Button
+                          style={{ marginTop: '1rem' }}
+                          onClick={() =>
+                            clockInUser(selectionValue, authDispatch)
+                          }
+                          color='teal'
+                        >
+                          Clock In
+                        </Button>
+                      </span>
+                    </Fragment>
+                  )}
+                  <br />
+
+                  <Divider />
+                  <span className='homepage-timestamps'>
                     <Button
-                      onClick={() =>
-                        clockOutUser(
-                          user.clockedInTimestamp.moniker,
-                          authDispatch
-                        )
-                      }
+                      as={Link}
+                      to='/timestamps/user'
+                      style={{ width: '150px' }}
                     >
-                      Clock Out
+                      Timestamps
                     </Button>
-                  </Fragment>
-                ) : (
-                  <Fragment>
-                    <h3>You are currently not clocked in.</h3>
-                    <p>
-                      Last jobsite visited:{' '}
-                      {user.lastJobsiteVisited &&
-                        user.lastJobsiteVisited.moniker}{' '}
-                      -{' '}
-                      {user.lastJobsiteVisited &&
-                        user.lastJobsiteVisited.jobsite}
-                    </p>
-                    <Search
-                      placeholder='search jobsite...'
-                      loading={loading}
-                      onResultSelect={handleResultSelect}
-                      onSearchChange={handleSearchChange}
-                      results={results}
-                      value={selectionValue}
-                    />
-                    <Button
-                      style={{ marginTop: '1rem' }}
-                      onClick={() => clockInUser(selectionValue, authDispatch)}
-                    >
-                      Clock In
+                  </span>
+                  <span className='homepage-log-out'>
+                    <Button onClick={() => logoutUser(authDispatch)}>
+                      Log Out
                     </Button>
-                  </Fragment>
-                )}
-                <br />
-                <Button
-                  as={Link}
-                  to='/timestamps/user'
-                  size='small'
-                  style={{ marginTop: '1rem' }}
-                >
-                  My Timestamps
-                </Button>
-              </Fragment>
-            ) : (
-              // If user is not logged in
-              <Fragment>
-                <Header as='h2' content='Welcome to Payroll App' />
-                <Button
-                  onClick={() => openModal(<LoginForm />, modalDispatch)}
-                  to='/login'
-                  size='huge'
-                >
-                  Login
-                </Button>
-              </Fragment>
-            )}
-          </Container>
-        </Segment>
-      </Grid.Column>
-    </Grid>
+                  </span>
+                </Fragment>
+              ) : (
+                // If user is not logged in
+                <Fragment>
+                  <Header as='h2' content='Welcome!' />
+                  <Button
+                    onClick={() => openModal(<LoginForm />, modalDispatch)}
+                    to='/login'
+                    size='huge'
+                  >
+                    Login
+                  </Button>
+                </Fragment>
+              )}
+            </Container>
+          </Segment>
+        </Grid.Column>
+      </Grid>
+    </Segment>
   );
 };
 

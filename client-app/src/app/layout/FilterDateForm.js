@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { DateInput } from 'semantic-ui-calendar-react';
-import { Accordion, Divider, Icon } from 'semantic-ui-react';
+import { Accordion, Divider, Icon, Popup } from 'semantic-ui-react';
 import {
   useTimestampState,
   useTimestampDispatch,
@@ -68,6 +68,13 @@ const FilterDateForm = ({ open = false }) => {
               clearable
               style={{ width: '300px' }}
             />
+            <span style={{ marginLeft: '10px' }}>
+              <Popup
+                trigger={<Icon name='question circle outline' />}
+                content='"From Date" begins at 12:00 am. "To Date" ends at 11:59 pm.'
+                position='right center'
+              />
+            </span>
           </div>
           <Divider />
         </Accordion.Content>

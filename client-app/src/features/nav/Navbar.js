@@ -13,7 +13,7 @@ const Navbar = () => {
 
   return (
     <>
-      <Menu fixed='top' inverted>
+      <Menu fixed='top' inverted borderless>
         <Container>
           <Menu.Item header>
             <img
@@ -21,8 +21,9 @@ const Navbar = () => {
               alt='logo'
               style={{ marginRight: '10px' }}
             />
-            <Link to='/'>Payroll</Link>
+            <Link to='/'>FTM</Link>
           </Menu.Item>
+
           {user && user.manager && (
             <Fragment>
               <Menu.Item name='Jobsites' as={NavLink} to='/jobsites' />

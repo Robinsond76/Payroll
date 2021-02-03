@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { Divider, Header, Icon, Popup, Segment } from 'semantic-ui-react';
 import { useAuthState } from '../../app/context/auth/authContext';
 
 import FilterDateForm from '../../app/layout/FilterDateForm';
@@ -10,20 +11,35 @@ import ListTimestamps from '../tables/ListTimestamps';
 
 const ViewUserTimestamps = () => {
   const { user } = useAuthState();
-  const { displayName, username } = user;
-  const pageSize = 3;
+  const { username } = user;
+  const pageSize = 10;
 
   return (
     <Fragment>
-      <FilterDateForm />
-
-      <h2>{displayName}'s Timestamps </h2>
-      <ListTimestamps
-        username={username}
-        forCurrentUser={true}
-        pageSize={pageSize}
-        forEmployeeView={true}
+      <Header
+        as='h2'
+        color='teal'
+        style={{ display: 'inline-block', marginRight: '5px' }}
+      >
+        Your Timestamps
+      </Header>
+      <Popup
+        trigger={<Icon name='question circle outline' />}
+        content='These are all your timestamps - can be filtered by date.'
+        position='right center'
       />
+
+      <Divider />
+
+      <FilterDateForm />
+      <Segment>
+        <ListTimestamps
+          username={username}
+          forCurrentUser={true}
+          pageSize={pageSize}
+          forEmployeeView={true}
+        />
+      </Segment>
     </Fragment>
   );
 };
