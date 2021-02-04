@@ -6,6 +6,7 @@ const loginUser = async (userFormValues, dispatch) => {
   try {
     const user = await User.login(userFormValues);
     dispatch({ type: 'LOGIN', payload: user });
+    if (user.manager) history.push('/dashboard');
   } catch (err) {
     throw err;
   }

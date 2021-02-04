@@ -37,7 +37,9 @@ const App = () => {
   //get user if logged in
   useEffect(() => {
     if (token && isLoaded === false) {
-      loadUser(authDispatch);
+      loadUser(authDispatch).catch((err) => {
+        throw err;
+      });
       setIsLoaded(true);
     }
   }, [token, authDispatch, isLoaded]);

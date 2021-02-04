@@ -21,9 +21,12 @@ const LoginForm = () => {
   const handleFinalFormSubmit = (values) =>
     loginUser(values, authDispatch)
       .then(() => modalDispatch({ type: 'CLOSE_MODAL' }))
-      .catch((error) => ({
-        [FORM_ERROR]: error,
-      }));
+      .catch((error) => {
+        console.log(error.data);
+        return {
+          [FORM_ERROR]: error,
+        };
+      });
 
   return (
     <Fragment>

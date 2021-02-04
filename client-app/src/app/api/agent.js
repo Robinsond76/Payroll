@@ -1,9 +1,11 @@
 import axios from 'axios';
-// import { history } from '../..';
+import { history } from '../..';
 
-axios.defaults.baseURL = 'http://localhost:5000/api';
+const api = axios.create({
+  baseURL: 'http://localhost:5000/api',
+});
 
-axios.interceptors.request.use(
+api.interceptors.request.use(
   (config) => {
     const token = window.localStorage.getItem('token');
     if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -14,38 +16,35 @@ axios.interceptors.request.use(
   }
 );
 
-//for error messages
-axios.interceptors.response.use(undefined, (error) => {
-  // if (error.message === 'Network Error' && !error.response) {
-  //   console('Network error - confirm API is running');
-  // }
-  // console.log(error);
-  // const { status, data, config } = error.response;
-  // if (status === 404) {
-  //   history.push('/notfound');
-  // }
-  // if (
-  //   status === 400 &&
-  //   config.method === 'get' &&
-  //   data.errors.hasOwnProperty('id')
-  // ) {
-  //   history.push('/notfound');
-  // }
+//for error messages and logging user out when token expires
+api.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    const { status, headers } = error.response;
 
-  // if (status === 500) {
-  //   console.log('Server error - check the terminal for more info!');
-  // }
+    if (
+      status === 401 &&
+      headers['www-authenticate'] &&
+      headers['www-authenticate'].includes(
+        'Bearer error="invalid_token", error_description="The token expired'
+      )
+    ) {
+      window.localStorage.removeItem('token');
+      history.push('/');
+      console.log('your session expired. Please login again');
+    }
 
-  throw error.response;
-});
+    return Promise.reject(error.response);
+  }
+);
 
 const responseBody = (response) => response.data;
 
 const requests = {
-  get: (url) => axios.get(url).then(responseBody),
-  post: (url, body) => axios.post(url, body).then(responseBody),
-  put: (url, body) => axios.put(url, body).then(responseBody),
-  del: (url) => axios.delete(url).then(responseBody),
+  get: (url) => api.get(url).then(responseBody),
+  post: (url, body) => api.post(url, body).then(responseBody),
+  put: (url, body) => api.put(url, body).then(responseBody),
+  del: (url) => api.delete(url).then(responseBody),
 };
 
 const Jobsites = {
@@ -55,7 +54,7 @@ const Jobsites = {
     requests.put(`/jobsites/${moniker}`, jobsite),
   deleteJobsite: (moniker) => requests.del(`/jobsites/${moniker}`),
   listJobsites: (query, pageSize, pageNumber) =>
-    axios.get(
+    api.get(
       `/jobsites/search?q=${query}&pagesize=${pageSize}&pagenumber=${pageNumber}`
     ),
   getJobsiteTimestamps: (
@@ -69,14 +68,14 @@ const Jobsites = {
     let parameters = '';
     if (fromDate) parameters = `&fromDate=${fromDate}`;
     if (toDate) parameters += `&toDate=${toDate}`;
-    return axios.get(url + parameters);
+    return api.get(url + parameters);
   },
   getJobsitesVisited: (pageSize, pageNumber, fromDate = '', toDate = '') => {
     let url = `/timestamps/jobsitesvisited?pagesize=${pageSize}&pagenumber=${pageNumber}`;
     let parameters = '';
     if (fromDate) parameters = `&fromDate=${fromDate}`;
     if (toDate) parameters += `&toDate=${toDate}`;
-    return axios.get(url + parameters);
+    return api.get(url + parameters);
   },
 };
 
@@ -95,7 +94,7 @@ const Timestamps = {
     let parameters = '';
     if (fromDate) parameters = `&fromDate=${fromDate}`;
     if (toDate) parameters += `&toDate=${toDate}`;
-    return axios.get(url + parameters);
+    return api.get(url + parameters);
   },
   getCurrentUserJobsiteTimestamps: (
     moniker,
@@ -108,7 +107,7 @@ const Timestamps = {
     let parameters = '';
     if (fromDate) parameters = `&fromDate=${fromDate}`;
     if (toDate) parameters += `&toDate=${toDate}`;
-    return axios.get(url + parameters);
+    return api.get(url + parameters);
   },
   getAnyUserTimestamps: (
     username,
@@ -121,7 +120,7 @@ const Timestamps = {
     let parameters = '';
     if (fromDate) parameters = `&fromDate=${fromDate}`;
     if (toDate) parameters += `&toDate=${toDate}`;
-    return axios.get(url + parameters);
+    return api.get(url + parameters);
   },
   getAnyUserJobsiteTimestamps: (
     moniker,
@@ -135,14 +134,14 @@ const Timestamps = {
     let parameters = '';
     if (fromDate) parameters = `&fromDate=${fromDate}`;
     if (toDate) parameters += `&toDate=${toDate}`;
-    return axios.get(url + parameters);
+    return api.get(url + parameters);
   },
   getClockedInTimestamps: (pageSize, pageNumber) =>
-    axios.get(
+    api.get(
       `/timestamps/clockedin?pagesize=${pageSize}&pagenumber=${pageNumber}`
     ),
   getClockedInJobsites: (pageSize, pageNumber) =>
-    axios.get(
+    api.get(
       `/timestamps/jobsitesclockedin?pagesize=${pageSize}&pagenumber=${pageNumber}`
     ),
   getWorkHistory: (fromDate, toDate) => {
@@ -150,21 +149,21 @@ const Timestamps = {
     let parameters = '';
     if (fromDate) parameters = `&fromDate=${fromDate}`;
     if (toDate) parameters += `&toDate=${toDate}`;
-    return axios.get(url + parameters);
+    return api.get(url + parameters);
   },
   getUserWorkHistory: (username, fromDate, toDate) => {
     let url = `/timestamps/workhistory/${username}?`;
     let parameters = '';
     if (fromDate) parameters = `&fromDate=${fromDate}`;
     if (toDate) parameters += `&toDate=${toDate}`;
-    return axios.get(url + parameters);
+    return api.get(url + parameters);
   },
   getAllTimestamps: (pageSize, pageNumber, fromDate = '', toDate = '') => {
     let url = `/timestamps?pagesize=${pageSize}&pagenumber=${pageNumber}`;
     let parameters = '';
     if (fromDate) parameters = `&fromDate=${fromDate}`;
     if (toDate) parameters += `&toDate=${toDate}`;
-    return axios.get(url + parameters);
+    return api.get(url + parameters);
   },
 };
 
@@ -178,11 +177,11 @@ const User = {
   clockOutEmployee: (moniker, username) =>
     requests.post(`/jobsites/${moniker}/clockout?username=${username}`),
   getUsers: (pageSize, pageNumber) =>
-    axios.get(`/users?pagesize=${pageSize}&pagenumber=${pageNumber}`),
+    api.get(`/users?pagesize=${pageSize}&pagenumber=${pageNumber}`),
   getManagers: (pageSize, pageNumber) =>
-    axios.get(`/managers?pagesize=${pageSize}&pagenumber=${pageNumber}`),
+    api.get(`/managers?pagesize=${pageSize}&pagenumber=${pageNumber}`),
   editManager: (username, managerStatus) =>
-    axios.post(`/user/${username}?manager=${managerStatus}`),
+    api.post(`/user/${username}?manager=${managerStatus}`),
   getUser: (username) => requests.get(`/user/${username}`),
   updateUser: (username, updatedUser) =>
     requests.put(`/user/${username}`, updatedUser),

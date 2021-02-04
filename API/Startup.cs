@@ -16,6 +16,7 @@ using Payroll.Data.Models;
 using Payroll.Data.Persistence;
 using Payroll.Data.Profiles;
 using Payroll.Data.Services;
+using System;
 using System.Text;
 
 namespace API
@@ -60,7 +61,8 @@ namespace API
                 {
                     policy.AllowAnyHeader().AllowAnyMethod()
                     .WithOrigins("http://localhost:3000")
-                    .WithExposedHeaders("X-Pagination");
+                    .WithExposedHeaders("X-Pagination")
+                    .WithExposedHeaders("WWW-Authenticate");
                 });
             });
 
@@ -80,7 +82,9 @@ namespace API
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = key,
                         ValidateAudience = false,
-                        ValidateIssuer = false
+                        ValidateIssuer = false,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
                     };
                 });
         }

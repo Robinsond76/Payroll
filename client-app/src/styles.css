@@ -154,6 +154,10 @@ body {
   width: 150px;
 }
 
+.homepage-dashboard a.ui.teal.button {
+  width: 150px;
+}
+
 @media (min-width: 600px) {
   .homepage-header h3.ui.teal.header {
     font-size: 2rem;
@@ -175,6 +179,11 @@ body {
 
   .homepage-timestamps {
     display: none;
+  }
+
+  .homepage-dashboard a.ui.teal.button {
+    width: 100%;
+    margin-bottom: 5px;
   }
 
   .homepage-log-out button.ui.button {

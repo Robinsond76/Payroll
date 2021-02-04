@@ -26,6 +26,7 @@ const Navbar = () => {
 
           {user && user.manager && (
             <Fragment>
+              <Menu.Item name='Dashboard' as={NavLink} to='/dashboard' />
               <Menu.Item name='Jobsites' as={NavLink} to='/jobsites' />
               <Menu.Item name='Timestamps' as={NavLink} to='/timestamps' />
               <Menu.Item name='Employees' as={NavLink} to='/employees' />
