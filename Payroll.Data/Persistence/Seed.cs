@@ -33,6 +33,22 @@ namespace Payroll.Data.Persistence
                         DisplayName = "Jane",
                         UserName = "jane",
                         Email = "jane@test.com",
+                    },
+                    new AppUser
+                    {
+                        DisplayName = "Admin",
+                        UserName = "admin",
+                        Email = "admin@admin",
+                        Manager = true,
+                        Admin = true,
+                    },
+                    new AppUser
+                    {
+                        DisplayName = "Rich",
+                        UserName = "rich",
+                        Email = "Rich@test.com",
+                        Manager = true,
+                        Admin = false,
                     }
                 };
 

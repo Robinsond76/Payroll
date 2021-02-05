@@ -23,7 +23,7 @@ const HomeClockedIn = () => {
   return (
     <Fragment>
       <h3>Currently clocked in at:</h3>
-      <Header as='h2' color='teal' style={{ marginBottom: '25px' }}>
+      <Header as='h3' color='teal' style={{ marginBottom: '25px' }}>
         {user.clockedInTimestamp.moniker} - {user.clockedInTimestamp.jobsite}
       </Header>
 

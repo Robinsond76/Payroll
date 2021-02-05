@@ -96,6 +96,25 @@ namespace API
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
+
+            //for security headers
+            app.UseXContentTypeOptions(); //used to prevent content sniffing
+            app.UseReferrerPolicy(opt => opt.NoReferrer()); //restrict info passed to other websites
+            app.UseXXssProtection(opt => opt.EnabledWithBlockMode()); //stops page loading when cross-site scripting is discovered
+            app.UseXfo(opt => opt.Deny()); //blocks iframes and click jacking
+            app.UseCsp(opt => opt
+                    .BlockAllMixedContent() //prevents loading assets using http
+                    .StyleSources(s => s.Self().CustomSources("https://fonts.googleapis.com/"))
+                    .FontSources(s => s.Self().CustomSources("https://fonts.gstatic.com/", "data:"))
+                    .FormActions(s => s.Self())
+                    .FrameAncestors(s => s.Self())
+                    .ImageSources(s => s.Self().CustomSources("data:"))
+                    .ScriptSources(s => s.Self().CustomSources("sha256-ma5XxS1EBgt17N22Qq31rOxxRWRfzUTQS1KOtfYwuNo="))
+                );
 
             //app.UseHttpsRedirection();
 
