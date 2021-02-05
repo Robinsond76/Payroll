@@ -22,7 +22,6 @@ const LoginForm = () => {
     loginUser(values, authDispatch)
       .then(() => modalDispatch({ type: 'CLOSE_MODAL' }))
       .catch((error) => {
-        console.log(error.data);
         return {
           [FORM_ERROR]: error,
         };
@@ -45,7 +44,7 @@ const LoginForm = () => {
           <Form onSubmit={handleSubmit} error>
             <Header
               as='h2'
-              content='Login to Payroll App'
+              content='Login to JobTME'
               color='teal'
               textAlign='center'
             />

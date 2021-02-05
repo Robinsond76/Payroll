@@ -21,7 +21,7 @@ const Navbar = () => {
               alt='logo'
               style={{ marginRight: '10px' }}
             />
-            <Link to='/'>FTM</Link>
+            <Link to='/'>JOBTME</Link>
           </Menu.Item>
 
           {user && user.manager && (

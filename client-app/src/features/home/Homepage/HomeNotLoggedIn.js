@@ -9,7 +9,7 @@ const HomeNotLoggedIn = () => {
 
   return (
     <Fragment>
-      <Header as='h2' content='Welcome!' />
+      <Header as='h3'> Job Time Management Engine </Header>
       <Button
         onClick={() => openModal(<LoginForm />, modalDispatch)}
         to='/login'
