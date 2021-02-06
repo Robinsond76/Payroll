@@ -18,6 +18,7 @@ import DeleteJobsite from './DeleteJobsite';
 import { useTimestampState } from '../../app/context/timestamps/timestampContext';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { openModal } from '../../app/context/modal/modalActions';
+import LoadingComponent from '../../app/layout/LoadingComponent';
 
 const JobsiteHistory = ({ match }) => {
   const moniker = match.params.moniker;
@@ -26,6 +27,7 @@ const JobsiteHistory = ({ match }) => {
 
   const [jobsite, setJobsite] = React.useState(null);
   const [pagination, setPagination] = React.useState(null);
+  const [loading, setLoading] = React.useState(null);
   const pageSize = 10;
   const pageOne = 1;
 
@@ -45,7 +47,9 @@ const JobsiteHistory = ({ match }) => {
   );
 
   React.useEffect(() => {
+    setLoading(true);
     loadJobsiteTimestamps(pageOne);
+    setLoading(false);
   }, [loadJobsiteTimestamps]);
 
   const pageChangeHandler = (e, { activePage }) => {
@@ -103,26 +107,30 @@ const JobsiteHistory = ({ match }) => {
       </ul>
 
       <FilterDateForm />
-      <Segment>
-        <h3>Timestamps</h3>
-        {jobsite && <JobsiteHistoryTable timestamps={jobsite.timestamps} />}
-        <div style={{ width: '100%', overflow: 'auto' }}>
-          {pagination && (
-            <Pagination
-              boundaryRange={0}
-              activePage={pagination.CurrentPage}
-              onPageChange={pageChangeHandler}
-              siblingRange={1}
-              totalPages={Math.ceil(
-                pagination.TotalCount / pagination.PageSize
-              )}
-              borderless
-              size='small'
-              floated='right'
-            />
-          )}
-        </div>
-      </Segment>
+      {loading ? (
+        <LoadingComponent />
+      ) : (
+        <Segment>
+          <h3>Timestamps</h3>
+          {jobsite && <JobsiteHistoryTable timestamps={jobsite.timestamps} />}
+          <div style={{ width: '100%', overflow: 'auto' }}>
+            {pagination && (
+              <Pagination
+                boundaryRange={0}
+                activePage={pagination.CurrentPage}
+                onPageChange={pageChangeHandler}
+                siblingRange={1}
+                totalPages={Math.ceil(
+                  pagination.TotalCount / pagination.PageSize
+                )}
+                borderless
+                size='small'
+                floated='right'
+              />
+            )}
+          </div>
+        </Segment>
+      )}
     </Fragment>
   );
 };

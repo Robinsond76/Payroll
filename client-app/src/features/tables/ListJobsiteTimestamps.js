@@ -1,7 +1,8 @@
 import React, { Fragment, useCallback } from 'react';
-import { Pagination } from 'semantic-ui-react';
+import { Pagination, Segment } from 'semantic-ui-react';
 import { Timestamps } from '../../app/api/agent';
 import { useTimestampState } from '../../app/context/timestamps/timestampContext';
+import LoadingComponent from '../../app/layout/LoadingComponent';
 import TimestampTable from './TimestampTable';
 
 //This is a tables page that fetches timestamps at a jobsite for one user or for all users
@@ -23,6 +24,8 @@ const ListJobsiteTimestamps = ({
   const { fromDate, toDate } = useTimestampState();
   const [timestamps, setTimestamps] = React.useState([]);
   const [pagination, setPagination] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
+
   const pageOne = 1;
 
   const loadTimestamps = useCallback(
@@ -70,35 +73,43 @@ const ListJobsiteTimestamps = ({
   );
 
   React.useEffect(() => {
+    setLoading(true);
     loadTimestamps(pageOne);
+    setLoading(false);
   }, [loadTimestamps]);
 
   const pageChangeHandler = async (e, { activePage }) => {
     loadTimestamps(activePage);
   };
 
+  if (loading) return <LoadingComponent />;
   return (
     <Fragment>
-      <TimestampTable
-        timestamps={timestamps}
-        forOneUser={username ? true : false}
-        forEmployeeView={forEmployeeView}
-        noLinksInTable={noLinksInTable}
-      />
-      <div style={{ width: '100%', overflow: 'auto' }}>
-        {pagination && (
-          <Pagination
-            boundaryRange={0}
-            activePage={pagination.CurrentPage}
-            onPageChange={pageChangeHandler}
-            siblingRange={1}
-            totalPages={Math.ceil(pagination.TotalCount / pagination.PageSize)}
-            borderless
-            size='small'
-            floated='right'
-          />
-        )}
-      </div>
+      <Segment>
+        <h3>Timestamps</h3>
+        <TimestampTable
+          timestamps={timestamps}
+          forOneUser={username ? true : false}
+          forEmployeeView={forEmployeeView}
+          noLinksInTable={noLinksInTable}
+        />
+        <div style={{ width: '100%', overflow: 'auto' }}>
+          {pagination && (
+            <Pagination
+              boundaryRange={0}
+              activePage={pagination.CurrentPage}
+              onPageChange={pageChangeHandler}
+              siblingRange={1}
+              totalPages={Math.ceil(
+                pagination.TotalCount / pagination.PageSize
+              )}
+              borderless
+              size='small'
+              floated='right'
+            />
+          )}
+        </div>
+      </Segment>
     </Fragment>
   );
 };

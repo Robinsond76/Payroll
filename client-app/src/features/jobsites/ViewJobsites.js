@@ -71,9 +71,7 @@ const ViewJobsites = () => {
         </div>
       </Form>
 
-      <Segment>
-        <ListJobsites query={query} pageSize={pageSize} />
-      </Segment>
+      <ListJobsites query={query} pageSize={pageSize} />
     </Fragment>
   );
 };

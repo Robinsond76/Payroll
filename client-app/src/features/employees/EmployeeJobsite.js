@@ -1,13 +1,6 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Button,
-  Divider,
-  Header,
-  Icon,
-  Popup,
-  Segment,
-} from 'semantic-ui-react';
+import { Button, Divider, Header, Icon, Popup } from 'semantic-ui-react';
 import FilterDateForm from '../../app/layout/FilterDateForm';
 import ListJobsiteTimestamps from '../tables/ListJobsiteTimestamps';
 
@@ -45,14 +38,12 @@ const EmployeeJobsite = ({ match }) => {
       />
 
       <FilterDateForm />
-      <Segment>
-        <h3>Timestamps</h3>
-        <ListJobsiteTimestamps
-          pageSize={pageSize}
-          username={username}
-          moniker={moniker}
-        />
-      </Segment>
+
+      <ListJobsiteTimestamps
+        pageSize={pageSize}
+        username={username}
+        moniker={moniker}
+      />
     </Fragment>
   );
 };

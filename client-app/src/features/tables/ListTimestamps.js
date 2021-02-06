@@ -14,6 +14,7 @@ import {
   useTimestampState,
   useTimestampDispatch,
 } from '../../app/context/timestamps/timestampContext';
+import LoadingComponent from '../../app/layout/LoadingComponent';
 
 //This is a table component
 //username: If username is provided, will retrieve that user's timestamps
@@ -36,6 +37,7 @@ const ListTimestamps = ({
     toDate,
     timestamps,
     timestampPagination,
+    loading,
   } = useTimestampState();
 
   const loadUserTimestamps = useCallback(
@@ -74,6 +76,8 @@ const ListTimestamps = ({
   const pageChangeHandler = (e, { activePage }) => {
     loadUserTimestamps(activePage);
   };
+
+  if (loading) return <LoadingComponent />;
 
   return (
     <Fragment>
