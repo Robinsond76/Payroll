@@ -7,7 +7,7 @@ namespace Payroll.Data.Models
     public class TimestampParameters
     {
         const int maxPageSize = 50;
-        private DateTime _toDate = DateTime.Now;
+        private DateTimeOffset _toDate = DateTimeOffset.Now;
         private int _pageSize = 10;
 
         public int PageNumber { get; set; } = 1;
@@ -24,8 +24,8 @@ namespace Payroll.Data.Models
             }
         }
 
-        public DateTime FromDate { get; set; } = System.DateTime.MinValue;
-        public DateTime ToDate
+        public DateTimeOffset FromDate { get; set; } = System.DateTimeOffset.MinValue;
+        public DateTimeOffset ToDate
         {
             get
             {

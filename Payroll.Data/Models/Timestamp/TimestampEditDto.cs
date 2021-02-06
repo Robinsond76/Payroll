@@ -8,10 +8,10 @@ namespace Payroll.Data.Models
     public class TimestampEditDto
     {
         [Required]
-        public DateTime ClockedInStamp { get; set; }
+        public DateTimeOffset ClockedInStamp { get; set; }
 
-        public DateTime LunchStamp { get; set; }
+        public DateTimeOffset LunchStamp { get; set; }
         [Required]
-        public DateTime ClockedOutStamp { get; set; }
+        public DateTimeOffset ClockedOutStamp { get; set; }
     }
 }

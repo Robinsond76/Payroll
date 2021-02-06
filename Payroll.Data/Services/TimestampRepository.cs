@@ -21,7 +21,7 @@ namespace Payroll.Data.Services
             _db = db;
         }
 
-        public async Task<bool> AddTimestamp(Jobsite jobsite, AppUser user, DateTime clockedIn, DateTime clockedOut)
+        public async Task<bool> AddTimestamp(Jobsite jobsite, AppUser user, DateTimeOffset clockedIn, DateTimeOffset clockedOut)
         {
             var timestamp = new Timestamp
             {
@@ -65,7 +65,7 @@ namespace Payroll.Data.Services
                 Jobsite = jobsite,
                 AppUser = user,
                 ClockedIn = true,
-                ClockedInStamp = DateTime.Now
+                ClockedInStamp = DateTimeOffset.Now
             };
             _db.Timestamps.Add(timestamp);
 
@@ -75,7 +75,7 @@ namespace Payroll.Data.Services
         public async Task<bool> ClockInLunch(AppUser user)
         {
             var clockedInTimestamp = await this.GetClockedInTimestamp(user);
-            clockedInTimestamp.LunchStamp = DateTime.Now;
+            clockedInTimestamp.LunchStamp = DateTimeOffset.Now;
             
             return await _db.SaveChangesAsync() > 0;
                     
@@ -85,7 +85,7 @@ namespace Payroll.Data.Services
         {
             var clockedInTimestamp = await this.GetClockedInTimestamp(user);
             clockedInTimestamp.ClockedIn = false;
-            clockedInTimestamp.ClockedOutStamp = DateTime.Now;
+            clockedInTimestamp.ClockedOutStamp = DateTimeOffset.Now;
 
             return await _db.SaveChangesAsync() > 0;
         }

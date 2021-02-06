@@ -10,6 +10,6 @@ namespace Payroll.Data.Models
         public string Jobsite { get; set; }
         public string Moniker { get; set; }
         [JsonPropertyName("clockedIn")]
-        public DateTime ClockedInStamp { get; set; }
+        public DateTimeOffset ClockedInStamp { get; set; }
     }
 }

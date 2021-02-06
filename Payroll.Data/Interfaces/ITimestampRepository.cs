@@ -11,7 +11,7 @@ namespace Payroll.Data.Interfaces
 {
     public interface ITimestampRepository
     {
-        public Task<bool> AddTimestamp(Jobsite jobsite, AppUser user, DateTime clockedIn, DateTime clockedOut);
+        public Task<bool> AddTimestamp(Jobsite jobsite, AppUser user, DateTimeOffset clockedIn, DateTimeOffset clockedOut);
         public Task<bool> DeleteTimestamp(int timestampId);
         public Task<Timestamp> GetTimestamp(int timestampId);
         public Task<bool> ClockIn(Jobsite jobsite, AppUser user);

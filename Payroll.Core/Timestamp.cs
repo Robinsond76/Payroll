@@ -13,9 +13,9 @@ namespace Payroll.Core
         public Jobsite Jobsite { get; set; }
 
         public bool ClockedIn { get; set; }
-        public DateTime ClockedInStamp { get; set; }
-        public DateTime LunchStamp { get; set; }
-        public DateTime ClockedOutStamp { get; set; }
+        public DateTimeOffset ClockedInStamp { get; set; }
+        public DateTimeOffset LunchStamp { get; set; }
+        public DateTimeOffset ClockedOutStamp { get; set; }
 
     }
 }

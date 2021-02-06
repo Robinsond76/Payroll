@@ -279,7 +279,7 @@ namespace API.Controllers
                     return BadRequest($"You're currently clocked in to another job: {currentlyClockedin.Jobsite.Moniker}");
 
                 //if already clocked in for lunch, bad request
-                if (currentlyClockedin.LunchStamp != System.DateTime.MinValue)
+                if (currentlyClockedin.LunchStamp != System.DateTimeOffset.MinValue)
                     return BadRequest($"You've already clocked in for lunch.");
 
                 //if clockedin to the correct jobsite, clockinLunch

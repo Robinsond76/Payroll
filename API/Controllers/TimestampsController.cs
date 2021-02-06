@@ -58,7 +58,7 @@ namespace API.Controllers
                     return NotFound(new RestError(HttpStatusCode.NotFound, new { Jobsite = $"Jobsite {timestampNewDto.Moniker} not found" }));
 
                 //confirm clockedOutTimestamp is not past this moment
-                if (timestampNewDto.ClockedOutStamp > DateTime.Now)
+                if (timestampNewDto.ClockedOutStamp > DateTimeOffset.Now)
                     return BadRequest(new RestError(HttpStatusCode.BadRequest, new { ClockedOutStamp = $"Clocked-Out time cannot be in the future." }));
 
                 //confirm clockedInTimestamp is not past clockedOutTimestamp
@@ -114,7 +114,7 @@ namespace API.Controllers
                     return NotFound(new RestError(HttpStatusCode.NotFound, new { Timestamp = $"Timestamp with id {timestampId} not found" }));
 
                 //confirm clockedOutTimestamp is not past Now
-                if (timestampEditDto.ClockedOutStamp > DateTime.Now)
+                if (timestampEditDto.ClockedOutStamp > DateTimeOffset.Now)
                     return BadRequest(new RestError(HttpStatusCode.BadRequest, new { ClockedOutStamp = $"Clocked Out time cannot be in the future." }));
 
                 //confirm clockedInTimestamp is not past clockedOutTimestamp
