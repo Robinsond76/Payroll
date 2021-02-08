@@ -1,10 +1,8 @@
 import React from 'react';
 import { Grid, Header, Image, Segment } from 'semantic-ui-react';
-
-import { useAuthState } from '../../app/context/auth/authContext';
-
-import HomeLoggedIn from './Homepage/HomeLoggedIn';
-import HomeNotLoggedIn from './Homepage/HomeNotLoggedIn';
+import { useAuthState } from '../../../app/context/auth/authContext';
+import HomeLoggedIn from './HomeLoggedIn';
+import HomeNotLoggedIn from './HomeNotLoggedIn';
 
 const TestHome = () => {
   const { isAuthenticated, user } = useAuthState();

@@ -12,12 +12,17 @@ const jobsiteReducer = (state, action) => {
       return {
         ...state,
         jobsites: [],
-        jobsitePagination: 0,
+        jobsitePagination: null,
       };
-    case 'LOADING':
+    case 'SET_LOADING_TRUE':
       return {
         ...state,
         loading: true,
+      };
+    case 'SET_LOADING_FALSE':
+      return {
+        ...state,
+        loading: false,
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

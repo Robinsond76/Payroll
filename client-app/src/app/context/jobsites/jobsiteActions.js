@@ -20,7 +20,7 @@ const getJobsite = async (moniker) => {
 };
 
 const getJobsites = async (dispatch, query = '', pageSize, pageNumber = 1) => {
-  dispatch({ type: 'LOADING' });
+  dispatch({ type: 'SET_LOADING_TRUE' });
   try {
     const result = await Jobsites.listJobsites(query, pageSize, pageNumber);
     dispatch({
@@ -40,7 +40,7 @@ const getJobsitesVisitedByDate = async (
   fromDate = '',
   toDate = ''
 ) => {
-  dispatch({ type: 'LOADING' });
+  dispatch({ type: 'SET_LOADING_TRUE' });
   try {
     const result = await Jobsites.getJobsitesVisited(
       pageSize,

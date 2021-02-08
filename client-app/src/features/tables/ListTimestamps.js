@@ -1,5 +1,5 @@
 import React, { Fragment, useCallback } from 'react';
-import { Pagination } from 'semantic-ui-react';
+import { Image, Pagination, Segment } from 'semantic-ui-react';
 import TimestampTable from './TimestampTable';
 
 // import actions
@@ -14,7 +14,6 @@ import {
   useTimestampState,
   useTimestampDispatch,
 } from '../../app/context/timestamps/timestampContext';
-import LoadingComponent from '../../app/layout/LoadingComponent';
 
 //This is a table component
 //username: If username is provided, will retrieve that user's timestamps
@@ -77,7 +76,12 @@ const ListTimestamps = ({
     loadUserTimestamps(activePage);
   };
 
-  if (loading) return <LoadingComponent />;
+  if (loading)
+    return (
+      <Segment loading={loading}>
+        <Image src='/assets/paragraph.png' />
+      </Segment>
+    );
 
   return (
     <Fragment>

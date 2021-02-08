@@ -7,7 +7,6 @@ import {
   Divider,
   Popup,
   Icon,
-  Segment,
 } from 'semantic-ui-react';
 import ListJobsites from '../tables/ListJobsites';
 import JobsiteForm from './JobsiteForm';
@@ -21,7 +20,7 @@ const ViewJobsites = () => {
   const modalDispatch = useModalDispatch();
   const jobsiteDispatch = useJobsiteDispatch();
   const [query, setQuery] = React.useState('');
-  const pageSize = 10;
+  const pageSize = 5;
 
   //getJobsites loads the results and pagination into context upon searching,
   //which is then retrieved by the 'ListJobsites' table component to display results

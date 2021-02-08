@@ -9,24 +9,29 @@ import {
 import FilterDateForm from '../../app/layout/FilterDateForm';
 import addDays from 'date-fns/addDays';
 import format from 'date-fns/format';
+import LoadingComponent from '../../app/layout/LoadingComponent';
 
 const Payroll = () => {
   const [employees, setEmployees] = React.useState([]);
   const { fromDate, toDate } = useTimestampState();
   const timestampDispatch = useTimestampDispatch();
+  const [loading, setLoading] = React.useState(false);
 
-  //set initial FromDate
+  //load work History
+  React.useEffect(() => {
+    setLoading(true);
+    Timestamps.getWorkHistory(fromDate, toDate).then((result) => {
+      setEmployees(result.data);
+      setLoading(false);
+    });
+  }, [fromDate, toDate]);
+
+  //set initial FromDate for Date Filter
   React.useEffect(() => {
     const oneWeekAgo = addDays(new Date(), -7);
     const formattedOneWeekAgo = format(oneWeekAgo, 'MM/dd/yyyy');
     timestampDispatch({ type: 'SET_FROM_DATE', payload: formattedOneWeekAgo });
   }, [timestampDispatch]);
-
-  React.useEffect(() => {
-    Timestamps.getWorkHistory(fromDate, toDate).then((result) => {
-      setEmployees(result.data);
-    });
-  }, [fromDate, toDate]);
 
   return (
     <div>
@@ -61,35 +66,40 @@ const Payroll = () => {
       <Divider />
 
       <FilterDateForm open={true} />
-      <Table basic='very' size='small' celled selectable>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Employee</Table.HeaderCell>
-            <Table.HeaderCell>
-              Hours Worked{' '}
-              <Popup
-                trigger={<Icon name='question circle outline' />}
-                content='Decimal values represent a fractional hour, not minutes.'
-                position='right center'
-              />
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {employees.map((employee) => {
-            return (
-              <Table.Row key={employee.username}>
-                <Table.Cell>
-                  <Link to={`/employees/payroll/${employee.username}`}>
-                    {employee.displayName}
-                  </Link>
-                </Table.Cell>
-                <Table.Cell>{employee.totalHoursWorked}</Table.Cell>
-              </Table.Row>
-            );
-          })}
-        </Table.Body>
-      </Table>
+
+      {loading ? (
+        <LoadingComponent />
+      ) : (
+        <Table basic='very' size='small' celled selectable>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Employee</Table.HeaderCell>
+              <Table.HeaderCell>
+                Hours Worked{' '}
+                <Popup
+                  trigger={<Icon name='question circle outline' />}
+                  content='Decimal values represent a fractional hour, not minutes.'
+                  position='right center'
+                />
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {employees.map((employee) => {
+              return (
+                <Table.Row key={employee.username}>
+                  <Table.Cell>
+                    <Link to={`/employees/payroll/${employee.username}`}>
+                      {employee.displayName}
+                    </Link>
+                  </Table.Cell>
+                  <Table.Cell>{employee.totalHoursWorked}</Table.Cell>
+                </Table.Row>
+              );
+            })}
+          </Table.Body>
+        </Table>
+      )}
     </div>
   );
 };

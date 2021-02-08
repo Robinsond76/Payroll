@@ -8,6 +8,7 @@ import {
   Segment,
   Popup,
   Icon,
+  Image,
 } from 'semantic-ui-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Jobsites } from '../../app/api/agent';
@@ -15,24 +16,27 @@ import JobsiteHistoryTable from '../tables/JobsiteHistoryTable';
 import FilterDateForm from '../../app/layout/FilterDateForm';
 import JobsiteForm from './JobsiteForm';
 import DeleteJobsite from './DeleteJobsite';
-import { useTimestampState } from '../../app/context/timestamps/timestampContext';
+import {
+  useTimestampDispatch,
+  useTimestampState,
+} from '../../app/context/timestamps/timestampContext';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { openModal } from '../../app/context/modal/modalActions';
-import LoadingComponent from '../../app/layout/LoadingComponent';
 
 const JobsiteHistory = ({ match }) => {
   const moniker = match.params.moniker;
-  const { fromDate, toDate } = useTimestampState();
+  const { fromDate, toDate, loading } = useTimestampState();
+  const timestampDispatch = useTimestampDispatch();
   const modalDispatch = useModalDispatch();
 
   const [jobsite, setJobsite] = React.useState(null);
   const [pagination, setPagination] = React.useState(null);
-  const [loading, setLoading] = React.useState(null);
   const pageSize = 10;
   const pageOne = 1;
 
   const loadJobsiteTimestamps = useCallback(
     async (activePage) => {
+      timestampDispatch({ type: 'SET_LOADING_TRUE' });
       const result = await Jobsites.getJobsiteTimestamps(
         moniker,
         pageSize,
@@ -42,14 +46,13 @@ const JobsiteHistory = ({ match }) => {
       );
       setJobsite(result.data);
       setPagination(JSON.parse(result.headers['x-pagination']));
+      timestampDispatch({ type: 'SET_LOADING_FALSE' });
     },
-    [fromDate, moniker, pageSize, toDate]
+    [fromDate, moniker, timestampDispatch, toDate]
   );
 
   React.useEffect(() => {
-    setLoading(true);
     loadJobsiteTimestamps(pageOne);
-    setLoading(false);
   }, [loadJobsiteTimestamps]);
 
   const pageChangeHandler = (e, { activePage }) => {
@@ -108,10 +111,11 @@ const JobsiteHistory = ({ match }) => {
 
       <FilterDateForm />
       {loading ? (
-        <LoadingComponent />
+        <Segment loading={loading}>
+          <Image src='/assets/paragraph.png' />
+        </Segment>
       ) : (
-        <Segment>
-          <h3>Timestamps</h3>
+        <Fragment>
           {jobsite && <JobsiteHistoryTable timestamps={jobsite.timestamps} />}
           <div style={{ width: '100%', overflow: 'auto' }}>
             {pagination && (
@@ -129,7 +133,7 @@ const JobsiteHistory = ({ match }) => {
               />
             )}
           </div>
-        </Segment>
+        </Fragment>
       )}
     </Fragment>
   );

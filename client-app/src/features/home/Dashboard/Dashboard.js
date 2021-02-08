@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react';
 import { Header, Icon, Popup, Tab } from 'semantic-ui-react';
-
-import DashboardJobsites from './Dashboard/DashboardJobsites';
-import DashboardEmployees from './Dashboard/DashboardEmployees';
+import DashboardJobsites from './DashboardJobsites';
+import DashboardEmployees from './DashboardEmployees';
 
 const Dashboard = () => {
   //panes that will be loaded on the dashboard

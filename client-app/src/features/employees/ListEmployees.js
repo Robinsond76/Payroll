@@ -7,6 +7,7 @@ import { useModalDispatch } from '../../app/context/modal/modalContext';
 import ListEmployeesTable from '../tables/ListEmployeesTable';
 import AddEmployee from './AddEmployee';
 
+// url: /employees
 const ListEmployees = () => {
   const modalDispatch = useModalDispatch();
 

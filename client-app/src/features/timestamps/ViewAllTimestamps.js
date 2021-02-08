@@ -6,14 +6,18 @@ import { Header, Icon, Popup, Tab } from 'semantic-ui-react';
 
 //url: /timestamps
 const ViewAllTimestamps = () => {
-  const pageSize = 10;
+  const pageSize = 5;
 
   const panes = [
     {
       menuItem: 'Timestamps',
       render: () => (
         <Tab.Pane>
-          <h3>Timestamps</h3>
+          <Popup
+            trigger={<Icon name='question circle outline' />}
+            content='All completed timestamps in the system sorted by most recent.'
+            position='right center'
+          />
           <ListTimestamps pageSize={pageSize} />
         </Tab.Pane>
       ),
@@ -22,9 +26,6 @@ const ViewAllTimestamps = () => {
       menuItem: 'Jobsites',
       render: () => (
         <Tab.Pane>
-          <h3 style={{ display: 'inline-block', marginRight: '5px' }}>
-            Jobsites Visited
-          </h3>
           <Popup
             trigger={<Icon name='question circle outline' />}
             content='Use this view along with the date filter to determine jobsites visited within a time frame.'

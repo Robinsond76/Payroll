@@ -1,21 +1,23 @@
 import { format } from 'date-fns';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Icon, Pagination, Table } from 'semantic-ui-react';
+import { Icon, Image, Pagination, Segment, Table } from 'semantic-ui-react';
 import { Timestamps } from '../../../app/api/agent';
 import { openModal } from '../../../app/context/modal/modalActions';
 import { useModalDispatch } from '../../../app/context/modal/modalContext';
-import LoadingComponent from '../../../app/layout/LoadingComponent';
+
 import ClockOutEmployee from '../../employees/ClockOutEmployee';
 
 const DashboardEmployees = () => {
   const modalDispatch = useModalDispatch();
+
+  const [loading, setLoading] = React.useState(false);
+
   const pageSize = 10;
   const pageOne = 1;
 
   const [clockedInTimestamps, setClockedInTimestamps] = React.useState([]);
   const [timestampsPagination, setTimestampsPagination] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
 
   const loadTimestamps = React.useCallback((pageSize, pageNumber) => {
     setLoading(true);
@@ -35,7 +37,19 @@ const DashboardEmployees = () => {
     loadTimestamps(pageSize, activePage);
   };
 
-  if (loading) return <LoadingComponent />;
+  if (loading)
+    return (
+      <Segment loading={loading}>
+        <Image src='/assets/paragraph.png' />
+      </Segment>
+    );
+
+  if (clockedInTimestamps.length === 0)
+    return (
+      <p className='dashboard-message'>
+        There are currently no employees clocked in
+      </p>
+    );
 
   return (
     <Fragment>

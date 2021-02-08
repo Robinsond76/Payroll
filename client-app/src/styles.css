@@ -1,6 +1,6 @@
 :root {
   --light-color: #f4f4f4;
-  --update-color: #3594f3;
+  --update-color: rgb(142, 144, 146);
   --error-color: #f51b30;
   --success-color: #2db94e;
 }
@@ -34,6 +34,12 @@ body {
 }
 
 /*end home page styles*/
+
+/*Segments */
+div.ui.bottom.attached.segment.active.tab {
+  background-color: rgb(234, 234, 234);
+  border: 0px;
+}
 
 /*Top Nav bar */
 .ui.inverted.top.fixed.menu {

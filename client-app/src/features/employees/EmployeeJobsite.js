@@ -10,20 +10,17 @@ import ListJobsiteTimestamps from '../tables/ListJobsiteTimestamps';
 const EmployeeJobsite = ({ match }) => {
   const username = match.params.username;
   const moniker = match.params.moniker;
-  const pageSize = 10;
+  const pageSize = 1;
 
   return (
     <Fragment>
       <Header as='h2' color='teal'>
-        Jobsite: {moniker}
+        Timestamps at Jobsite: {moniker}
       </Header>
-
       <Button color='blue' as={Link} to={`/jobsites/${moniker}`} size='small'>
         See all timestamps
       </Button>
-
       <Divider />
-
       <Header
         as='h4'
         color='teal'
@@ -36,7 +33,6 @@ const EmployeeJobsite = ({ match }) => {
         content={`Showing all timestamps for user ${username} at this jobsite`}
         position='right center'
       />
-
       <FilterDateForm />
 
       <ListJobsiteTimestamps

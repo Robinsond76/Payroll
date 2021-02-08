@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Icon } from 'semantic-ui-react';
+import { Table, Icon, Segment, Image } from 'semantic-ui-react';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import TimestampForm from '../timestamps/TimestampForm';
@@ -9,6 +9,7 @@ import DeleteTimestamp from '../timestamps/DeleteTimestamp';
 import { getDuration } from '../../app/common/util';
 
 const TimestampsTable = ({
+  loading,
   timestamps,
   forOneUser = false,
   forEmployeeView = false,
@@ -17,6 +18,13 @@ const TimestampsTable = ({
   noLinksInTable = false,
 }) => {
   const modalDispatch = useModalDispatch();
+
+  if (loading)
+    return (
+      <Segment loading={loading}>
+        <Image src='/assets/paragraph.png' />
+      </Segment>
+    );
 
   return (
     <Table padded size='small' celled selectable>

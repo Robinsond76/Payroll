@@ -1,11 +1,10 @@
-import React from 'react';
-import { Icon, Pagination, Segment, Table } from 'semantic-ui-react';
+import React, { Fragment } from 'react';
+import { Icon, Image, Pagination, Segment, Table } from 'semantic-ui-react';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import EditEmployee from '../employees/EditEmployee';
 import EditManagerStatus from '../managers/EditManagerStatus';
 import { User } from '../../app/api/agent';
 import { openModal } from '../../app/context/modal/modalActions';
-import LoadingComponent from '../../app/layout/LoadingComponent';
 
 const ListManagersTable = () => {
   const pageSize = 10;
@@ -17,27 +16,32 @@ const ListManagersTable = () => {
   const [managersPagination, setManagersPagination] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
 
-  const loadManagers = React.useCallback((pageSize, pageNumber) => {
+  const loadManagers = React.useCallback((pageNumber) => {
+    setLoading(true);
     User.getManagers(pageSize, pageNumber).then((result) => {
       setManagers(result.data);
       setManagersPagination(JSON.parse(result.headers['x-pagination']));
+      setLoading(false);
     });
   }, []);
 
   React.useEffect(() => {
-    setLoading(true);
-    loadManagers(pageSize, pageOne);
-    setLoading(false);
+    loadManagers(pageOne);
   }, [loadManagers]);
 
   const jobsitePageChangeHandler = (e, { activePage }) => {
-    loadManagers(pageSize, activePage);
+    loadManagers(activePage);
   };
 
-  if (loading) return <LoadingComponent />;
+  if (loading)
+    return (
+      <Segment loading={loading}>
+        <Image src='/assets/paragraph.png' />
+      </Segment>
+    );
 
   return (
-    <Segment>
+    <Fragment>
       <Table selectable>
         <Table.Header>
           <Table.Row>
@@ -107,7 +111,7 @@ const ListManagersTable = () => {
           />
         )}
       </div>
-    </Segment>
+    </Fragment>
   );
 };
 

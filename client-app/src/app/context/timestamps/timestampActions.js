@@ -7,7 +7,7 @@ const getAllTimestamps = async (
   fromDate = '',
   toDate = ''
 ) => {
-  dispatch({ type: 'LOADING' });
+  dispatch({ type: 'SET_LOADING_TRUE' });
   try {
     const result = await Timestamps.getAllTimestamps(
       pageSize,
@@ -35,7 +35,7 @@ const getCurrentUserTimestamps = async (
   fromDate = '',
   toDate = ''
 ) => {
-  dispatch({ type: 'LOADING' });
+  dispatch({ type: 'SET_LOADING_TRUE' });
   try {
     const result = await Timestamps.getCurrentUserTimestamps(
       username,
@@ -64,7 +64,7 @@ const getUserTimestamps = async (
   fromDate = '',
   toDate = ''
 ) => {
-  dispatch({ type: 'LOADING' });
+  dispatch({ type: 'SET_LOADING_TRUE' });
   try {
     const result = await Timestamps.getAnyUserTimestamps(
       username,
@@ -92,7 +92,7 @@ const getJobsiteTimestampsByUser = async (
   pageSize = 3,
   pageNumber = 1
 ) => {
-  dispatch({ type: 'LOADING' });
+  dispatch({ type: 'SET_LOADING_TRUE' });
   try {
     const result = await Timestamps.getJobsiteTimestamps(
       moniker,

@@ -9,6 +9,7 @@ import {
   useTimestampState,
   useTimestampDispatch,
 } from '../../app/context/timestamps/timestampContext';
+import LoadingComponent from '../../app/layout/LoadingComponent';
 
 // url: /employees/payroll/{username}
 
@@ -18,6 +19,16 @@ const EmployeeWorkHistory = ({ match }) => {
   const [employee, setEmployee] = React.useState(null);
   const { fromDate, toDate } = useTimestampState();
   const timestampDispatch = useTimestampDispatch();
+  const [loading, setLoading] = React.useState(false);
+
+  //get work history on load
+  React.useEffect(() => {
+    setLoading(true);
+    Timestamps.getUserWorkHistory(username, fromDate, toDate).then((result) => {
+      setEmployee(result.data);
+      setLoading(false);
+    });
+  }, [fromDate, toDate, username]);
 
   //set initial FromDate on load
   React.useEffect(() => {
@@ -25,13 +36,6 @@ const EmployeeWorkHistory = ({ match }) => {
     const formattedOneWeekAgo = format(oneWeekAgo, 'MM/dd/yyyy');
     timestampDispatch({ type: 'SET_FROM_DATE', payload: formattedOneWeekAgo });
   }, [timestampDispatch]);
-
-  //get work history on load
-  React.useEffect(() => {
-    Timestamps.getUserWorkHistory(username, fromDate, toDate).then((result) => {
-      setEmployee(result.data);
-    });
-  }, [fromDate, toDate, username]);
 
   return (
     <div>
@@ -51,38 +55,43 @@ const EmployeeWorkHistory = ({ match }) => {
       <Divider />
 
       <FilterDateForm open={true} />
-      <Table basic='very' size='small' celled selectable>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Moniker</Table.HeaderCell>
-            <Table.HeaderCell>Jobsite</Table.HeaderCell>
-            <Table.HeaderCell>
-              Hours Worked{' '}
-              <Popup
-                trigger={<Icon name='question circle outline' />}
-                content='Decimal values represent a fractional hour, not minutes.'
-                position='right center'
-              />
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {employee &&
-            employee.workHistory.map((entry) => {
-              return (
-                <Table.Row key={entry.moniker}>
-                  <Table.Cell>
-                    <Link to={`/jobsites/${entry.moniker}/${username}`}>
-                      {entry.moniker}
-                    </Link>
-                  </Table.Cell>
-                  <Table.Cell>{entry.name}</Table.Cell>
-                  <Table.Cell>{entry.hoursWorked}</Table.Cell>
-                </Table.Row>
-              );
-            })}
-        </Table.Body>
-      </Table>
+
+      {loading ? (
+        <LoadingComponent />
+      ) : (
+        <Table basic='very' size='small' celled selectable>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Moniker</Table.HeaderCell>
+              <Table.HeaderCell>Jobsite</Table.HeaderCell>
+              <Table.HeaderCell>
+                Hours Worked{' '}
+                <Popup
+                  trigger={<Icon name='question circle outline' />}
+                  content='Decimal values represent a fractional hour, not minutes.'
+                  position='right center'
+                />
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {employee &&
+              employee.workHistory.map((entry) => {
+                return (
+                  <Table.Row key={entry.moniker}>
+                    <Table.Cell>
+                      <Link to={`/jobsites/${entry.moniker}/${username}`}>
+                        {entry.moniker}
+                      </Link>
+                    </Table.Cell>
+                    <Table.Cell>{entry.name}</Table.Cell>
+                    <Table.Cell>{entry.hoursWorked}</Table.Cell>
+                  </Table.Row>
+                );
+              })}
+          </Table.Body>
+        </Table>
+      )}
     </div>
   );
 };

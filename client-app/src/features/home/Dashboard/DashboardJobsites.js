@@ -1,16 +1,15 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Pagination, Table } from 'semantic-ui-react';
-import LoadingComponent from '../../../app/layout/LoadingComponent';
+import { Image, Pagination, Segment, Table } from 'semantic-ui-react';
 import { Timestamps } from '../../../app/api/agent';
 
 const DashboardJobsites = () => {
+  const [loading, setLoading] = React.useState(false);
   const pageSize = 10;
   const pageOne = 1;
 
   const [clockedInJobsites, setClockedInJobsites] = React.useState([]);
   const [jobsitesPagination, setJobsitesPagination] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
 
   const loadJobsites = React.useCallback((pageSize, pageNumber) => {
     setLoading(true);
@@ -30,7 +29,19 @@ const DashboardJobsites = () => {
     loadJobsites(pageSize, pageOne);
   }, [loadJobsites]);
 
-  if (loading) return <LoadingComponent />;
+  if (loading)
+    return (
+      <Segment loading={loading}>
+        <Image src='/assets/paragraph.png' />
+      </Segment>
+    );
+
+  if (clockedInJobsites.length === 0)
+    return (
+      <p className='dashboard-message'>
+        There are currently no jobsites with active employees{' '}
+      </p>
+    );
 
   return (
     <Fragment>

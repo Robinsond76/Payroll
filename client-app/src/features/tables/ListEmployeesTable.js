@@ -1,37 +1,42 @@
-import React from 'react';
-import { Pagination, Segment, Table } from 'semantic-ui-react';
+import React, { Fragment } from 'react';
+import { Image, Pagination, Segment, Table } from 'semantic-ui-react';
 import { User } from '../../app/api/agent';
 import { Link } from 'react-router-dom';
-import LoadingComponent from '../../app/layout/LoadingComponent';
 
 const ListEmployeesTable = () => {
   const [users, setUsers] = React.useState([]);
   const [pagination, setPagination] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
 
-  const pageSize = 10;
+  const pageSize = 3;
   const pageOne = 1;
 
-  //load employees on page load
-  React.useEffect(() => {
+  const loadEmployees = React.useCallback(async (activePage) => {
     setLoading(true);
-    User.getUsers(pageSize, pageOne).then((result) => {
-      setUsers(result.data);
-      setPagination(JSON.parse(result.headers['x-pagination']));
-      setLoading(false);
-    });
-  }, []);
-
-  const pageChangeHandler = async (e, { activePage }) => {
     const result = await User.getUsers(pageSize, activePage);
     setUsers(result.data);
     setPagination(JSON.parse(result.headers['x-pagination']));
+    setLoading(false);
+  }, []);
+
+  //load employees on page load
+  React.useEffect(() => {
+    loadEmployees(pageOne);
+  }, [loadEmployees]);
+
+  const pageChangeHandler = async (e, { activePage }) => {
+    loadEmployees(activePage);
   };
 
-  if (loading) return <LoadingComponent />;
+  if (loading)
+    return (
+      <Segment loading={loading}>
+        <Image src='/assets/paragraph.png' />
+      </Segment>
+    );
 
   return (
-    <Segment>
+    <Fragment>
       <Table selectable>
         <Table.Header>
           <Table.Row>
@@ -70,7 +75,7 @@ const ListEmployeesTable = () => {
           />
         )}
       </div>
-    </Segment>
+    </Fragment>
   );
 };
 

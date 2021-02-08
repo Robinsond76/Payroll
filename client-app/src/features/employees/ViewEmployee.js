@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import ListTimestamps from '../tables/ListTimestamps';
 import FilterDateForm from '../../app/layout/FilterDateForm';
-import { Button, Divider, Header, Segment } from 'semantic-ui-react';
+import { Button, Divider, Header } from 'semantic-ui-react';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { openModal } from '../../app/context/modal/modalActions';
 import { useAuthState } from '../../app/context/auth/authContext';
@@ -71,15 +71,14 @@ const ViewEmployee = ({ match }) => {
       <Divider />
 
       <FilterDateForm />
-      <Segment>
-        <h3>Timestamps</h3>
-        <ListTimestamps
-          username={username}
-          pageSize={pageSize}
-          forOneUser={true}
-          showEditDelete={true}
-        />
-      </Segment>
+
+      <h3>Timestamps</h3>
+      <ListTimestamps
+        username={username}
+        pageSize={pageSize}
+        forOneUser={true}
+        showEditDelete={true}
+      />
     </Fragment>
   );
 };
