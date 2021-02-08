@@ -1,7 +1,9 @@
 import formatISO from 'date-fns/formatISO';
 import { intervalToDuration } from 'date-fns';
+import format from 'date-fns/format';
 
-//01-01-2021 08:05:25
+//receiving data example: 01-01-2021 08:05:25
+//changes a string of date and time into an ISO string
 export const formatDateTime = (dateTimeString) => {
   let month = Number(dateTimeString.slice(0, 2));
   const day = Number(dateTimeString.slice(3, 5));
@@ -16,17 +18,11 @@ export const formatDateTime = (dateTimeString) => {
   return formatISO(new Date(year, month, day, hour, minute, second));
 };
 
-//2021-01-26T07:23:00
+//receiving data example: 2021-01-26T07:23:00
+//changes a UTC date string into a formatted string
 export const reverseFormatDateTime = (dateString) => {
-  const year = dateString.slice(0, 4);
-  let month = dateString.slice(5, 7);
-  const day = dateString.slice(8, 10);
-  const hour = dateString.slice(11, 13);
-  const minute = dateString.slice(14, 16);
-
-  const timeString = hour + ':' + minute;
-
-  const result = `${month}-${day}-${year} ${timeString}`;
+  const newDate = new Date(dateString);
+  const result = format(newDate, 'MM-dd-yyyy HH:mm');
 
   return result;
 };
