@@ -5,6 +5,7 @@ import { Button, Divider, Header } from 'semantic-ui-react';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { openModal } from '../../app/context/modal/modalActions';
 import { useAuthState } from '../../app/context/auth/authContext';
+
 import EditEmployee from './EditEmployee';
 import DeleteEmployee from './DeleteEmployee';
 import TimestampForm from '../timestamps/TimestampForm';
@@ -25,6 +26,7 @@ const ViewEmployee = ({ match }) => {
       </Header>
 
       <Button
+        className='add-employee-btn'
         color='teal'
         size='small'
         onClick={() =>
@@ -36,6 +38,7 @@ const ViewEmployee = ({ match }) => {
 
       {user.admin && (
         <Button
+          className='make-manager-btn'
           color='green'
           size='small'
           onClick={() =>
@@ -50,6 +53,7 @@ const ViewEmployee = ({ match }) => {
       )}
 
       <Button
+        className='edit-employee-btn'
         color='blue'
         size='small'
         onClick={() =>
@@ -59,6 +63,7 @@ const ViewEmployee = ({ match }) => {
         Edit Employee
       </Button>
       <Button
+        className='delete-employee-btn'
         color='red'
         size='small'
         onClick={() =>
@@ -72,7 +77,6 @@ const ViewEmployee = ({ match }) => {
 
       <FilterDateForm />
 
-      <h3>Timestamps</h3>
       <ListTimestamps
         username={username}
         pageSize={pageSize}

@@ -54,6 +54,11 @@ const timestampReducer = (state, action) => {
         ...state,
         loading: false,
       };
+    case 'REFRESH':
+      return {
+        ...state,
+        refresh: !state.refresh,
+      };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }

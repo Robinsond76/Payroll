@@ -6,7 +6,7 @@ import { Header, Icon, Popup, Tab } from 'semantic-ui-react';
 
 //url: /timestamps
 const ViewAllTimestamps = () => {
-  const pageSize = 5;
+  const pageSize = 10;
 
   const panes = [
     {

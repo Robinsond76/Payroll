@@ -51,7 +51,9 @@ const ListJobsites = ({ pageSize, query = '', basicView = false }) => {
   }, [jDispatch, loadJobsites, query]);
 
   const pageChangeHandler = (e, { activePage }) => {
-    loadJobsites(activePage, query);
+    if (jobsitePagination.HasNext || jobsitePagination.HasPrevious) {
+      loadJobsites(activePage, query);
+    }
   };
 
   if (loading)
@@ -109,7 +111,7 @@ const ListJobsites = ({ pageSize, query = '', basicView = false }) => {
           })}
         </Table.Body>
       </Table>
-      <div style={{ width: '100%', overflow: 'auto', marginBottom: '15px' }}>
+      <div style={{ width: '100%', overflow: 'auto', marginBottom: '30px' }}>
         {jobsitePagination && (
           <Pagination
             boundaryRange={0}

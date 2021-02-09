@@ -8,7 +8,7 @@ const ListEmployeesTable = () => {
   const [pagination, setPagination] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
 
-  const pageSize = 3;
+  const pageSize = 10;
   const pageOne = 1;
 
   const loadEmployees = React.useCallback(async (activePage) => {
@@ -25,7 +25,9 @@ const ListEmployeesTable = () => {
   }, [loadEmployees]);
 
   const pageChangeHandler = async (e, { activePage }) => {
-    loadEmployees(activePage);
+    if (pagination.HasNext || pagination.HasPrevious) {
+      loadEmployees(activePage);
+    }
   };
 
   if (loading)
@@ -61,7 +63,7 @@ const ListEmployeesTable = () => {
             ))}
         </Table.Body>
       </Table>
-      <div style={{ width: '100%', overflow: 'auto' }}>
+      <div style={{ width: '100%', overflow: 'auto', marginBottom: '30px' }}>
         {pagination && (
           <Pagination
             boundaryRange={0}

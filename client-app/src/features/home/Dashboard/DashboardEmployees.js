@@ -5,12 +5,13 @@ import { Icon, Image, Pagination, Segment, Table } from 'semantic-ui-react';
 import { Timestamps } from '../../../app/api/agent';
 import { openModal } from '../../../app/context/modal/modalActions';
 import { useModalDispatch } from '../../../app/context/modal/modalContext';
+import { useTimestampState } from '../../../app/context/timestamps/timestampContext';
 
 import ClockOutEmployee from '../../employees/ClockOutEmployee';
 
 const DashboardEmployees = () => {
   const modalDispatch = useModalDispatch();
-
+  const { refresh } = useTimestampState();
   const [loading, setLoading] = React.useState(false);
 
   const pageSize = 10;
@@ -31,10 +32,12 @@ const DashboardEmployees = () => {
   //on load, load timestamps
   React.useEffect(() => {
     loadTimestamps(pageSize, pageOne);
-  }, [loadTimestamps]);
+  }, [loadTimestamps, refresh]);
 
   const timestampPageChangeHandler = (e, { activePage }) => {
-    loadTimestamps(pageSize, activePage);
+    if (timestampsPagination.HasNext || timestampsPagination.HasPrevious) {
+      loadTimestamps(pageSize, activePage);
+    }
   };
 
   if (loading)
@@ -108,7 +111,7 @@ const DashboardEmployees = () => {
           })}
         </Table.Body>
       </Table>
-      <div style={{ width: '100%', overflow: 'auto' }}>
+      <div style={{ width: '100%', overflow: 'auto', marginBottom: '30px' }}>
         {timestampsPagination && (
           <Pagination
             boundaryRange={0}

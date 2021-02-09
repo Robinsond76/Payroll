@@ -2,19 +2,20 @@ import React, { Fragment } from 'react';
 import { Button, Header, Icon } from 'semantic-ui-react';
 import { Timestamps } from '../../app/api/agent';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
-import { history } from '../..';
 
 import { useAlertDispatch } from '../../app/context/alerts/alertContext';
 import { setAlert } from '../../app/context/alerts/alertActions';
+import { useTimestampDispatch } from '../../app/context/timestamps/timestampContext';
 
 const DeleteTimestamp = ({ timestampId }) => {
   const modalDispatch = useModalDispatch();
   const alertDispatch = useAlertDispatch();
+  const timestampDispatch = useTimestampDispatch();
 
   const onDelete = () => {
     Timestamps.deleteTimestamp(timestampId).then(() => {
       modalDispatch({ type: 'CLOSE_MODAL' });
-      history.push('/refresh');
+      timestampDispatch({ type: 'REFRESH' });
       setAlert(alertDispatch, `Timestamp deleted`, 'error');
     });
   };

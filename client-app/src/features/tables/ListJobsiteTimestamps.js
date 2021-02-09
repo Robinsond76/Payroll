@@ -67,7 +67,9 @@ const ListJobsiteTimestamps = ({
   }, [loadTimestamps]);
 
   const pageChangeHandler = async (e, { activePage }) => {
-    loadTimestamps(activePage);
+    if (pagination.HasNext || pagination.HasPrevious) {
+      loadTimestamps(activePage);
+    }
   };
 
   if (loading)
@@ -85,7 +87,7 @@ const ListJobsiteTimestamps = ({
         forEmployeeView={forEmployeeView}
         noLinksInTable={noLinksInTable}
       />
-      <div style={{ width: '100%', overflow: 'auto' }}>
+      <div style={{ width: '100%', overflow: 'auto', marginBottom: '30px' }}>
         {pagination && (
           <Pagination
             boundaryRange={0}

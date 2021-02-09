@@ -21,7 +21,9 @@ const DashboardJobsites = () => {
   }, []);
 
   const jobsitePageChangeHandler = (e, { activePage }) => {
-    loadJobsites(pageSize, activePage);
+    if (jobsitesPagination.HasNext || jobsitesPagination.HasPrevious) {
+      loadJobsites(pageSize, activePage);
+    }
   };
 
   //on load, load jobsites
@@ -69,7 +71,7 @@ const DashboardJobsites = () => {
           })}
         </Table.Body>
       </Table>
-      <div style={{ width: '100%', overflow: 'auto' }}>
+      <div style={{ width: '100%', overflow: 'auto', marginBottom: '30px' }}>
         {jobsitesPagination && (
           <Pagination
             boundaryRange={0}

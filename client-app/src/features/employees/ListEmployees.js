@@ -36,7 +36,12 @@ const ListEmployees = () => {
         Add New Employee
       </Button>
 
-      <Button size='small' as={Link} to={'/employees/payroll'}>
+      <Button
+        size='small'
+        as={Link}
+        to={'/employees/payroll'}
+        className='payroll-btn'
+      >
         Payroll
       </Button>
 

@@ -37,6 +37,7 @@ const ListTimestamps = ({
     timestamps,
     timestampPagination,
     loading,
+    refresh,
   } = useTimestampState();
 
   const loadUserTimestamps = useCallback(
@@ -70,10 +71,12 @@ const ListTimestamps = ({
     return () => {
       tDispatch({ type: 'CLEAR_TIMESTAMPS' });
     };
-  }, [loadUserTimestamps, tDispatch]);
+  }, [loadUserTimestamps, tDispatch, refresh]);
 
   const pageChangeHandler = (e, { activePage }) => {
-    loadUserTimestamps(activePage);
+    if (timestampPagination.HasNext || timestampPagination.HasPrevious) {
+      loadUserTimestamps(activePage);
+    }
   };
 
   if (loading)
@@ -85,29 +88,38 @@ const ListTimestamps = ({
 
   return (
     <Fragment>
-      <TimestampTable
-        timestamps={timestamps}
-        forOneUser={username ? true : false}
-        username={username}
-        showEditDelete={showEditDelete}
-        forEmployeeView={forEmployeeView}
-      />
-      <div style={{ width: '100%', overflow: 'auto' }}>
-        {timestampPagination && (
-          <Pagination
-            boundaryRange={0}
-            activePage={timestampPagination.CurrentPage}
-            onPageChange={pageChangeHandler}
-            siblingRange={1}
-            totalPages={Math.ceil(
-              timestampPagination.TotalCount / timestampPagination.PageSize
-            )}
-            borderless
-            size='small'
-            floated='right'
+      {timestamps.length === 0 ? (
+        <p className='no-timestamps'>No Timestamps</p>
+      ) : (
+        <>
+          <h3>Timestamps</h3>
+          <TimestampTable
+            timestamps={timestamps}
+            forOneUser={username ? true : false}
+            username={username}
+            showEditDelete={showEditDelete}
+            forEmployeeView={forEmployeeView}
           />
-        )}
-      </div>
+          <div
+            style={{ width: '100%', overflow: 'auto', marginBottom: '30px' }}
+          >
+            {timestampPagination && (
+              <Pagination
+                boundaryRange={0}
+                activePage={timestampPagination.CurrentPage}
+                onPageChange={pageChangeHandler}
+                siblingRange={1}
+                totalPages={Math.ceil(
+                  timestampPagination.TotalCount / timestampPagination.PageSize
+                )}
+                borderless
+                size='small'
+                floated='right'
+              />
+            )}
+          </div>
+        </>
+      )}
     </Fragment>
   );
 };

@@ -70,7 +70,13 @@ const Payroll = () => {
       {loading ? (
         <LoadingComponent />
       ) : (
-        <Table basic='very' size='small' celled selectable>
+        <Table
+          basic='very'
+          size='small'
+          celled
+          selectable
+          style={{ marginBottom: '30px' }}
+        >
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Employee</Table.HeaderCell>

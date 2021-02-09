@@ -13,6 +13,7 @@ const TimestampProvider = ({ children }) => {
     loading: false,
     fromDate: '',
     toDate: '',
+    refresh: false,
   };
 
   const [state, dispatch] = useReducer(timestampReducer, initialState);

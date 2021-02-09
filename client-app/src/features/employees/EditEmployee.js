@@ -11,6 +11,7 @@ import ErrorMessage from '../../app/common/form/ErrorMessage';
 import { useAlertDispatch } from '../../app/context/alerts/alertContext';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { setAlert } from '../../app/context/alerts/alertActions';
+import { useTimestampDispatch } from '../../app/context/timestamps/timestampContext';
 
 const validate = combineValidators({
   username: isRequired('Username'),
@@ -22,6 +23,7 @@ const validate = combineValidators({
 const EditEmployee = ({ username, manager = false }) => {
   const modalDispatch = useModalDispatch();
   const alertDispatch = useAlertDispatch();
+  const timestampDispatch = useTimestampDispatch();
 
   const [employee, setEmployee] = React.useState({});
 
@@ -35,7 +37,8 @@ const EditEmployee = ({ username, manager = false }) => {
         modalDispatch({ type: 'CLOSE_MODAL' });
         setAlert(alertDispatch, `${username} updated`, 'update');
         if (manager) {
-          history.push('/refresh');
+          //if editing a manager, will refresh manager page.
+          timestampDispatch({ type: 'REFRESH' });
         } else {
           history.push('/employees');
         }

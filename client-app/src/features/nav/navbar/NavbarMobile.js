@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Icon, Menu, Sidebar } from 'semantic-ui-react';
+import { Icon, Menu, Sidebar, Ref } from 'semantic-ui-react';
 import { LeftMenuItems, RightMenuItems } from './MenuItems';
 
 const NavbarMobile = ({ children, onPusherClick, onToggle, visible }) => {
+  const menuRef = React.useRef();
+
   return (
     <Sidebar.Pushable>
       <Sidebar
@@ -15,8 +17,12 @@ const NavbarMobile = ({ children, onPusherClick, onToggle, visible }) => {
         visible={visible}
         borderless
         width='thin'
+        target={menuRef}
+        onClick={onPusherClick}
       >
-        <LeftMenuItems />
+        <Ref innerRef={menuRef}>
+          <LeftMenuItems />
+        </Ref>
       </Sidebar>
 
       <Sidebar.Pusher

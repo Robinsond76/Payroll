@@ -56,7 +56,9 @@ const JobsiteHistory = ({ match }) => {
   }, [loadJobsiteTimestamps]);
 
   const pageChangeHandler = (e, { activePage }) => {
-    loadJobsiteTimestamps(activePage);
+    if (pagination.HasNext || pagination.HasPrevious) {
+      loadJobsiteTimestamps(activePage);
+    }
   };
 
   return (
@@ -75,6 +77,7 @@ const JobsiteHistory = ({ match }) => {
         Edit Jobsite
       </Button>
       <Button
+        className='delete-jobsite-btn'
         color='red'
         size='small'
         onClick={() =>
@@ -117,7 +120,9 @@ const JobsiteHistory = ({ match }) => {
       ) : (
         <Fragment>
           {jobsite && <JobsiteHistoryTable timestamps={jobsite.timestamps} />}
-          <div style={{ width: '100%', overflow: 'auto' }}>
+          <div
+            style={{ width: '100%', overflow: 'auto', marginBottom: '30px' }}
+          >
             {pagination && (
               <Pagination
                 boundaryRange={0}

@@ -5,11 +5,13 @@ import EditEmployee from '../employees/EditEmployee';
 import EditManagerStatus from '../managers/EditManagerStatus';
 import { User } from '../../app/api/agent';
 import { openModal } from '../../app/context/modal/modalActions';
+import { useTimestampState } from '../../app/context/timestamps/timestampContext';
 
 const ListManagersTable = () => {
   const pageSize = 10;
   const pageOne = 1;
 
+  const { refresh } = useTimestampState();
   const [managers, setManagers] = React.useState([]);
   const modalDispatch = useModalDispatch();
 
@@ -27,10 +29,12 @@ const ListManagersTable = () => {
 
   React.useEffect(() => {
     loadManagers(pageOne);
-  }, [loadManagers]);
+  }, [loadManagers, refresh]);
 
   const jobsitePageChangeHandler = (e, { activePage }) => {
-    loadManagers(activePage);
+    if (managersPagination.HasNext || managersPagination.HasPrevious) {
+      loadManagers(activePage);
+    }
   };
 
   if (loading)
@@ -95,7 +99,7 @@ const ListManagersTable = () => {
           })}
         </Table.Body>
       </Table>
-      <div style={{ width: '100%', overflow: 'auto' }}>
+      <div style={{ width: '100%', overflow: 'auto', marginBottom: '30px' }}>
         {managersPagination && (
           <Pagination
             boundaryRange={0}

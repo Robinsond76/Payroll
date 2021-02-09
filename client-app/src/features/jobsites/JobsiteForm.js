@@ -5,12 +5,13 @@ import { Button, Form, Header, Divider } from 'semantic-ui-react';
 import TextInput from '../../app/common/form/TextInput';
 import { combineValidators, isRequired } from 'revalidate';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
-import { history } from '../..';
+
 import { FORM_ERROR } from 'final-form';
 import { useModalDispatch } from '../../app/context/modal/modalContext';
 import { useAlertDispatch } from '../../app/context/alerts/alertContext';
 import { setAlert } from '../../app/context/alerts/alertActions';
 import { getJobsite } from '../../app/context/jobsites/jobsiteActions';
+import { useTimestampDispatch } from '../../app/context/timestamps/timestampContext';
 
 //validator to validate form
 const validate = combineValidators({
@@ -26,6 +27,7 @@ const validate = combineValidators({
 const JobsiteForm = ({ moniker }) => {
   const modalDispatch = useModalDispatch();
   const alertDispatch = useAlertDispatch();
+  const timestampDispatch = useTimestampDispatch();
   const [loading, setLoading] = React.useState(false);
   const [jobsite, setJobsite] = React.useState({
     name: '',
@@ -70,14 +72,14 @@ const JobsiteForm = ({ moniker }) => {
       if (moniker) {
         await Jobsites.editJobsite(moniker, formValues);
         modalDispatch({ type: 'CLOSE_MODAL' });
-        history.push(`/jobsites`);
+        timestampDispatch({ type: 'REFRESH' });
 
         setAlert(alertDispatch, 'Edit Successful', 'update');
       } else {
         // if moniker is not present, form submission means new jobsite
-        const newJobsite = await Jobsites.addJobsite(formValues);
+        await Jobsites.addJobsite(formValues);
         modalDispatch({ type: 'CLOSE_MODAL' });
-        history.push(`/jobsites/${newJobsite.moniker}`);
+        timestampDispatch({ type: 'REFRESH' });
 
         setAlert(alertDispatch, 'Jobsite Added', 'success');
       }

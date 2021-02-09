@@ -6,6 +6,7 @@ import { history } from '../..';
 
 import { useAlertDispatch } from '../../app/context/alerts/alertContext';
 import { setAlert } from '../../app/context/alerts/alertActions';
+import { useTimestampDispatch } from '../../app/context/timestamps/timestampContext';
 
 //modal to edit manager status
 //if revoke is true, component's purpose is confirm revoking a user
@@ -14,12 +15,13 @@ import { setAlert } from '../../app/context/alerts/alertActions';
 const EditManagerStatus = ({ username, revoke = false }) => {
   const modalDispatch = useModalDispatch();
   const alertDispatch = useAlertDispatch();
+  const timestampDispatch = useTimestampDispatch();
 
   const onSubmit = () => {
     if (revoke) {
       User.editManager(username, false).then(() => {
         modalDispatch({ type: 'CLOSE_MODAL' });
-        history.push('/refresh');
+        timestampDispatch({ type: 'REFRESH' });
         setAlert(
           alertDispatch,
           `${username} - Manager status revoked`,
