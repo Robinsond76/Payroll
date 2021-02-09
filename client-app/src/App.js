@@ -1,5 +1,5 @@
 import React, { useEffect, Fragment } from 'react';
-import { Container } from 'semantic-ui-react';
+
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { TimestampProvider } from './app/context/timestamps/timestampContext';
 import { JobsiteProvider } from './app/context/jobsites/jobsiteContext';
@@ -10,7 +10,8 @@ import { loadUser } from './app/context/auth/authActions';
 import PrivateRoute from './app/layout/PrivateRoute';
 
 //components
-import Navbar from './features/nav/Navbar.js';
+// import Navbar from './features/nav/Navbar.js';
+import NewNavbar from './features/nav/NewNavbar';
 import Alerts from './app/layout/Alerts';
 import ViewJobsites from './features/jobsites/ViewJobsites';
 import ModalContainer from './app/common/modals/ModalContainer';
@@ -57,8 +58,7 @@ const App = () => {
                 path={'/(.+)'}
                 render={() => (
                   <Fragment>
-                    <Navbar />
-                    <Container style={{ marginTop: '7em' }}>
+                    <NewNavbar>
                       <Alerts />
 
                       <Switch>
@@ -129,7 +129,7 @@ const App = () => {
                         />
                         <PrivateRoute component={NotFound} />
                       </Switch>
-                    </Container>
+                    </NewNavbar>
                   </Fragment>
                 )}
               />

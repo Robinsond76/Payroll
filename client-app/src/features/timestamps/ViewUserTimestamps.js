@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Divider, Header, Icon, Popup, Segment } from 'semantic-ui-react';
+import { Divider, Header, Icon, Popup } from 'semantic-ui-react';
 import { useAuthState } from '../../app/context/auth/authContext';
 
 import FilterDateForm from '../../app/layout/FilterDateForm';
@@ -32,14 +32,13 @@ const ViewUserTimestamps = () => {
       <Divider />
 
       <FilterDateForm />
-      <Segment>
-        <ListTimestamps
-          username={username}
-          forCurrentUser={true}
-          pageSize={pageSize}
-          forEmployeeView={true}
-        />
-      </Segment>
+
+      <ListTimestamps
+        username={username}
+        forCurrentUser={true}
+        pageSize={pageSize}
+        forEmployeeView={true}
+      />
     </Fragment>
   );
 };

@@ -63,6 +63,7 @@ const ListJobsites = ({ pageSize, query = '', basicView = false }) => {
 
   return (
     <Fragment>
+      {/* <div style={{ marginBottom: '15px' }}> */}
       <Table padded size='small' celled selectable>
         <Table.Header>
           <Table.Row>
@@ -108,7 +109,7 @@ const ListJobsites = ({ pageSize, query = '', basicView = false }) => {
           })}
         </Table.Body>
       </Table>
-      <div style={{ width: '100%', overflow: 'auto' }}>
+      <div style={{ width: '100%', overflow: 'auto', marginBottom: '15px' }}>
         {jobsitePagination && (
           <Pagination
             boundaryRange={0}
@@ -124,6 +125,7 @@ const ListJobsites = ({ pageSize, query = '', basicView = false }) => {
           />
         )}
       </div>
+      {/* </div> */}
     </Fragment>
   );
 };

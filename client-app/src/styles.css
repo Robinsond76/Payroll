@@ -9,6 +9,10 @@ body {
   background-color: rgb(234, 234, 234) !important;
 }
 
+.ui.sidebar.menu {
+  background-color: #333;
+}
+
 /*home page styles -----------------------------*/
 
 .masthead {
@@ -44,6 +48,10 @@ div.ui.bottom.attached.segment.active.tab {
 /*Top Nav bar */
 .ui.inverted.top.fixed.menu {
   background-color: #125031;
+}
+.divider.text,
+.ui.inverted.top.fixed.menu a {
+  font-weight: 500;
 }
 
 /*Clock out button used in dashboard */
@@ -197,5 +205,25 @@ div.ui.bottom.attached.segment.active.tab {
 
   .homepage-clock-in button.ui.button {
     width: 100%;
+  }
+}
+
+/*Navbars on Media*/
+@media (max-width: 767px) {
+  .navbar-desktop {
+    display: none;
+  }
+  .Filter-Date-Form {
+    display: flex;
+    flex-direction: column;
+  }
+  .Filter-Date-Form span {
+    margin: 10px 0 0 5px;
+  }
+}
+
+@media (min-width: 768px) {
+  .navbar-mobile {
+    display: none;
   }
 }

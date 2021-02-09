@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { useAuthState } from '../../app/context/auth/authContext';
 import ListJobsiteTimestamps from '../tables/ListJobsiteTimestamps';
 import FilterDateForm from '../../app/layout/FilterDateForm';
-import { Divider, Header, Icon, Popup, Segment } from 'semantic-ui-react';
+import { Divider, Header, Icon, Popup } from 'semantic-ui-react';
 
 // /timestamps/user/:moniker
 //this page lists timestamps for the VIEWING EMPLOYEE at a particular jobsite
@@ -33,15 +33,14 @@ const UserJobsiteTimestamps = ({ match }) => {
       <Divider />
 
       <FilterDateForm />
-      <Segment>
-        <ListJobsiteTimestamps
-          pageSize={pageSize}
-          username={username}
-          moniker={moniker}
-          forCurrentUser={true}
-          noLinksInTable={true}
-        />
-      </Segment>
+
+      <ListJobsiteTimestamps
+        pageSize={pageSize}
+        username={username}
+        moniker={moniker}
+        forCurrentUser={true}
+        noLinksInTable={true}
+      />
     </Fragment>
   );
 };

@@ -22,7 +22,7 @@ const ViewJobsites = () => {
   const [query, setQuery] = React.useState('');
   const pageSize = 5;
 
-  //getJobsites loads the results and pagination into context upon searching,
+  //getJobsites loads the results and pagination into context upon searching with the search bar,
   //which is then retrieved by the 'ListJobsites' table component to display results
   const searchJobsites = (query) => {
     getJobsites(jobsiteDispatch, query, pageSize);
